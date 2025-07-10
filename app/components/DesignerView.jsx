@@ -13,11 +13,12 @@ function FloatingElements() {
     { type: "emoji", content: "🎨", x: "15%", y: "20%", delay: 0 },
     {
       type: "photo",
-      content: "/placeholder.svg?height=80&width=80",
+      content: "/images/gallery/UBORA-104.jpg",
       alt: "Design Work 1",
       x: "85%",
       y: "25%",
       delay: 0.2,
+      size: "large",
     },
     { type: "emoji", content: "🖌️", x: "10%", y: "60%", delay: 0.4 },
     {
@@ -119,22 +120,34 @@ function FloatingElements() {
             <span className="text-2xl md:text-3xl filter drop-shadow-lg">{element.content}</span>
           ) : (
             <div className="relative group">
-              {/* Photo container with modern styling */}
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl border-[5px] border-white shadow-lg overflow-hidden bg-gradient-to-br from-rose-100 to-amber-100 hover:shadow-xl transition-shadow duration-300">
+              <div
+                className={`${element.size === "large"
+                    ? "w-[160px] h-[160px]"
+                    : element.size === "small"
+                      ? "w-[80px] h-[80px]"
+                      : "w-[120px] h-[120px]" // default
+                  } md:${element.size === "large"
+                    ? "w-[200px] h-[200px]"
+                    : element.size === "small"
+                      ? "w-[100px] h-[100px]"
+                      : "w-[160px] h-[160px]"
+                  } rounded-2xl border-[5px] border-white shadow-lg overflow-hidden bg-gradient-to-br from-rose-100 to-amber-100 hover:shadow-xl transition-shadow duration-300`}
+              >
                 <img
-                  src={element.content || "/placeholder.svg"}
+                  src={element.content}
                   alt={element.alt}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
 
-              {/* Subtle glow effect on hover */}
+              {/* Glow effect on hover */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-rose-400/20 to-amber-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-              {/* Optional: Small indicator dot */}
+              {/* Dot indicator */}
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-rose-400 to-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
           )}
+
         </motion.div>
       ))}
     </div>
@@ -244,7 +257,7 @@ export default function DesignerView() {
 
         {/* Sparkle effects */}
         {sparkles.map((sparkle) => (
-          <SparkleEffect key={sparkle.id} x={sparkle.x} y={sparkle.y} show={true} onComplete={() => {}} />
+          <SparkleEffect key={sparkle.id} x={sparkle.x} y={sparkle.y} show={true} onComplete={() => { }} />
         ))}
 
         {/* Content */}
@@ -255,7 +268,7 @@ export default function DesignerView() {
             transition={{ delay: 0.3, duration: 0.8 }}
             className="text-6xl md:text-9xl font-light mb-6 bg-gradient-to-r from-rose-600 via-amber-600 to-orange-600 bg-clip-text text-transparent"
             style={{ fontFamily: "var(--font-bricolage)" }}
-            >
+          >
             Nana Amoako
           </motion.h1>
 
