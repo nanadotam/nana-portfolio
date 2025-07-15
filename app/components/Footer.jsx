@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import PersonaReset from "./PersonaReset"
 
 export default function Footer() {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
@@ -32,13 +33,17 @@ export default function Footer() {
               </li>
             </ol>
           </nav>
-          <p className="footer-text">
-            &copy; <span>{currentYear}</span> • Designed & Developed by
-            <a target="_blank" rel="noopener noreferrer" href="https://github.com/nanadotam">
-              {" "}
-              Nana Amoako.
-            </a>
-          </p>
+          
+          <div className="flex flex-col items-center space-y-4">
+            <PersonaReset />
+            <p className="footer-text">
+              &copy; <span>{currentYear}</span> • Designed & Developed by
+              <a target="_blank" rel="noopener noreferrer" href="https://github.com/nanadotam">
+                {" "}
+                Nana Amoako.
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
