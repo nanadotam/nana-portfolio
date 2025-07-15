@@ -187,31 +187,38 @@ export default function DesignerView() {
   const portfolioItems = [
     {
       title: "Brand Identity System",
-      category: "Branding",
-      description: "Complete visual identity for a sustainable fashion startup",
+      category: "SHAKESHACK",
+      description: "Complete visual identity for a sustainable fashion startup featuring modern typography and cohesive color palette",
       image: "/placeholder.svg?height=400&width=600",
       tags: ["Logo Design", "Typography", "Color Theory"],
     },
     {
       title: "Mobile App UI/UX",
-      category: "Digital Design",
-      description: "Intuitive meditation app with calming user experience",
+      category: "JAFFA",
+      description: "Intuitive meditation app with calming user experience and seamless interaction design",
       image: "/placeholder.svg?height=400&width=600",
       tags: ["UI Design", "UX Research", "Prototyping"],
     },
     {
       title: "Editorial Photography",
-      category: "Photography",
-      description: "Fashion editorial shoot for emerging designers",
+      category: "FASHION",
+      description: "Fashion editorial shoot for emerging designers showcasing contemporary styles",
       image: "/placeholder.svg?height=400&width=600",
       tags: ["Fashion", "Editorial", "Studio Lighting"],
     },
     {
       title: "Motion Graphics",
-      category: "Video",
-      description: "Animated explainer video for tech startup",
+      category: "BRANDING",
+      description: "Animated explainer video for tech startup with engaging visual storytelling",
       image: "/placeholder.svg?height=400&width=600",
       tags: ["Animation", "Motion Design", "Storytelling"],
+    },
+    {
+      title: "Package Design",
+      category: "PRODUCT",
+      description: "Sustainable packaging solution for eco-friendly beauty brand",
+      image: "/placeholder.svg?height=400&width=600",
+      tags: ["Packaging", "Sustainability", "Brand"],
     },
   ]
 
