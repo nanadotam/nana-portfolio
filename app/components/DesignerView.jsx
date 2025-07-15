@@ -364,6 +364,9 @@ export default function DesignerView() {
         {/* Footer */}
         <Footer />
 
+        {/* Extra spacing for giant toggle */}
+        <div className="h-80"></div>
+
         {/* Persistent Persona Toggle */}
         <PersistentPersonaToggle />
       </div>

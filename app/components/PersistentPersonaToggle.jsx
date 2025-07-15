@@ -10,6 +10,8 @@ export default function PersistentPersonaToggle() {
   const [currentMode, setCurrentMode] = useState("developer")
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [hoveredSide, setHoveredSide] = useState(null)
+  const [isAtBottom, setIsAtBottom] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   // Detect current mode from pathname
   useEffect(() => {
@@ -19,6 +21,27 @@ export default function PersistentPersonaToggle() {
       setCurrentMode("developer")
     }
   }, [pathname])
+
+  // Scroll detection for bottom of page
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight
+      const scrollTop = document.documentElement.scrollTop
+      const clientHeight = document.documentElement.clientHeight
+      
+      // Check if we're within 100px of the bottom
+      const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100
+      setIsAtBottom(isNearBottom)
+      
+      // Expand the toggle when at bottom or when hovered
+      setIsExpanded(isNearBottom || hoveredSide !== null)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // Check initial state
+    
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [hoveredSide])
 
   const handleSwitch = (targetMode) => {
     if (targetMode === currentMode || isTransitioning) return
@@ -42,207 +65,339 @@ export default function PersistentPersonaToggle() {
   // Don't show on home page
   if (pathname === "/") return null
 
+  // Stick the pill to the bottom center of the screen
   return (
-    <motion.div
-      initial={{ y: 100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 0.5, type: "spring", damping: 30, stiffness: 400 }}
-      className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40"
-    >
-      <div className="relative bg-black/5 backdrop-blur-2xl rounded-2xl p-1 border border-white/10 shadow-2xl">
-        {/* Background transition effect */}
+    <div className="fixed bottom-6 left-0 right-0 z-40 flex justify-center pointer-events-none">
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.5, type: "spring", damping: 30, stiffness: 400 }}
+        className="relative pointer-events-auto"
+      >
         <motion.div
-          className="absolute inset-0 rounded-2xl"
+          className="relative backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full min-w-[340px] min-h-[64px] flex items-center"
           animate={{
-            background: isTransitioning
-              ? "linear-gradient(90deg, rgba(34, 197, 94, 0.1), rgba(244, 63, 94, 0.1))"
-              : currentMode === "developer"
-              ? "rgba(34, 197, 94, 0.05)"
-              : "rgba(244, 63, 94, 0.05)",
+            scale: isAtBottom ? 2.8 : (hoveredSide ? 1.4 : 1),
+            y: isAtBottom ? -125 : 0,
+            background: isExpanded 
+              ? "rgba(0, 0, 0, 0.15)" 
+              : "rgba(0, 0, 0, 0.05)",
+            borderColor: isExpanded 
+              ? currentMode === "developer" 
+                ? "rgba(34, 197, 94, 0.3)" 
+                : "rgba(244, 63, 94, 0.3)"
+              : "rgba(255, 255, 255, 0.1)",
           }}
-          transition={{ duration: 0.3 }}
-        />
-
-        {/* Matrix effect for developer mode */}
-        {(currentMode === "developer" || hoveredSide === "developer") && (
-          <div className="absolute left-0 top-0 w-1/2 h-full overflow-hidden rounded-l-2xl pointer-events-none">
-            <div className="matrix-dots w-full h-full opacity-20" />
-          </div>
-        )}
-
-        {/* Designer effect */}
-        {(currentMode === "designer" || hoveredSide === "designer") && (
-          <div className="absolute right-0 top-0 w-1/2 h-full overflow-hidden rounded-r-2xl pointer-events-none">
-            <div className="designer-glow w-full h-full opacity-15" />
-          </div>
-        )}
-
-        <div className="flex relative z-10">
-          {/* Developer Side */}
-          <motion.button
-            onClick={() => handleSwitch("developer")}
-            onMouseEnter={() => setHoveredSide("developer")}
-            onMouseLeave={() => setHoveredSide(null)}
-            className="relative px-6 py-3 rounded-l-2xl transition-motion-blur-fast overflow-hidden"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            disabled={isTransitioning}
-          >
-            {/* Active indicator */}
-            <motion.div
-              className="absolute inset-0 bg-green-400/10 rounded-l-2xl"
-              animate={{
-                opacity: currentMode === "developer" ? 1 : 0,
-              }}
-              transition={{ duration: 0.2 }}
-            />
-
-            {/* Hover effect */}
-            <motion.div
-              className="absolute inset-0 bg-green-400/5 rounded-l-2xl"
-              animate={{
-                opacity: hoveredSide === "developer" ? 1 : 0,
-              }}
-              transition={{ duration: 0.2 }}
-            />
-
-            <div className="relative z-10 flex items-center space-x-2">
-              <motion.span 
-                className={`text-lg font-developer transition-motion-blur-fast ${
-                  currentMode === "developer" 
-                    ? "text-green-400" 
-                    : hoveredSide === "developer"
-                    ? "text-green-300"
-                    : "text-gray-500"
-                }`}
-                animate={{
-                  textShadow: currentMode === "developer" 
-                    ? "0 0 10px rgba(34, 197, 94, 0.3)" 
-                    : "none",
-                }}
-              >
-                DEV
-              </motion.span>
-              
-              {/* Status indicator */}
-              <motion.div
-                className={`w-2 h-2 rounded-full transition-motion-blur-fast ${
-                  currentMode === "developer" ? "bg-green-400" : "bg-gray-400/30"
-                }`}
-                animate={{
-                  scale: currentMode === "developer" ? 1 : 0.7,
-                  boxShadow: currentMode === "developer" 
-                    ? "0 0 8px rgba(34, 197, 94, 0.5)" 
-                    : "none",
-                }}
-              />
-            </div>
-          </motion.button>
-
-          {/* Divider */}
+          transition={{ 
+            type: "spring", 
+            damping: 25, 
+            stiffness: 400,
+            duration: 0.3 
+          }}
+          onMouseEnter={() => setIsExpanded(true)}
+          onMouseLeave={() => setIsExpanded(isAtBottom)}
+          style={{
+            // Make the pill look more like a bill: wide, not too tall, very rounded
+            padding: isExpanded ? "12px 24px" : "8px 16px",
+            boxShadow: isExpanded
+              ? currentMode === "developer"
+                ? "0 0 30px rgba(34, 197, 94, 0.2)"
+                : "0 0 30px rgba(244, 63, 94, 0.2)"
+              : "0 10px 30px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          {/* Enhanced background transition effect */}
           <motion.div
-            className="w-px my-2"
+            className="absolute inset-0 rounded-full"
             animate={{
-              background: hoveredSide === "developer" 
-                ? "linear-gradient(to bottom, transparent, #22c55e, transparent)"
-                : hoveredSide === "designer"
-                ? "linear-gradient(to bottom, transparent, #f43f5e, transparent)"
-                : "linear-gradient(to bottom, transparent, #404040, transparent)",
+              background: isTransitioning
+                ? "linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(244, 63, 94, 0.15))"
+                : currentMode === "developer"
+                ? isExpanded 
+                  ? "rgba(34, 197, 94, 0.1)" 
+                  : "rgba(34, 197, 94, 0.05)"
+                : isExpanded 
+                  ? "rgba(244, 63, 94, 0.1)" 
+                  : "rgba(244, 63, 94, 0.05)",
             }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              boxShadow: isExpanded
+                ? currentMode === "developer"
+                  ? "0 0 30px rgba(34, 197, 94, 0.2)"
+                  : "0 0 30px rgba(244, 63, 94, 0.2)"
+                : "0 10px 30px rgba(0, 0, 0, 0.1)",
+            }}
           />
 
-          {/* Designer Side */}
-          <motion.button
-            onClick={() => handleSwitch("designer")}
-            onMouseEnter={() => setHoveredSide("designer")}
-            onMouseLeave={() => setHoveredSide(null)}
-            className="relative px-6 py-3 rounded-r-2xl transition-motion-blur-fast overflow-hidden"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            disabled={isTransitioning}
-          >
-            {/* Active indicator */}
-            <motion.div
-              className="absolute inset-0 bg-rose-400/10 rounded-r-2xl"
-              animate={{
-                opacity: currentMode === "designer" ? 1 : 0,
-              }}
-              transition={{ duration: 0.2 }}
-            />
-
-            {/* Hover effect */}
-            <motion.div
-              className="absolute inset-0 bg-rose-400/5 rounded-r-2xl"
-              animate={{
-                opacity: hoveredSide === "designer" ? 1 : 0,
-              }}
-              transition={{ duration: 0.2 }}
-            />
-
-            <div className="relative z-10 flex items-center space-x-2">
-              {/* Status indicator */}
-              <motion.div
-                className={`w-2 h-2 rounded-full transition-motion-blur-fast ${
-                  currentMode === "designer" ? "bg-rose-400" : "bg-gray-400/30"
-                }`}
+          {/* Enhanced matrix effect for developer mode */}
+          {(currentMode === "developer" || hoveredSide === "developer") && (
+            <div className="absolute left-0 top-0 w-1/2 h-full overflow-hidden rounded-l-full pointer-events-none">
+              <motion.div 
+                className="matrix-dots w-full h-full"
                 animate={{
-                  scale: currentMode === "designer" ? 1 : 0.7,
-                  boxShadow: currentMode === "designer" 
-                    ? "0 0 8px rgba(244, 63, 94, 0.5)" 
-                    : "none",
+                  opacity: isExpanded ? 0.4 : 0.2,
                 }}
               />
-              
-              <motion.span 
-                className={`text-lg font-designer transition-motion-blur-fast ${
-                  currentMode === "designer" 
-                    ? "text-rose-400" 
-                    : hoveredSide === "designer"
-                    ? "text-rose-300"
-                    : "text-gray-500"
-                }`}
-                animate={{
-                  textShadow: currentMode === "designer" 
-                    ? "0 0 10px rgba(244, 63, 94, 0.3)" 
-                    : "none",
-                }}
-              >
-                Art
-              </motion.span>
             </div>
-          </motion.button>
-        </div>
+          )}
 
-        {/* Transition loading indicator */}
+          {/* Enhanced designer effect */}
+          {(currentMode === "designer" || hoveredSide === "designer") && (
+            <div className="absolute right-0 top-0 w-1/2 h-full overflow-hidden rounded-r-full pointer-events-none">
+              <motion.div 
+                className="designer-glow w-full h-full"
+                animate={{
+                  opacity: isExpanded ? 0.3 : 0.15,
+                }}
+              />
+            </div>
+          )}
+
+          <motion.div 
+            className="flex relative z-10"
+            animate={{
+              padding: isExpanded ? "8px" : "4px",
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Developer Side */}
+            <motion.button
+              onClick={() => handleSwitch("developer")}
+              onMouseEnter={() => setHoveredSide("developer")}
+              onMouseLeave={() => setHoveredSide(null)}
+              className="relative rounded-l-full transition-motion-blur-fast overflow-hidden"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              disabled={isTransitioning}
+              animate={{
+                paddingLeft: isExpanded ? "32px" : "24px",
+                paddingRight: isExpanded ? "32px" : "24px",
+                paddingTop: isExpanded ? "16px" : "12px",
+                paddingBottom: isExpanded ? "16px" : "12px",
+              }}
+              transition={{ duration: 0.3 }}
+              style={{
+                borderTopLeftRadius: "9999px",
+                borderBottomLeftRadius: "9999px",
+              }}
+            >
+              {/* Active indicator */}
+              <motion.div
+                className="absolute inset-0 bg-green-400/10 rounded-l-full"
+                animate={{
+                  opacity: currentMode === "developer" ? 1 : 0,
+                }}
+                transition={{ duration: 0.2 }}
+              />
+
+              {/* Hover effect */}
+              <motion.div
+                className="absolute inset-0 bg-green-400/5 rounded-l-full"
+                animate={{
+                  opacity: hoveredSide === "developer" ? 1 : 0,
+                }}
+                transition={{ duration: 0.2 }}
+              />
+
+              <div className="relative z-10 flex items-center space-x-3">
+                <motion.span 
+                  className={`font-developer transition-motion-blur-fast ${
+                    currentMode === "developer" 
+                      ? "text-green-400" 
+                      : hoveredSide === "developer"
+                      ? "text-green-300"
+                      : "text-gray-500"
+                  }`}
+                  animate={{
+                    fontSize: isExpanded ? "20px" : "18px",
+                    textShadow: currentMode === "developer" 
+                      ? isExpanded 
+                        ? "0 0 15px rgba(34, 197, 94, 0.4)" 
+                        : "0 0 10px rgba(34, 197, 94, 0.3)"
+                      : "none",
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  DEV
+                </motion.span>
+                
+                {/* Enhanced status indicator */}
+                <motion.div
+                  className={`rounded-full transition-motion-blur-fast ${
+                    currentMode === "developer" ? "bg-green-400" : "bg-gray-400/30"
+                  }`}
+                  animate={{
+                    width: isExpanded ? "10px" : "8px",
+                    height: isExpanded ? "10px" : "8px",
+                    scale: currentMode === "developer" ? 1 : 0.7,
+                    boxShadow: currentMode === "developer" 
+                      ? isExpanded 
+                        ? "0 0 12px rgba(34, 197, 94, 0.6)" 
+                        : "0 0 8px rgba(34, 197, 94, 0.5)"
+                      : "none",
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+            </motion.button>
+
+            {/* Enhanced divider */}
+            <motion.div
+              className="my-2"
+              animate={{
+                width: "1px",
+                background: hoveredSide === "developer" 
+                  ? "linear-gradient(to bottom, transparent, #22c55e, transparent)"
+                  : hoveredSide === "designer"
+                  ? "linear-gradient(to bottom, transparent, #f43f5e, transparent)"
+                  : "linear-gradient(to bottom, transparent, #404040, transparent)",
+                opacity: isExpanded ? 1 : 0.7,
+              }}
+              transition={{ duration: 0.2 }}
+              style={{
+                borderRadius: "9999px",
+                marginLeft: "-2px",
+                marginRight: "-2px",
+              }}
+            />
+
+            {/* Designer Side */}
+            <motion.button
+              onClick={() => handleSwitch("designer")}
+              onMouseEnter={() => setHoveredSide("designer")}
+              onMouseLeave={() => setHoveredSide(null)}
+              className="relative rounded-r-full transition-motion-blur-fast overflow-hidden"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              disabled={isTransitioning}
+              animate={{
+                paddingLeft: isExpanded ? "32px" : "24px",
+                paddingRight: isExpanded ? "32px" : "24px",
+                paddingTop: isExpanded ? "16px" : "12px",
+                paddingBottom: isExpanded ? "16px" : "12px",
+              }}
+              transition={{ duration: 0.3 }}
+              style={{
+                borderTopRightRadius: "9999px",
+                borderBottomRightRadius: "9999px",
+              }}
+            >
+              {/* Active indicator */}
+              <motion.div
+                className="absolute inset-0 bg-rose-400/10 rounded-r-full"
+                animate={{
+                  opacity: currentMode === "designer" ? 1 : 0,
+                }}
+                transition={{ duration: 0.2 }}
+              />
+
+              {/* Hover effect */}
+              <motion.div
+                className="absolute inset-0 bg-rose-400/5 rounded-r-full"
+                animate={{
+                  opacity: hoveredSide === "designer" ? 1 : 0,
+                }}
+                transition={{ duration: 0.2 }}
+              />
+
+              <div className="relative z-10 flex items-center space-x-3">
+                {/* Enhanced status indicator */}
+                <motion.div
+                  className={`rounded-full transition-motion-blur-fast ${
+                    currentMode === "designer" ? "bg-rose-400" : "bg-gray-400/30"
+                  }`}
+                  animate={{
+                    width: isExpanded ? "10px" : "8px",
+                    height: isExpanded ? "10px" : "8px",
+                    scale: currentMode === "designer" ? 1 : 0.7,
+                    boxShadow: currentMode === "designer" 
+                      ? isExpanded 
+                        ? "0 0 12px rgba(244, 63, 94, 0.6)" 
+                        : "0 0 8px rgba(244, 63, 94, 0.5)"
+                      : "none",
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+                
+                <motion.span 
+                  className={`font-designer transition-motion-blur-fast ${
+                    currentMode === "designer" 
+                      ? "text-rose-400" 
+                      : hoveredSide === "designer"
+                      ? "text-rose-300"
+                      : "text-gray-500"
+                  }`}
+                  animate={{
+                    fontSize: isExpanded ? "20px" : "18px",
+                    textShadow: currentMode === "designer" 
+                      ? isExpanded 
+                        ? "0 0 15px rgba(244, 63, 94, 0.4)" 
+                        : "0 0 10px rgba(244, 63, 94, 0.3)"
+                      : "none",
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  Designer
+                </motion.span>
+              </div>
+            </motion.button>
+          </motion.div>
+
+          {/* Enhanced transition loading indicator */}
+          <AnimatePresence>
+            {isTransitioning && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm rounded-full"
+              >
+                <motion.div
+                  className="border-2 border-white/30 border-t-white rounded-full"
+                  animate={{ 
+                    rotate: 360,
+                    width: isExpanded ? "20px" : "16px",
+                    height: isExpanded ? "20px" : "16px",
+                  }}
+                  transition={{ 
+                    rotate: { duration: 1, repeat: Infinity, ease: "linear" },
+                    width: { duration: 0.3 },
+                    height: { duration: 0.3 }
+                  }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+      
+        {/* Bottom of page indicator */}
         <AnimatePresence>
-          {isTransitioning && (
+          {isAtBottom && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm rounded-2xl"
+              className="absolute left-1/2 transform -translate-x-1/2"
+              style={{ bottom: "calc(100% + 60px)" }}
             >
               <motion.div
-                className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              />
+                className="text-center"
+                animate={{
+                  y: [0, -5, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-
-      {/* Keyboard shortcut hint */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: hoveredSide ? 1 : 0 }}
-        className="absolute -top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap"
-      >
-        <div className="px-3 py-1 bg-black/50 backdrop-blur-sm rounded-lg text-xs text-gray-300 border border-white/10">
-          Press ⌘+D to switch
-        </div>
       </motion.div>
-    </motion.div>
+    </div>
   )
 } 
