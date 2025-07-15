@@ -9,48 +9,169 @@ export default function Projects() {
   const featuredRepos = [
     {
       name: "NanoClip",
-      description:
-        "A file transfer and universal clipboard sharing platform that allows you to send files from device to device similar to AirDrop.",
+      tagline: "Universal clipboard for seamless device-to-device transfers",
+      description: "A file transfer and universal clipboard sharing platform that allows you to send files from device to device similar to AirDrop.",
+      year: "2024",
+      role: "Full-Stack Developer",
+      tools: ["React", "Node.js", "Socket.io", "Express", "MongoDB"],
+      team: "Solo project",
+      problem: "Traditional file sharing methods are cumbersome and require multiple steps, making quick transfers between devices inefficient.",
+      solution: "Built a real-time platform that enables instant file and text sharing across devices using WebRTC and WebSocket connections.",
+      features: [
+        "Real-time file transfers without size limits",
+        "Universal clipboard synchronization",
+        "Cross-platform compatibility"
+      ],
+      images: [
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&h=300&fit=crop"
+      ],
       url: "https://nanoclip.vercel.app",
     },
     {
       name: "DSA File Explorers: Virtual File Management",
+      tagline: "Advanced file system with CLI and GUI interfaces",
       description: "A file management system with CLI and GUI built using Java.",
+      year: "2023",
+      role: "Lead Developer",
+      tools: ["Java", "Swing", "Data Structures", "Algorithms"],
+      team: "4-person team",
+      problem: "Students needed hands-on experience with file system operations and data structure implementations.",
+      solution: "Developed a comprehensive file management system that demonstrates key DSA concepts through practical application.",
+      features: [
+        "Command-line and graphical interfaces",
+        "Advanced search and sorting algorithms",
+        "Custom data structure implementations"
+      ],
+      images: [
+        "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=500&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=500&h=300&fit=crop"
+      ],
       url: "https://github.com/nanadotam/DSA-File-Explorers",
     },
     {
       name: "Ashesi Parking Management System",
+      tagline: "Smart parking solution for campus management",
       description: "Advanced property management system for real estate.",
+      year: "2023",
+      role: "Full-Stack Developer",
+      tools: ["PHP", "MySQL", "Bootstrap", "JavaScript"],
+      team: "3-person team",
+      problem: "Campus parking was chaotic with no system to track availability or manage reservations.",
+      solution: "Created a comprehensive parking management system with real-time tracking and automated allocation.",
+      features: [
+        "Real-time parking space monitoring",
+        "Automated reservation system",
+        "Admin dashboard with analytics"
+      ],
       url: "https://github.com/nanadotam/apms",
     },
     {
       name: "Kumi: Making Learning Fun",
+      tagline: "Gamified educational platform for collaborative learning",
       description: "An educational platform for collaborative learning.",
+      year: "2023",
+      role: "UI/UX Designer & Frontend Developer",
+      tools: ["React", "Node.js", "MongoDB", "Socket.io"],
+      team: "5-person team",
+      problem: "Traditional learning platforms lack engagement and collaborative features for students.",
+      solution: "Built an interactive platform that gamifies learning through collaborative challenges and real-time interaction.",
+      features: [
+        "Gamified learning modules",
+        "Real-time collaboration tools",
+        "Progress tracking and rewards system"
+      ],
+      images: [
+        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=500&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&h=300&fit=crop"
+      ],
       url: "https://github.com/nanadotam/kumi_fcln",
     },
     {
       name: "Recifree: Free Recipes",
+      tagline: "Community-driven recipe sharing platform",
       description: "A recipe sharing platform with admin dashboard features.",
+      year: "2022",
+      role: "Full-Stack Developer",
+      tools: ["React", "Node.js", "Express", "MongoDB"],
+      team: "Solo project",
+      problem: "Finding quality, free recipes online is difficult due to paywalls and poor organization.",
+      solution: "Created a community platform where users can share, rate, and discover recipes with powerful search features.",
+      features: [
+        "Community recipe sharing",
+        "Advanced search and filtering",
+        "User ratings and reviews system"
+      ],
       url: "https://github.com/nanadotam/Recifree",
     },
     {
       name: "Volume Gesture Control App",
+      tagline: "Control your computer volume with hand gestures",
       description: "Control volume with hand gestures using computer vision.",
+      year: "2022",
+      role: "Computer Vision Developer",
+      tools: ["Python", "OpenCV", "MediaPipe", "NumPy"],
+      team: "Solo project",
+      problem: "Physical volume controls are inconvenient when working from a distance or during presentations.",
+      solution: "Developed a hands-free volume control system using computer vision and gesture recognition.",
+      features: [
+        "Real-time hand gesture recognition",
+        "Smooth volume adjustment",
+        "Customizable gesture settings"
+      ],
       url: "https://github.com/nanadotam/volume-gesture-control",
     },
     {
       name: "Cocoa Price Prediction App",
+      tagline: "AI-powered cocoa market price forecasting",
       description: "Machine learning model to predict cocoa market prices.",
+      year: "2022",
+      role: "Data Scientist & ML Engineer",
+      tools: ["Python", "Scikit-learn", "Pandas", "Matplotlib"],
+      team: "Solo project",
+      problem: "Farmers and traders need accurate price predictions to make informed decisions in the cocoa market.",
+      solution: "Built a machine learning model that analyzes historical data to predict future cocoa price trends.",
+      features: [
+        "Time series forecasting model",
+        "Interactive data visualizations",
+        "Historical price trend analysis"
+      ],
       url: "https://github.com/nanadotam/Cocoa-Price-Prediction",
     },
     {
       name: "text clock by nanaamoako",
+      tagline: "Creative text-based clock with dynamic animations",
       description: "A creative text-based clock implemented with JavaScript.",
+      year: "2021",
+      role: "Frontend Developer",
+      tools: ["JavaScript", "CSS3", "HTML5"],
+      team: "Solo project",
+      problem: "Traditional digital clocks lack personality and creative expression.",
+      solution: "Designed an artistic clock that displays time through animated text with smooth transitions.",
+      features: [
+        "Dynamic text animations",
+        "Customizable color schemes",
+        "Responsive design"
+      ],
       url: "https://github.com/nanadotam/text-clock-by-nanaamoako",
     },
     {
       name: "Personal Pomodoro Timer",
+      tagline: "Productivity-focused timer with customizable work sessions",
       description: "A custom Pomodoro timer for productivity enthusiasts.",
+      year: "2021",
+      role: "Frontend Developer",
+      tools: ["JavaScript", "CSS3", "HTML5", "Local Storage"],
+      team: "Solo project",
+      problem: "Existing Pomodoro apps lack customization and distract users with unnecessary features.",
+      solution: "Created a minimalist, highly customizable timer focused solely on productivity enhancement.",
+      features: [
+        "Customizable work/break intervals",
+        "Session history tracking",
+        "Minimalist, distraction-free interface"
+      ],
       url: "https://github.com/nanadotam/personal-pomodoro-timer",
     },
   ]

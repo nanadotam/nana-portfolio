@@ -8,6 +8,7 @@ import About from "./About"
 import Contact from "./Contact"
 import Footer from "./Footer"
 import PersistentPersonaToggle from "./PersistentPersonaToggle"
+import ScrollIndicator from "./ScrollIndicator"
 
 export default function DeveloperView() {
   useEffect(() => {
@@ -24,6 +25,9 @@ export default function DeveloperView() {
 
       {/* Header with Matrix Effect */}
       <Header />
+
+      {/* Scroll Indicator */}
+      <ScrollIndicator />
 
       {/* Main Content */}
       <main>
