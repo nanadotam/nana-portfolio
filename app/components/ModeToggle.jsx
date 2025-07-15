@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useMode } from "../page"
+import { useMode } from "./PortfolioWrapper"
 
 export default function ModeToggle() {
   const { mode, handleSwitch } = useMode()

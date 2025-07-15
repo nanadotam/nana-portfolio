@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
-import { useMode } from "../page"
+import { useMode } from "./PortfolioWrapper"
 
 export default function BackgroundMusic() {
   const [isPlaying, setIsPlaying] = useState(false)
