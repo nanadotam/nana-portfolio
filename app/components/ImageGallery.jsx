@@ -13,7 +13,7 @@ export default function ImageGallery() {
   ]
 
   return (
-    <section className="py-24 px-6 bg-white/50">
+    <section className="py-24 px-6 bg-white/5 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -34,7 +34,7 @@ export default function ImageGallery() {
               viewport={{ once: true }}
               className="break-inside-avoid group cursor-pointer"
             >
-              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-100 to-amber-100">
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-100/60 to-amber-100/60 backdrop-blur-sm border border-white/20">
                 <img
                   src={image.src || "/placeholder.svg"}
                   alt={image.alt}
@@ -42,7 +42,7 @@ export default function ImageGallery() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p className="font-medium">{image.alt}</p>
+                  <p className="font-medium drop-shadow-md">{image.alt}</p>
                 </div>
               </div>
             </motion.div>

@@ -104,8 +104,8 @@ function CarouselCard({ item, index, activeIndex, totalCards }) {
       }}
       aria-label={`${item.title}: ${item.description}`}
     >
-      <div className="w-full h-full bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_20px_40px_-12px_rgba(0,0,0,0.3)] overflow-hidden border border-white/20">
-        <div className="relative w-full h-4/5 bg-gradient-to-br from-rose-100 to-amber-100">
+      <div className="w-full h-full bg-white/85 backdrop-blur-md rounded-2xl shadow-[0_20px_40px_-12px_rgba(0,0,0,0.25)] overflow-hidden border border-white/30 cursor-pointer hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] transition-shadow duration-300">
+        <div className="relative w-full h-4/5 bg-gradient-to-br from-rose-100/80 to-amber-100/80">
           <img
             src={item.image || "/placeholder.svg"}
             alt={item.title}
@@ -113,8 +113,8 @@ function CarouselCard({ item, index, activeIndex, totalCards }) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
-        <div className="p-4 h-1/5 flex items-center justify-center bg-white/95">
-          <span className="inline-block px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md">
+        <div className="p-4 h-1/5 flex items-center justify-center bg-white/90 backdrop-blur-sm">
+          <span className="inline-block px-4 py-2 bg-gradient-to-r from-red-500 to-purple-600 text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md">
             {item.category}
           </span>
         </div>
@@ -203,7 +203,7 @@ export default function DesignShowcase({ items }) {
   }
 
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-rose-50 via-amber-50 to-orange-50">
+    <section className="py-24 px-6 bg-white/10 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
@@ -221,7 +221,7 @@ export default function DesignShowcase({ items }) {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-lg text-gray-600 font-light"
+            className="text-lg text-gray-700 font-light"
           >
             Select recent and notable projects
           </motion.p>
@@ -256,7 +256,7 @@ export default function DesignShowcase({ items }) {
             {/* Previous Button */}
             <button
               onClick={prevSlide}
-              className="w-12 h-12 bg-gradient-to-r from-rose-500 to-amber-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+              className="w-12 h-12 bg-gradient-to-r from-red-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
               aria-label="Previous project"
             >
               <LeftArrow />
@@ -265,7 +265,7 @@ export default function DesignShowcase({ items }) {
             {/* Play/Pause Button */}
             <button
               onClick={toggleAutoPlay}
-              className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+              className="w-10 h-10 bg-gray-800/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
               aria-label={isAutoPlaying ? "Pause autoplay" : "Start autoplay"}
             >
               <PlayPauseIcon isPlaying={isAutoPlaying} />
@@ -274,7 +274,7 @@ export default function DesignShowcase({ items }) {
             {/* Next Button */}
             <button
               onClick={nextSlide}
-              className="w-12 h-12 bg-gradient-to-r from-rose-500 to-amber-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+              className="w-12 h-12 bg-gradient-to-r from-red-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
               aria-label="Next project"
             >
               <RightArrow />
@@ -293,8 +293,8 @@ export default function DesignShowcase({ items }) {
                 }}
                 className={`transition-all duration-300 rounded-full ${
                   index === activeIndex 
-                    ? "w-8 h-3 bg-gradient-to-r from-rose-500 to-amber-500" 
-                    : "w-3 h-3 bg-gray-300 hover:bg-gray-400"
+                    ? "w-8 h-3 bg-gradient-to-r from-red-500 to-purple-600" 
+                    : "w-3 h-3 bg-gray-400/60 hover:bg-gray-500/80"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -313,14 +313,14 @@ export default function DesignShowcase({ items }) {
           <h3 className="text-3xl font-light text-gray-800 mb-3">
             {items[activeIndex].title}
           </h3>
-          <p className="text-gray-600 leading-relaxed mb-6">
+          <p className="text-gray-700 leading-relaxed mb-6">
             {items[activeIndex].description}
           </p>
           <div className="flex flex-wrap gap-2 justify-center">
             {items[activeIndex].tags.map((tag, tagIndex) => (
               <span
                 key={tagIndex}
-                className="px-4 py-2 bg-white/80 backdrop-blur-sm text-gray-700 text-sm rounded-full border border-gray-200 shadow-sm"
+                className="px-4 py-2 bg-white/60 backdrop-blur-sm text-gray-800 text-sm rounded-full border border-white/30 shadow-sm"
               >
                 {tag}
               </span>
@@ -334,7 +334,7 @@ export default function DesignShowcase({ items }) {
           whileInView={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center text-gray-500 text-sm mt-8"
+          className="text-center text-gray-600 text-sm mt-8"
         >
           Scroll horizontally or use navigation buttons to explore projects
         </motion.p>

@@ -5,6 +5,7 @@ import ImageGallery from "./ImageGallery"
 import DesignShowcase from "./DesignShowcase"
 import Footer from "./Footer"
 import { useState } from "react"
+import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation"
 
 // Updated FloatingElements component with photos
 function FloatingElements() {
@@ -243,113 +244,125 @@ export default function DesignerView() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-orange-50 text-gray-800">
-      {/* Hero Section */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="relative h-screen flex items-center justify-center overflow-hidden cursor-pointer"
-        onClick={handleHeroClick}
-      >
-        {/* Background Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-rose-200/30 to-amber-200/30 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-orange-200/30 to-rose-200/30 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-amber-100/20 to-rose-100/20 rounded-full blur-3xl" />
-        </div>
+    <div className="relative min-h-screen text-gray-800">
+      {/* Background Gradient Animation */}
+      <BackgroundGradientAnimation
+        gradientBackgroundStart="rgb(245, 230, 215)" // Nude/beige start
+        gradientBackgroundEnd="rgb(240, 220, 200)" // Nude/warm beige end
+        firstColor="220, 180, 160" // Nude/pink
+        secondColor="180, 60, 90" // Deep red
+        thirdColor="120, 60, 120" // Purple
+        fourthColor="200, 120, 100" // Warm nude
+        fifthColor="160, 80, 140" // Purple-red
+        pointerColor="140, 70, 110" // Interactive purple-red
+        size="90%"
+        blendingValue="soft-light"
+        interactive={true}
+        containerClassName="fixed inset-0 -z-10"
+      />
 
-        {/* Floating Elements with Photos */}
-        <FloatingElements />
+      {/* Content Container */}
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="relative h-screen flex items-center justify-center overflow-hidden cursor-pointer"
+          onClick={handleHeroClick}
+        >
+          {/* Background Elements */}
+          <div className="absolute inset-0">
+            <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-rose-200/20 to-amber-200/20 rounded-full blur-3xl" />
+            <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-orange-200/20 to-rose-200/20 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-amber-100/10 to-rose-100/10 rounded-full blur-3xl" />
+          </div>
 
-        {/* Sparkle effects */}
-        {sparkles.map((sparkle) => (
-          <SparkleEffect key={sparkle.id} x={sparkle.x} y={sparkle.y} show={true} onComplete={() => { }} />
-        ))}
+          {/* Floating Elements with Photos */}
+          <FloatingElements />
 
-        {/* Content */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-6xl md:text-9xl font-light mb-6 bg-gradient-to-r from-rose-600 via-amber-600 to-orange-600 bg-clip-text text-transparent"
-            style={{ fontFamily: "var(--font-bricolage)" }}
-          >
-            Nana Amoako
-          </motion.h1>
+          {/* Sparkle effects */}
+          {sparkles.map((sparkle) => (
+            <SparkleEffect key={sparkle.id} x={sparkle.x} y={sparkle.y} show={true} onComplete={() => { }} />
+          ))}
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="text-2xl md:text-3xl font-bricolage font-light text-gray-600 mb-8 font-serif"
-          >
-            Visual Designer & Creative Director
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.8 }}
-            className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed"
-          >
-            Crafting meaningful experiences through thoughtful design, compelling visuals, and authentic storytelling
-            that resonates with audiences and drives engagement.
-          </motion.p>
-        </div>
-      </motion.div>
+          {/* Content */}
+          <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="text-6xl md:text-9xl font-light mb-6 bg-gradient-to-r from-rose-600 via-amber-600 to-orange-600 bg-clip-text text-transparent"
+              style={{ fontFamily: "var(--font-bricolage)" }}
+            >
+              Nana Amoako
+            </motion.h1>
 
-      {/* Portfolio Showcase */}
-      <DesignShowcase items={portfolioItems} />
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="text-2xl md:text-3xl font-bricolage font-light text-gray-700 mb-8 font-serif"
+            >
+              Visual Designer & Creative Director
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.8 }}
+              className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed"
+            >
+              Crafting meaningful experiences through thoughtful design, compelling visuals, and authentic storytelling
+              that resonates with audiences and drives engagement.
+            </motion.p>
+          </div>
+        </motion.div>
 
-      {/* Image Gallery */}
-      <ImageGallery />
+        {/* Portfolio Showcase */}
+        <DesignShowcase items={portfolioItems} />
 
-      {/* About Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-        className="py-24 px-6"
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl font-light mb-8 text-gray-800 font-serif">About My Creative Process</h2>
-              <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                I believe in the power of visual storytelling to create emotional connections. My approach combines
-                strategic thinking with artistic intuition, ensuring every design decision serves both aesthetic and
-                functional purposes.
-              </p>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                From concept to execution, I focus on creating cohesive brand experiences that stand out in today's
-                saturated visual landscape while remaining timeless and authentic.
-              </p>
-            </div>
-            <div className="relative">
-              <div className="aspect-square bg-gradient-to-br from-rose-200 to-amber-200 rounded-3xl p-8">
-                <div className="w-full h-full bg-white/50 rounded-2xl backdrop-blur-sm flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-6xl mb-4">🎨</div>
-                    <p className="text-gray-700 font-medium">Creative Excellence</p>
+        {/* Image Gallery */}
+        <ImageGallery />
+
+        {/* About Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="py-24 px-6"
+        >
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-4xl font-light mb-8 text-gray-800 font-serif">About My Creative Process</h2>
+                <p className="text-lg text-gray-600 leading-relaxed mb-6">
+                  I believe in the power of visual storytelling to create emotional connections. My approach combines
+                  strategic thinking with artistic intuition, ensuring every design decision serves both aesthetic and
+                  functional purposes.
+                </p>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  From concept to execution, I focus on creating cohesive brand experiences that stand out in today's
+                  saturated visual landscape while remaining timeless and authentic.
+                </p>
+              </div>
+              <div className="relative">
+                <div className="aspect-square bg-gradient-to-br from-rose-200/40 to-amber-200/40 rounded-3xl p-8 backdrop-blur-sm border border-white/20">
+                  <div className="w-full h-full bg-white/50 rounded-2xl backdrop-blur-sm flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-6xl mb-4">🎨</div>
+                      <p className="text-gray-700 font-medium">Creative Excellence</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </motion.section>
+        </motion.section>
 
-      {/* Footer */}
-      <Footer />
-
-      {/* <footer className="py-12 bg-white border-t border-gray-200">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <p className="text-gray-600 text-sm mb-2">© 2023 Nana Amoako. All rights reserved.</p>
-          <p className="text-gray-500 text-xs">Crafted with ❤️ in Ghana</p>
-        </div>
-      </footer> */}
+        {/* Footer */}
+        <Footer />
+      </div>
     </div>
   )
 }
