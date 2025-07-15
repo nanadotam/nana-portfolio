@@ -9,25 +9,6 @@ export default function PersonaToggleOverlay({ onSelect }) {
   const [isVisible, setIsVisible] = useState(true)
   const [hoveredSide, setHoveredSide] = useState(null)
   const [selectedSide, setSelectedSide] = useState(null)
-  const [particles, setParticles] = useState([])
-
-  // Generate floating particles
-  useEffect(() => {
-    const generateParticles = () => {
-      const newParticles = []
-      for (let i = 0; i < 20; i++) {
-        newParticles.push({
-          id: i,
-          x: Math.random() * 100,
-          y: Math.random() * 100,
-          delay: Math.random() * 2,
-          duration: 3 + Math.random() * 4,
-        })
-      }
-      setParticles(newParticles)
-    }
-    generateParticles()
-  }, [])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -65,51 +46,41 @@ export default function PersonaToggleOverlay({ onSelect }) {
     localStorage.setItem("preferredView", persona)
     localStorage.setItem("hasSeenPersonaToggle", "true")
     
-    // Animate out and navigate
+    // Fast transition with motion blur
     setTimeout(() => {
       setIsVisible(false)
       setTimeout(() => {
         router.push(`/${persona}`)
         onSelect && onSelect(persona)
-      }, 800)
-    }, 600)
+      }, 300) // Faster transition
+    }, 200) // Faster response
   }
 
   const overlayVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
+    initial: { opacity: 0, filter: "blur(10px)" },
+    animate: { opacity: 1, filter: "blur(0px)" },
     exit: { 
       opacity: 0,
-      scale: selectedSide === "developer" ? [1, 0.8] : [1, 1.2],
+      filter: "blur(20px)",
+      scale: selectedSide === "developer" ? 0.8 : 1.2,
       x: selectedSide === "developer" ? "-100vw" : "100vw",
-      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] }
+      transition: { duration: 0.3, ease: [0.76, 0, 0.24, 1] }
     }
   }
 
   const pillVariants = {
-    initial: { y: 100, opacity: 0, scale: 0.8 },
+    initial: { y: 50, opacity: 0, scale: 0.9, filter: "blur(5px)" },
     animate: { 
       y: 0, 
       opacity: 1, 
       scale: 1,
+      filter: "blur(0px)",
       transition: { 
         type: "spring", 
-        damping: 25, 
-        stiffness: 300,
-        delay: 0.3 
+        damping: 30, 
+        stiffness: 400,
+        delay: 0.1 
       }
-    }
-  }
-
-  const sideVariants = {
-    initial: { scale: 1 },
-    hover: { 
-      scale: 1.02,
-      transition: { duration: 0.3, ease: "easeOut" }
-    },
-    selected: {
-      scale: 1.1,
-      transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] }
     }
   }
 
@@ -122,120 +93,86 @@ export default function PersonaToggleOverlay({ onSelect }) {
         initial="initial"
         animate="animate"
         exit="exit"
-        className="fixed inset-0 z-[9999] flex items-center justify-center"
+        className="fixed inset-0 z-[9999] flex items-center justify-center transition-motion-blur-fast"
         style={{
           background: selectedSide === "developer" 
-            ? "linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #1a1a1a 100%)"
+            ? "linear-gradient(135deg, #000000 0%, #0f0f0f 100%)"
             : selectedSide === "designer"
-            ? "linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%)"
-            : "linear-gradient(135deg, #000000 0%, #1a1a1a 30%, #fdf2f8 70%, #fce7f3 100%)"
+            ? "linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)"
+            : "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #fdf2f8 100%)"
         }}
       >
-        {/* Animated Background Particles */}
-        <div className="absolute inset-0 overflow-hidden">
-          {particles.map((particle) => (
-            <motion.div
-              key={particle.id}
-              className={`absolute w-1 h-1 rounded-full ${
-                hoveredSide === "developer" 
-                  ? "bg-green-400/30" 
-                  : hoveredSide === "designer"
-                  ? "bg-rose-400/30"
-                  : "bg-white/20"
-              }`}
-              style={{
-                left: `${particle.x}%`,
-                top: `${particle.y}%`,
-              }}
-              animate={{
-                y: [0, -50, 0],
-                opacity: [0.2, 1, 0.2],
-                scale: [0.5, 1.5, 0.5],
-              }}
-              transition={{
-                duration: particle.duration,
-                repeat: Infinity,
-                delay: particle.delay,
-                ease: "easeInOut",
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Matrix Rain Effect for Developer Side */}
-        {hoveredSide === "developer" && (
+        {/* Subtle Matrix Effect for Developer Side */}
+        {(hoveredSide === "developer" || selectedSide === "developer") && (
           <div className="absolute left-0 top-0 w-1/2 h-full overflow-hidden pointer-events-none">
-            {[...Array(20)].map((_, i) => (
+            <div className="matrix-dots w-full h-full opacity-30" />
+            {/* Matrix lines */}
+            {[...Array(8)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute text-green-400/20 font-mono text-sm"
+                className="absolute w-px bg-green-400/20"
                 style={{ 
-                  left: `${(i * 5) % 50}%`,
-                  top: "-10%"
+                  left: `${(i * 12) % 50}%`,
+                  height: "100%"
                 }}
                 animate={{
-                  y: ["0vh", "110vh"],
+                  opacity: [0.1, 0.3, 0.1],
                 }}
                 transition={{
-                  duration: 2 + Math.random() * 3,
+                  duration: 2 + Math.random() * 2,
                   repeat: Infinity,
                   delay: Math.random() * 2,
-                  ease: "linear",
                 }}
-              >
-                {Math.random() > 0.5 ? "01" : "10"}
-              </motion.div>
+              />
             ))}
           </div>
         )}
 
-        {/* Flowing Shapes for Designer Side */}
-        {hoveredSide === "designer" && (
+        {/* Subtle Designer Effect */}
+        {(hoveredSide === "designer" || selectedSide === "designer") && (
           <div className="absolute right-0 top-0 w-1/2 h-full overflow-hidden pointer-events-none">
-            {[...Array(6)].map((_, i) => (
+            <div className="designer-glow w-full h-full opacity-20" />
+            {/* Organic shapes */}
+            {[...Array(4)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute"
+                className="absolute rounded-full bg-gradient-to-br from-rose-200/10 to-pink-200/10 blur-xl"
                 style={{
-                  right: `${(i * 15) % 50}%`,
-                  top: `${(i * 20) % 80}%`,
-                  width: `${20 + Math.random() * 30}px`,
-                  height: `${20 + Math.random() * 30}px`,
+                  right: `${(i * 20) % 40}%`,
+                  top: `${(i * 25) % 60}%`,
+                  width: `${80 + Math.random() * 120}px`,
+                  height: `${80 + Math.random() * 120}px`,
                 }}
                 animate={{
-                  rotate: [0, 360],
-                  scale: [1, 1.5, 1],
-                  x: [0, 50, 0],
+                  scale: [1, 1.2, 1],
+                  opacity: [0.1, 0.3, 0.1],
                 }}
                 transition={{
                   duration: 4 + Math.random() * 2,
                   repeat: Infinity,
-                  delay: i * 0.5,
-                  ease: "easeInOut",
+                  delay: i * 0.8,
                 }}
-              >
-                <div className="w-full h-full bg-gradient-to-br from-rose-400/20 to-pink-400/20 rounded-full blur-sm" />
-              </motion.div>
+              />
             ))}
           </div>
         )}
 
         {/* Main Content */}
-        <div className="relative z-10 text-center px-8">
+        <div className="relative z-10 text-center px-6 w-full max-w-6xl">
           {/* Welcome Text */}
           <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="mb-12"
+            initial={{ opacity: 0, y: -30, filter: "blur(5px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="mb-16"
           >
             <motion.h1 
-              className="text-6xl md:text-8xl font-bold mb-4 bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent"
+              className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent"
               animate={{
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}
               transition={{
-                duration: 3,
+                duration: 4,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
@@ -243,12 +180,12 @@ export default function PersonaToggleOverlay({ onSelect }) {
               Choose Your Path
             </motion.h1>
             <motion.p 
-              className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto"
+              className="text-lg md:text-xl text-gray-400"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
+              transition={{ delay: 0.4 }}
             >
-              Explore two sides of creativity and innovation
+              Two sides of creativity
             </motion.p>
           </motion.div>
 
@@ -257,167 +194,127 @@ export default function PersonaToggleOverlay({ onSelect }) {
             variants={pillVariants}
             initial="initial"
             animate="animate"
-            className="relative mx-auto"
-            style={{ maxWidth: "min(90vw, 800px)" }}
+            className="relative mx-auto max-w-4xl"
           >
-            <div className="relative bg-black/20 backdrop-blur-xl rounded-full p-3 border border-white/10 shadow-2xl">
-              {/* Glowing Divider */}
+            <div className="relative bg-black/10 backdrop-blur-2xl rounded-2xl p-2 border border-white/5 shadow-2xl">
+              {/* Dynamic Divider */}
               <motion.div
-                className="absolute left-1/2 top-3 bottom-3 w-px transform -translate-x-1/2"
+                className="absolute left-1/2 top-2 bottom-2 w-px transform -translate-x-1/2 z-10"
                 animate={{
                   background: hoveredSide === "developer" 
                     ? "linear-gradient(to bottom, transparent, #22c55e, transparent)"
                     : hoveredSide === "designer"
                     ? "linear-gradient(to bottom, transparent, #f43f5e, transparent)"
-                    : "linear-gradient(to bottom, transparent, #ffffff, transparent)",
-                  boxShadow: hoveredSide 
-                    ? `0 0 20px ${hoveredSide === "developer" ? "#22c55e" : "#f43f5e"}`
-                    : "0 0 10px #ffffff",
+                    : "linear-gradient(to bottom, transparent, #404040, transparent)",
+                  opacity: hoveredSide ? 1 : 0.3,
                 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
               />
 
               <div className="flex">
                 {/* Developer Side */}
                 <motion.button
-                  variants={sideVariants}
-                  initial="initial"
-                  whileHover="hover"
-                  animate={selectedSide === "developer" ? "selected" : "initial"}
                   onClick={() => handleSelection("developer")}
                   onMouseEnter={() => setHoveredSide("developer")}
                   onMouseLeave={() => setHoveredSide(null)}
-                  className="flex-1 relative group p-8 md:p-12 rounded-l-full overflow-hidden"
+                  className="flex-1 relative group p-12 md:p-16 rounded-l-2xl overflow-hidden transition-motion-blur-fast"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  animate={selectedSide === "developer" ? { scale: 1.02 } : { scale: 1 }}
                 >
-                  {/* Developer Background Effect */}
+                  {/* Background Effect */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-green-900/20 to-black/20"
+                    className="absolute inset-0 bg-gradient-to-r from-green-900/10 to-transparent"
                     animate={{
                       opacity: hoveredSide === "developer" ? 1 : 0,
                     }}
-                    transition={{ duration: 0.3 }}
-                  />
-
-                  {/* Grid Pattern */}
-                  <motion.div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      backgroundImage: `
-                        linear-gradient(rgba(34, 197, 94, 0.1) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(34, 197, 94, 0.1) 1px, transparent 1px)
-                      `,
-                      backgroundSize: "20px 20px",
-                    }}
-                    animate={{
-                      opacity: hoveredSide === "developer" ? 0.3 : 0,
-                    }}
+                    transition={{ duration: 0.2 }}
                   />
 
                   <div className="relative z-10">
-                    <motion.div
-                      className="text-6xl md:text-8xl mb-4"
-                      animate={{
-                        scale: hoveredSide === "developer" ? 1.1 : 1,
-                        rotate: hoveredSide === "developer" ? [0, -5, 0] : 0,
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      💻
-                    </motion.div>
                     <motion.h2 
-                      className="text-2xl md:text-4xl font-mono font-bold text-green-400 mb-2"
+                      className="text-4xl md:text-6xl font-developer text-green-400 mb-4"
                       animate={{
                         textShadow: hoveredSide === "developer" 
-                          ? "0 0 20px #22c55e" 
+                          ? "0 0 20px rgba(34, 197, 94, 0.5)" 
                           : "none",
+                        scale: hoveredSide === "developer" ? 1.05 : 1,
                       }}
+                      transition={{ duration: 0.2 }}
                     >
                       DEVELOPER
                     </motion.h2>
                     <motion.p 
-                      className="text-sm md:text-lg text-green-300/80"
-                      initial={{ opacity: 0.6 }}
+                      className="text-sm md:text-lg text-green-300/70 font-developer tracking-wider"
                       animate={{ 
-                        opacity: hoveredSide === "developer" ? 1 : 0.6,
+                        opacity: hoveredSide === "developer" ? 1 : 0.7,
                       }}
                     >
-                      Code • Build • Deploy
+                      CODE • BUILD • DEPLOY
                     </motion.p>
                   </div>
 
-                  {/* Hover Effect Overlay */}
+                  {/* Hover Effect */}
                   <motion.div
-                    className="absolute inset-0 bg-green-400/5 rounded-l-full"
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    className="absolute inset-0 bg-green-400/5 rounded-l-2xl"
+                    initial={{ opacity: 0 }}
                     animate={{
                       opacity: hoveredSide === "developer" ? 1 : 0,
-                      scale: hoveredSide === "developer" ? 1 : 0.8,
                     }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2 }}
                   />
                 </motion.button>
 
                 {/* Designer Side */}
                 <motion.button
-                  variants={sideVariants}
-                  initial="initial"
-                  whileHover="hover"
-                  animate={selectedSide === "designer" ? "selected" : "initial"}
                   onClick={() => handleSelection("designer")}
                   onMouseEnter={() => setHoveredSide("designer")}
                   onMouseLeave={() => setHoveredSide(null)}
-                  className="flex-1 relative group p-8 md:p-12 rounded-r-full overflow-hidden"
+                  className="flex-1 relative group p-12 md:p-16 rounded-r-2xl overflow-hidden transition-motion-blur-fast"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  animate={selectedSide === "designer" ? { scale: 1.02 } : { scale: 1 }}
                 >
-                  {/* Designer Background Effect */}
+                  {/* Background Effect */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-l from-rose-900/20 to-pink-900/20"
+                    className="absolute inset-0 bg-gradient-to-l from-rose-900/10 to-transparent"
                     animate={{
                       opacity: hoveredSide === "designer" ? 1 : 0,
                     }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2 }}
                   />
 
                   <div className="relative z-10">
-                    <motion.div
-                      className="text-6xl md:text-8xl mb-4"
-                      animate={{
-                        scale: hoveredSide === "designer" ? 1.1 : 1,
-                        rotate: hoveredSide === "designer" ? [0, 5, 0] : 0,
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      🎨
-                    </motion.div>
                     <motion.h2 
-                      className="text-2xl md:text-4xl font-serif font-bold text-rose-400 mb-2"
+                      className="text-4xl md:text-6xl font-designer text-rose-400 mb-4"
                       animate={{
                         textShadow: hoveredSide === "designer" 
-                          ? "0 0 20px #f43f5e" 
+                          ? "0 0 20px rgba(244, 63, 94, 0.5)" 
                           : "none",
+                        scale: hoveredSide === "designer" ? 1.05 : 1,
                       }}
+                      transition={{ duration: 0.2 }}
                     >
-                      DESIGNER
+                      Designer
                     </motion.h2>
                     <motion.p 
-                      className="text-sm md:text-lg text-rose-300/80"
-                      initial={{ opacity: 0.6 }}
+                      className="text-sm md:text-lg text-rose-300/70 font-designer-alt tracking-wider"
                       animate={{ 
-                        opacity: hoveredSide === "designer" ? 1 : 0.6,
+                        opacity: hoveredSide === "designer" ? 1 : 0.7,
                       }}
                     >
-                      Create • Design • Inspire
+                      CREATE • DESIGN • INSPIRE
                     </motion.p>
                   </div>
 
-                  {/* Hover Effect Overlay */}
+                  {/* Hover Effect */}
                   <motion.div
-                    className="absolute inset-0 bg-rose-400/5 rounded-r-full"
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    className="absolute inset-0 bg-rose-400/5 rounded-r-2xl"
+                    initial={{ opacity: 0 }}
                     animate={{
                       opacity: hoveredSide === "designer" ? 1 : 0,
-                      scale: hoveredSide === "designer" ? 1 : 0.8,
                     }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2 }}
                   />
                 </motion.button>
               </div>
@@ -428,25 +325,26 @@ export default function PersonaToggleOverlay({ onSelect }) {
           <AnimatePresence>
             {selectedSide && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, y: 20, filter: "blur(5px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, filter: "blur(10px)" }}
                 className="mt-8"
+                transition={{ duration: 0.2 }}
               >
                 <motion.p 
-                  className={`text-2xl font-bold ${
-                    selectedSide === "developer" ? "text-green-400" : "text-rose-400"
+                  className={`text-xl font-bold transition-motion-blur-fast ${
+                    selectedSide === "developer" ? "text-green-400 font-developer" : "text-rose-400 font-designer"
                   }`}
                   animate={{
-                    scale: [1, 1.1, 1],
+                    scale: [1, 1.05, 1],
                   }}
                   transition={{
-                    duration: 0.6,
+                    duration: 0.3,
                     ease: "easeOut",
                   }}
                 >
                   {selectedSide === "developer" 
-                    ? "Entering Developer Mode..." 
+                    ? "ENTERING DEVELOPER MODE..." 
                     : "Entering Designer Mode..."
                   }
                 </motion.p>
@@ -454,33 +352,21 @@ export default function PersonaToggleOverlay({ onSelect }) {
             )}
           </AnimatePresence>
 
-          {/* Skip Option */}
+          {/* Keyboard Shortcuts */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2 }}
-            className="mt-8"
+            transition={{ delay: 0.6 }}
+            className="mt-12"
           >
-            <button
-              onClick={() => handleSelection("developer")}
-              className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
-            >
-              or press Enter to continue as Developer
-            </button>
+            <div className="text-center text-gray-500 text-sm">
+              <p>
+                Press <kbd className="px-2 py-1 bg-gray-800/50 rounded text-xs">D</kbd> for Developer or{" "}
+                <kbd className="px-2 py-1 bg-gray-800/50 rounded text-xs">G</kbd> for Designer
+              </p>
+            </div>
           </motion.div>
         </div>
-
-        {/* Keyboard Shortcut Listener */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-        >
-          <div className="text-center text-gray-500 text-sm">
-            <p>Press <kbd className="px-2 py-1 bg-gray-800 rounded">D</kbd> for Developer or <kbd className="px-2 py-1 bg-gray-800 rounded">G</kbd> for Designer</p>
-          </div>
-        </motion.div>
       </motion.div>
     </AnimatePresence>
   )

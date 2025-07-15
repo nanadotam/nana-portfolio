@@ -1,4 +1,4 @@
-import PortfolioWrapper from "../components/PortfolioWrapper"
+import DesignerView from "../components/DesignerView"
 
 export const metadata = {
   title: "Nana Amoako - Designer",
@@ -7,5 +7,5 @@ export const metadata = {
 }
 
 export default function DesignerPage() {
-  return <PortfolioWrapper initialMode="designer" />
+  return <DesignerView />
 } 

@@ -7,6 +7,7 @@ import Projects from "./Projects"
 import About from "./About"
 import Contact from "./Contact"
 import Footer from "./Footer"
+import PersistentPersonaToggle from "./PersistentPersonaToggle"
 
 export default function DeveloperView() {
   useEffect(() => {
@@ -38,6 +39,9 @@ export default function DeveloperView() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Persistent Persona Toggle */}
+      <PersistentPersonaToggle />
     </div>
   )
 }

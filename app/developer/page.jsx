@@ -1,4 +1,4 @@
-import PortfolioWrapper from "../components/PortfolioWrapper"
+import DeveloperView from "../components/DeveloperView"
 
 export const metadata = {
   title: "Nana Amoako - Developer",
@@ -7,5 +7,5 @@ export const metadata = {
 }
 
 export default function DeveloperPage() {
-  return <PortfolioWrapper initialMode="developer" />
+  return <DeveloperView />
 } 

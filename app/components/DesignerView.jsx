@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import ImageGallery from "./ImageGallery"
 import DesignShowcase from "./DesignShowcase"
 import Footer from "./Footer"
+import PersistentPersonaToggle from "./PersistentPersonaToggle"
 import { useState } from "react"
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation"
 
@@ -362,6 +363,9 @@ export default function DesignerView() {
 
         {/* Footer */}
         <Footer />
+
+        {/* Persistent Persona Toggle */}
+        <PersistentPersonaToggle />
       </div>
     </div>
   )

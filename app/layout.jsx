@@ -20,10 +20,13 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
           rel="stylesheet"
         />
-
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap"
           rel="stylesheet"
@@ -31,7 +34,11 @@ export default function RootLayout({ children }) {
 
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
       </head>
-      <body suppressHydrationWarning={true}>{children}</body>
+      <body suppressHydrationWarning={true} style={{
+        '--font-developer': '"JetBrains Mono", monospace',
+        '--font-designer': '"Playfair Display", serif',
+        '--font-designer-alt': '"Bricolage Grotesque", sans-serif'
+      }}>{children}</body>
     </html>
   )
 }
