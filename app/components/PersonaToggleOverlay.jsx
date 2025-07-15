@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
+import { AnimatedPersonaSection } from "./AnimatedPersonaSection"
 
 export default function PersonaToggleOverlay({ onSelect }) {
   const router = useRouter()
@@ -93,72 +94,14 @@ export default function PersonaToggleOverlay({ onSelect }) {
         initial="initial"
         animate="animate"
         exit="exit"
-        className="fixed inset-0 z-[9999] flex items-center justify-center transition-motion-blur-fast"
-        style={{
-          background: selectedSide === "developer" 
-            ? "linear-gradient(135deg, #000000 0%, #0f0f0f 100%)"
-            : selectedSide === "designer"
-            ? "linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)"
-            : "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #fdf2f8 100%)"
-        }}
+        className="fixed inset-0 z-[9999] transition-motion-blur-fast"
       >
-        {/* Subtle Matrix Effect for Developer Side */}
-        {(hoveredSide === "developer" || selectedSide === "developer") && (
-          <div className="absolute left-0 top-0 w-1/2 h-full overflow-hidden pointer-events-none">
-            <div className="matrix-dots w-full h-full opacity-30" />
-            {/* Matrix lines */}
-            {[...Array(8)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-px bg-green-400/20"
-                style={{ 
-                  left: `${(i * 12) % 50}%`,
-                  height: "100%"
-                }}
-                animate={{
-                  opacity: [0.1, 0.3, 0.1],
-                }}
-                transition={{
-                  duration: 2 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                }}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Subtle Designer Effect */}
-        {(hoveredSide === "designer" || selectedSide === "designer") && (
-          <div className="absolute right-0 top-0 w-1/2 h-full overflow-hidden pointer-events-none">
-            <div className="designer-glow w-full h-full opacity-20" />
-            {/* Organic shapes */}
-            {[...Array(4)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute rounded-full bg-gradient-to-br from-rose-200/10 to-pink-200/10 blur-xl"
-                style={{
-                  right: `${(i * 20) % 40}%`,
-                  top: `${(i * 25) % 60}%`,
-                  width: `${80 + Math.random() * 120}px`,
-                  height: `${80 + Math.random() * 120}px`,
-                }}
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.1, 0.3, 0.1],
-                }}
-                transition={{
-                  duration: 4 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: i * 0.8,
-                }}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Main Content */}
-        <div className="relative z-10 text-center px-6 w-full max-w-6xl">
+        <AnimatedPersonaSection 
+          hoveredPersona={hoveredSide}
+          selectedPersona={selectedSide}
+        >
+          {/* Main Content */}
+          <div className="relative text-center px-6 w-full max-w-6xl">
           {/* Welcome Text */}
           <motion.div
             initial={{ opacity: 0, y: -30, filter: "blur(5px)" }}
@@ -177,16 +120,9 @@ export default function PersonaToggleOverlay({ onSelect }) {
                 ease: "easeInOut",
               }}
             >
-              Choose Your Path
+              See my different sides
             </motion.h1>
-            <motion.p 
-              className="text-lg md:text-xl text-gray-400"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              Two sides of creativity
-            </motion.p>
+
           </motion.div>
 
           {/* Persona Toggle Pill */}
@@ -366,7 +302,8 @@ export default function PersonaToggleOverlay({ onSelect }) {
               </p>
             </div>
           </motion.div>
-        </div>
+          </div>
+        </AnimatedPersonaSection>
       </motion.div>
     </AnimatePresence>
   )
