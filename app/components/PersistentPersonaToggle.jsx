@@ -85,7 +85,7 @@ export default function PersistentPersonaToggle() {
             borderColor: isExpanded 
               ? currentMode === "developer" 
                 ? "rgba(34, 197, 94, 0.3)" 
-                : "rgba(244, 63, 94, 0.3)"
+                : "rgba(72, 24, 136, 0.3)"
               : "rgba(255, 255, 255, 0.1)",
           }}
           transition={{ 
@@ -110,24 +110,24 @@ export default function PersistentPersonaToggle() {
           <motion.div
             className="absolute inset-0 rounded-full"
             animate={{
-              background: isTransitioning
-                ? "linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(244, 63, 94, 0.15))"
-                : currentMode === "developer"
-                ? isExpanded 
-                  ? "rgba(34, 197, 94, 0.1)" 
-                  : "rgba(34, 197, 94, 0.05)"
-                : isExpanded 
-                  ? "rgba(244, 63, 94, 0.1)" 
-                  : "rgba(244, 63, 94, 0.05)",
+                             background: isTransitioning
+                 ? "linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(72, 24, 136, 0.15))"
+                 : currentMode === "developer"
+                 ? isExpanded 
+                   ? "rgba(34, 197, 94, 0.1)" 
+                   : "rgba(34, 197, 94, 0.05)"
+                 : isExpanded 
+                   ? "rgba(72, 24, 136, 0.1)" 
+                   : "rgba(72, 24, 136, 0.05)",
             }}
             transition={{ duration: 0.3 }}
-            style={{
-              boxShadow: isExpanded
-                ? currentMode === "developer"
-                  ? "0 0 30px rgba(34, 197, 94, 0.2)"
-                  : "0 0 30px rgba(244, 63, 94, 0.2)"
-                : "0 10px 30px rgba(0, 0, 0, 0.1)",
-            }}
+                         style={{
+               boxShadow: isExpanded
+                 ? currentMode === "developer"
+                   ? "0 0 30px rgba(34, 197, 94, 0.2)"
+                   : "0 0 30px rgba(72, 24, 136, 0.2)"
+                 : "0 10px 30px rgba(0, 0, 0, 0.1)",
+             }}
           />
 
           {/* Enhanced matrix effect for developer mode */}
@@ -213,13 +213,13 @@ export default function PersistentPersonaToggle() {
                     fontSize: isExpanded ? "20px" : "18px",
                     textShadow: currentMode === "developer" 
                       ? isExpanded 
-                        ? "0 0 15px rgba(34, 197, 94, 0.4)" 
-                        : "0 0 10px rgba(34, 197, 94, 0.3)"
+                        ? "0 0 15px rgba(34, 197, 94, 0.2)" 
+                        : "0 0 10px rgba(34, 197, 94, 0.1)"
                       : "none",
                   }}
                   transition={{ duration: 0.3 }}
                 >
-                  DEV
+                  DEVELOPER
                 </motion.span>
                 
                 {/* Enhanced status indicator */}
@@ -250,7 +250,7 @@ export default function PersistentPersonaToggle() {
                 background: hoveredSide === "developer" 
                   ? "linear-gradient(to bottom, transparent, #22c55e, transparent)"
                   : hoveredSide === "designer"
-                  ? "linear-gradient(to bottom, transparent, #f43f5e, transparent)"
+                  ? "linear-gradient(to bottom, transparent, #481888, transparent)"
                   : "linear-gradient(to bottom, transparent, #404040, transparent)",
                 opacity: isExpanded ? 1 : 0.7,
               }}
@@ -285,7 +285,10 @@ export default function PersistentPersonaToggle() {
             >
               {/* Active indicator */}
               <motion.div
-                className="absolute inset-0 bg-rose-400/10 rounded-r-full"
+                className="absolute inset-0 rounded-r-full"
+                style={{
+                  backgroundColor: currentMode === "designer" ? "rgba(72, 24, 136, 0.1)" : "transparent",
+                }}
                 animate={{
                   opacity: currentMode === "designer" ? 1 : 0,
                 }}
@@ -294,7 +297,10 @@ export default function PersistentPersonaToggle() {
 
               {/* Hover effect */}
               <motion.div
-                className="absolute inset-0 bg-rose-400/5 rounded-r-full"
+                className="absolute inset-0 rounded-r-full"
+                style={{
+                  backgroundColor: "rgba(138, 43, 226, 0.2)",
+                }}
                 animate={{
                   opacity: hoveredSide === "designer" ? 1 : 0,
                 }}
@@ -304,36 +310,38 @@ export default function PersistentPersonaToggle() {
               <div className="relative z-10 flex items-center space-x-3">
                 {/* Enhanced status indicator */}
                 <motion.div
-                  className={`rounded-full transition-motion-blur-fast ${
-                    currentMode === "designer" ? "bg-rose-400" : "bg-gray-400/30"
-                  }`}
+                  className="rounded-full transition-motion-blur-fast"
+                  style={{
+                    backgroundColor: currentMode === "designer" ? "#481888" : "rgba(156, 163, 175, 0.3)",
+                  }}
                   animate={{
                     width: isExpanded ? "10px" : "8px",
                     height: isExpanded ? "10px" : "8px",
                     scale: currentMode === "designer" ? 1 : 0.7,
                     boxShadow: currentMode === "designer" 
                       ? isExpanded 
-                        ? "0 0 12px rgba(244, 63, 94, 0.6)" 
-                        : "0 0 8px rgba(244, 63, 94, 0.5)"
+                        ? "0 0 12px rgba(72, 24, 136, 0.6)" 
+                        : "0 0 8px rgba(72, 24, 136, 0.5)"
                       : "none",
                   }}
                   transition={{ duration: 0.3 }}
                 />
                 
                 <motion.span 
-                  className={`font-designer transition-motion-blur-fast ${
-                    currentMode === "designer" 
-                      ? "text-rose-400" 
+                  className="font-designer transition-motion-blur-fast"
+                  style={{
+                    color: currentMode === "designer" 
+                      ? "#481888" 
                       : hoveredSide === "designer"
-                      ? "text-rose-300"
-                      : "text-gray-500"
-                  }`}
+                      ? "#6B21A8"
+                      : "#6B7280"
+                  }}
                   animate={{
                     fontSize: isExpanded ? "20px" : "18px",
                     textShadow: currentMode === "designer" 
                       ? isExpanded 
-                        ? "0 0 15px rgba(244, 63, 94, 0.4)" 
-                        : "0 0 10px rgba(244, 63, 94, 0.3)"
+                        ? "0 0 15px rgba(72, 24, 136, 0.4)" 
+                        : "0 0 10px rgba(72, 24, 136, 0.3)"
                       : "none",
                   }}
                   transition={{ duration: 0.3 }}
