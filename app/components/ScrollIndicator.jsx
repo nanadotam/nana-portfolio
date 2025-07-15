@@ -83,7 +83,7 @@ export default function ScrollIndicator() {
             stiffness: 400,
             duration: 0.6 
           }}
-          className="fixed bottom-32 left-1/2 transform -translate-x-1/2 z-25 pointer-events-auto"
+          className="fixed inset-0 z-25 flex items-end justify-center pb-32 pointer-events-auto"
           style={{
             // Ensure it's positioned above persona toggle but below modals
             zIndex: 25
