@@ -62,8 +62,8 @@ export function AnimatedPersonaSection({
         transition={{ duration: 0.3 }}
       >
         <Image
-          src="/placeholder-logo.svg" // You can replace this with your actual overlay logo
-          alt="Overlay Logo"
+          src="/logo/nana-amoako-logo-white.png"
+          alt="Nana Amoako Logo Overlay"
           fill
           className="object-contain opacity-30 mix-blend-overlay"
           priority
@@ -91,10 +91,10 @@ export function AnimatedPersonaSection({
             transition={{ type: "spring", stiffness: 300 }}
           >
             <Image 
-              src="/placeholder-logo.svg" // Replace with your actual logo
+              src="/logo/nana-amoako-logo-white.png"
               width={36} 
               height={36} 
-              alt="Logo" 
+              alt="Nana Amoako Logo" 
               className="drop-shadow-lg"
             />
           </motion.div>

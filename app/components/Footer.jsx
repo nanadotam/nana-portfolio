@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 
 export default function Footer() {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
@@ -13,6 +14,17 @@ export default function Footer() {
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
+          {/* Logo Section */}
+          <div className="flex flex-col items-center mb-6">
+            <Image
+              src="/logo/nana-amoako-logo-white.png"
+              alt="Nana Amoako Logo"
+              width={48}
+              height={48}
+              className="mb-4 opacity-90 hover:opacity-100 transition-opacity duration-300"
+            />
+          </div>
+
           <nav>
             <ol className="footer-links">
               <li className="footer-link">

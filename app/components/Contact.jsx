@@ -61,7 +61,7 @@ export default function Contact() {
                 id="logo"
                 alt="Nana Amoako's Logo"
                 className="contact-logo"
-                src="/placeholder.svg?height=200&width=200"
+                src="/logo/nana-amoako-logo-white.png"
               />
             </div>
             <p className="contact-text">You can also reach out through my social media platforms:</p>

@@ -120,8 +120,16 @@ export default function PersonaToggleOverlay({ onSelect }) {
                 ease: "easeInOut",
               }}
             >
-              See my different sides
+              Two Sides, One Vision
             </motion.h1>
+          <motion.h2
+            className="text-2xl md:text-3xl font-semibold text-gray-400"
+            initial={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.35, duration: 0.4 }}
+          >
+            Take a look around
+          </motion.h2>
 
           </motion.div>
 
@@ -186,7 +194,7 @@ export default function PersonaToggleOverlay({ onSelect }) {
                         opacity: hoveredSide === "developer" ? 1 : 0.7,
                       }}
                     >
-                      CODE • BUILD • DEPLOY
+                      Code that solves problems
                     </motion.p>
                   </div>
 
@@ -239,7 +247,7 @@ export default function PersonaToggleOverlay({ onSelect }) {
                         opacity: hoveredSide === "designer" ? 1 : 0.7,
                       }}
                     >
-                      CREATE • DESIGN • INSPIRE
+                      Creativity that speaks
                     </motion.p>
                   </div>
 
