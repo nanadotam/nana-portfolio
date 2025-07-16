@@ -476,7 +476,7 @@ export default function DesignerView() {
               className="text-sm font-light opacity-60 animate-pulse"
               style={{ color: "rgba(15,25,57,0.7)" }}
             >
-              Move your cursor around to discover hidden elements ✨
+              Wanna see some magic? Move your cursor around
             </motion.p>
           </div>
         </motion.div>

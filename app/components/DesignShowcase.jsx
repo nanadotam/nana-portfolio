@@ -40,40 +40,50 @@ function PlayPauseIcon({ isPlaying }) {
 function CarouselCard({ item, index, activeIndex, totalCards }) {
   const position = (index - activeIndex + totalCards) % totalCards
   const isActive = position === 0
-  const isLeft = position === totalCards - 1 || (position > totalCards / 2 && position < totalCards)
-  const isRight = position === 1 || (position > 0 && position <= totalCards / 2)
+  const isLeft = position === totalCards - 1
+  const isRight = position === 1
   
   // Calculate transforms based on position
   const getTransform = () => {
     if (isActive) {
+      // Center card (12 o'clock position)
       return {
         translateX: "0vw",
+        translateY: "0vh",
         rotate: "0deg",
         scale: 1,
         opacity: 1,
         zIndex: 10
       }
     } else if (isLeft) {
+      // Left card (9 o'clock position)
       return {
-        translateX: "-45vw",
-        rotate: "-12deg",
-        scale: 0.85,
-        opacity: 0.6,
-        zIndex: 1
+        translateX: "-35vw",
+        translateY: "0vh",
+        rotate: "-15deg",
+        scale: 0.8,
+        opacity: 0.7,
+        zIndex: 5
       }
     } else if (isRight) {
+      // Right card (3 o'clock position)
       return {
-        translateX: "45vw",
-        rotate: "12deg", 
-        scale: 0.85,
-        opacity: 0.6,
-        zIndex: 1
+        translateX: "35vw",
+        translateY: "0vh",
+        rotate: "15deg", 
+        scale: 0.8,
+        opacity: 0.7,
+        zIndex: 5
       }
     } else {
+      // Hidden cards - position them off-screen
+      // Alternate between top and bottom for clock tick effect
+      const isFromTop = (position % 2 === 0)
       return {
         translateX: "0vw",
+        translateY: isFromTop ? "-60vh" : "60vh",
         rotate: "0deg",
-        scale: 0.7,
+        scale: 0.6,
         opacity: 0,
         zIndex: 0
       }
@@ -93,13 +103,14 @@ function CarouselCard({ item, index, activeIndex, totalCards }) {
       }}
       animate={{
         x: transform.translateX,
+        y: transform.translateY,
         rotate: transform.rotate,
         scale: transform.scale,
         opacity: transform.opacity,
         zIndex: transform.zIndex,
       }}
       transition={{
-        duration: 0.8,
+        duration: 0.9,
         ease: [0.25, 0.75, 0.35, 1],
       }}
       aria-label={`${item.title}: ${item.description}`}
