@@ -121,15 +121,15 @@ export function AnimatedPersonaSection({
         </div>
 
         {/* Bible Verse Overlay at Bottom */}
-        <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-50">
+        <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-10">
           <div className="bg-black/10 rounded-[16px] px-4 py-2 shadow-lg max-w-md mx-auto mb-4">
-            <p className="italic text-base md:text-lg text-center font-serif text-gray-300">
+            <p className="italic text-xs md:text-[10px] text-center font-serif text-gray-300">
               the LORD, has filled Nana Koaku Amoako<br />
               with the Spirit of God in wisdom and skill,<br />
               in understanding and intelligence, in knowledge,<br />
               and in all kinds of craftsmanship
             </p>
-            <p className="mt-2 text-center font-serif text-sm text-gray-400">
+            <p className="mt-2 text-center font-serif text-[10px] text-gray-400">
               <span className="font-bold text-gray-200">Exodus 31:3</span>
             </p>
           </div>

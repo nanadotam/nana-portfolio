@@ -1,5 +1,15 @@
 import "./globals.css"
 
+// reminder to change this
+// add a favicon
+// add sharing-card
+// add a meta description
+// add a meta keywords
+// add a meta author
+// add a meta robots
+// add a meta viewport
+// add a meta theme-color
+
 export const metadata = {
   title: "Nana Amoako - Developer & Designer",
   description: "Dual-persona portfolio showcasing development and design work",
