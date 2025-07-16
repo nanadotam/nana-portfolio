@@ -5,6 +5,7 @@ import ImageGallery from "./ImageGallery"
 import DesignShowcase from "./DesignShowcase"
 import Footer from "./Footer"
 import PersistentPersonaToggle from "./PersistentPersonaToggle"
+import Navigation from "./Navigation"
 import { useState, useEffect } from "react"
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation"
 
@@ -454,10 +455,14 @@ export default function DesignerView() {
         containerClassName="fixed inset-0 -z-10"
       />
 
+      {/* Navigation */}
+      <Navigation />
+
       {/* Content Container */}
       <div className="relative z-10">
         {/* Hero Section */}
         <motion.div
+          id="designer-home"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
@@ -530,13 +535,18 @@ export default function DesignerView() {
         </motion.div>
 
         {/* Portfolio Showcase */}
-        <DesignShowcase items={portfolioItems} />
+        <div id="featured-work">
+          <DesignShowcase items={portfolioItems} />
+        </div>
 
         {/* Image Gallery */}
-        <ImageGallery />
+        <div id="gallery">
+          <ImageGallery />
+        </div>
 
         {/* About Section */}
         <motion.section
+          id="designer-about"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -577,6 +587,45 @@ export default function DesignerView() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Contact Section */}
+        <motion.section
+          id="designer-contact"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="py-24 px-6"
+        >
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl font-light mb-8 font-serif" style={{ color: "#F8F7F5" }}>Let's Create Together</h2>
+            <p className="text-lg leading-relaxed mb-12" style={{ color: "rgba(15,25,57,0.85)" }}>
+              Ready to bring your vision to life? I'd love to hear about your project and explore how we can create something extraordinary together.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <a
+                href="mailto:hello@nanaamoako.com"
+                className="px-8 py-4 rounded-full font-medium transition-all duration-300 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:shadow-lg hover:shadow-blue-400/20"
+                style={{
+                  background: "linear-gradient(135deg, rgba(81, 106, 200, 0.3), rgba(227, 175, 100, 0.3))",
+                  color: "#F8F7F5"
+                }}
+              >
+                Get In Touch
+              </a>
+              <a
+                href="https://www.linkedin.com/in/nanaamoako/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 rounded-full font-medium transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-white/30 hover:bg-white/10"
+                style={{ color: "rgba(15,25,57,0.9)" }}
+              >
+                Connect on LinkedIn
+              </a>
             </div>
           </div>
         </motion.section>

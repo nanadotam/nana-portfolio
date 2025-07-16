@@ -1,10 +1,33 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter, usePathname } from "next/navigation"
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [currentView, setCurrentView] = useState("developer")
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Detect current view from pathname
+  useEffect(() => {
+    if (pathname?.includes("/designer") || pathname === "/designer") {
+      setCurrentView("designer")
+    } else if (pathname?.includes("/developer") || pathname === "/developer") {
+      setCurrentView("developer")
+    } else {
+      // Check current route/component context
+      const isDeveloperView = document.querySelector('.matrix-bg') || document.querySelector('#matrix')
+      const isDesignerView = document.querySelector('.hero-interactive-area')
+      
+      if (isDesignerView) {
+        setCurrentView("designer")
+      } else if (isDeveloperView) {
+        setCurrentView("developer")
+      }
+    }
+  }, [pathname])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,49 +50,116 @@ export default function Navigation() {
     }
   }
 
-  return (
-    <div className={`menu-btn-container ${isMenuOpen ? "active" : ""} `}>
-      {/* <div className={`nav-buttons ${isMenuOpen ? "active" : ""} `}> */}
-      <div
-  className={`nav-buttons ${isMenuOpen ? "active" : ""} flex justify-center items-center fixed top-10 left-0 right-0 z-50 ${isScrolled ? "scrolled" : ""} `}
->
+  // Navigation items for each view
+  const developerNavItems = [
+    { label: "home", target: "#home" },
+    { label: "projects", target: "#projects" },
+    { label: "about", target: "#about" },
+    { label: "contact", target: "#contact" },
+  ]
 
+  const designerNavItems = [
+    { label: "home", target: "#designer-home" },
+    { label: "featured work", target: "#featured-work" },
+    { label: "gallery", target: "#gallery" },
+    { label: "about", target: "#designer-about" },
+    { label: "contact", target: "#designer-contact" },
+  ]
+
+  const navItems = currentView === "designer" ? designerNavItems : developerNavItems
+
+  // Styling based on current view
+  const getNavStyles = () => {
+    if (currentView === "designer") {
+      return {
+        container: `fixed top-6 left-0 right-0 z-50 flex justify-center items-center transition-all duration-500 ${isScrolled ? "top-4" : "top-6"}`,
+        menuContainer: `
+          flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
+          ${isScrolled 
+            ? "backdrop-blur-md bg-gradient-to-r from-white/10 to-white/5 border border-white/20 shadow-2xl" 
+            : "backdrop-blur-sm bg-gradient-to-r from-white/5 to-white/3 border border-white/10 shadow-xl"
+          }
+        `,
+        button: `
+          px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 relative overflow-hidden
+          text-white/90 hover:text-white backdrop-blur-sm
+          hover:bg-gradient-to-r hover:from-blue-400/20 hover:to-purple-400/20
+          hover:border-white/30 border border-transparent
+          hover:shadow-lg hover:shadow-blue-400/20
+          ${isScrolled ? "text-white/95" : "text-white/80"}
+        `,
+        menuButton: `
+          px-4 py-2 text-sm font-medium rounded-full transition-all duration-300
+          text-white/90 hover:text-white backdrop-blur-sm
+          ${isMenuOpen 
+            ? "bg-gradient-to-r from-blue-400/30 to-purple-400/30 border-white/40 text-white shadow-lg" 
+            : "hover:bg-gradient-to-r hover:from-blue-400/20 hover:to-purple-400/20 hover:border-white/30"
+          }
+          border border-transparent hover:shadow-lg hover:shadow-blue-400/20
+        `
+      }
+    } else {
+      return {
+        container: `menu-btn-container ${isMenuOpen ? "active" : ""}`,
+        menuContainer: `nav-buttons ${isMenuOpen ? "active" : ""} flex justify-center items-center fixed top-10 left-0 right-0 z-50 ${isScrolled ? "scrolled" : ""}`,
+        button: `menu-btn ${isScrolled ? "scrolled" : ""}`,
+        menuButton: `menu-btn ${isScrolled ? "scrolled" : ""}`
+      }
+    }
+  }
+
+  const styles = getNavStyles()
+
+  if (currentView === "designer") {
+    return (
+      <div className={styles.container}>
+        <nav className={styles.menuContainer}>
+          <button
+            type="button"
+            className={styles.menuButton}
+            onClick={toggleMenu}
+          >
+            {isMenuOpen ? "close" : "menu"}
+          </button>
+          
+          {navItems.map((item, index) => (
+            <button
+              key={index}
+              type="button"
+              className={styles.button}
+              onClick={() => scrollToSection(item.target)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+      </div>
+    )
+  }
+
+  // Developer view (original styling)
+  return (
+    <div className={styles.container}>
+      <div className={styles.menuContainer}>
         <button
           type="button"
-          className={`menu-btn ${isScrolled ? "scrolled" : ""}`}
+          className={styles.menuButton}
           onClick={toggleMenu}
           data-menu="toggle"
         >
           {isMenuOpen ? "close" : "menu"}
         </button>
-        <button
-          type="button"
-          className={`menu-btn ${isScrolled ? "scrolled" : ""}`}
-          onClick={() => scrollToSection("#home")}
-        >
-          home
-        </button>
-        <button
-          type="button"
-          className={`menu-btn ${isScrolled ? "scrolled" : ""}`}
-          onClick={() => scrollToSection("#projects")}
-        >
-          projects
-        </button>
-        <button
-          type="button"
-          className={`menu-btn ${isScrolled ? "scrolled" : ""}`}
-          onClick={() => scrollToSection("#about")}
-        >
-          about
-        </button>
-        <button
-          type="button"
-          className={`menu-btn ${isScrolled ? "scrolled" : ""}`}
-          onClick={() => scrollToSection("#contact")}
-        >
-          contact
-        </button>
+        
+        {navItems.map((item, index) => (
+          <button
+            key={index}
+            type="button"
+            className={styles.button}
+            onClick={() => scrollToSection(item.target)}
+          >
+            {item.label}
+          </button>
+        ))}
       </div>
     </div>
   )
