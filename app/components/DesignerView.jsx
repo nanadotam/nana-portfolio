@@ -516,7 +516,7 @@ export default function DesignerView() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
               className="text-lg max-w-2xl mx-auto leading-relaxed mb-8"
-              style={{ color: "rgba(15,25,57,0.85)" }}
+              style={{ color: "#F8F7F5" }}
             >
               Crafting meaningful experiences through thoughtful design, compelling visuals, and authentic storytelling
               that resonates with audiences and drives engagement.
@@ -527,7 +527,7 @@ export default function DesignerView() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2, duration: 0.8 }}
               className="text-sm font-light opacity-60 animate-pulse"
-              style={{ color: "rgba(15,25,57,0.7)" }}
+              style={{ color: "#F8F7F5" }}
             >
               Wanna see some magic? Move your cursor around
             </motion.p>
@@ -557,12 +557,12 @@ export default function DesignerView() {
             <div className="grid md:grid-cols-2 gap-16 items-center">
               <div>
                 <h2 className="text-4xl font-light mb-8 font-serif" style={{ color: "#F8F7F5" }}>About My Creative Process</h2>
-                <p className="text-lg leading-relaxed mb-6" style={{ color: "rgba(15,25,57,0.85)" }}>
+                <p className="text-lg leading-relaxed mb-6" style={{ color: "#F8F7F5" }}>
                   I believe in the power of visual storytelling to create emotional connections. My approach combines
                   strategic thinking with artistic intuition, ensuring every design decision serves both aesthetic and
                   functional purposes.
                 </p>
-                <p className="text-lg leading-relaxed" style={{ color: "rgba(15,25,57,0.85)" }}>
+                <p className="text-lg leading-relaxed" style={{ color: "#F8F7F5" }}>
                   From concept to execution, I focus on creating cohesive brand experiences that stand out in today's
                   saturated visual landscape while remaining timeless and authentic.
                 </p>
@@ -602,7 +602,7 @@ export default function DesignerView() {
         >
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-light mb-8 font-serif" style={{ color: "#F8F7F5" }}>Let's Create Together</h2>
-            <p className="text-lg leading-relaxed mb-12" style={{ color: "rgba(15,25,57,0.85)" }}>
+            <p className="text-lg leading-relaxed mb-12" style={{ color: "#F8F7F5" }}>
               Ready to bring your vision to life? I'd love to hear about your project and explore how we can create something extraordinary together.
             </p>
             
@@ -622,7 +622,7 @@ export default function DesignerView() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-8 py-4 rounded-full font-medium transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-white/30 hover:bg-white/10"
-                style={{ color: "rgba(15,25,57,0.9)" }}
+                style={{ color: "#F8F7F5" }}
               >
                 Connect on LinkedIn
               </a>

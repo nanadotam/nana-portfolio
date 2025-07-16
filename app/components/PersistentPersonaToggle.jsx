@@ -13,6 +13,24 @@ export default function PersistentPersonaToggle() {
   const [isAtBottom, setIsAtBottom] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
 
+  // Designer color constants (dark blue theme)
+  const DESIGNER_MAIN = "#0E0C90"
+  const DESIGNER_MAIN_RGB = "14, 12, 144"
+  const DESIGNER_GRADIENT = `linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(${DESIGNER_MAIN_RGB}, 0.15))`
+  const DESIGNER_BG = (alpha) => `rgba(${DESIGNER_MAIN_RGB}, ${alpha})`
+  const DESIGNER_GLOW = (alpha) => `0 0 30px rgba(${DESIGNER_MAIN_RGB}, ${alpha})`
+  const DESIGNER_SHADOW = (alpha) => `0 0 12px rgba(${DESIGNER_MAIN_RGB}, ${alpha})`
+  const DESIGNER_DIVIDER = `linear-gradient(to bottom, transparent, ${DESIGNER_MAIN}, transparent)`
+  const DESIGNER_HOVER_BG = `rgba(${DESIGNER_MAIN_RGB}, 0.2)`
+  const DESIGNER_STATUS_BG = DESIGNER_MAIN
+  const DESIGNER_STATUS_BG_INACTIVE = "rgba(156, 163, 175, 0.3)"
+  const DESIGNER_TEXT = DESIGNER_MAIN
+  const DESIGNER_TEXT_HOVER = "#0D0952"
+  const DESIGNER_TEXT_INACTIVE = "#6B7280"
+  const DESIGNER_TEXT_SHADOW = (alpha) => `0 0 15px rgba(${DESIGNER_MAIN_RGB}, ${alpha})`
+  const DESIGNER_TEXT_SHADOW_SMALL = (alpha) => `0 0 10px rgba(${DESIGNER_MAIN_RGB}, ${alpha})`
+  const DESIGNER_ALT = "#0A087D"
+
   // Detect current mode from pathname
   useEffect(() => {
     if (pathname.includes("/designer")) {
@@ -85,7 +103,7 @@ export default function PersistentPersonaToggle() {
             borderColor: isExpanded 
               ? currentMode === "developer" 
                 ? "rgba(34, 197, 94, 0.3)" 
-                : "rgba(72, 24, 136, 0.3)"
+                : `rgba(${DESIGNER_MAIN_RGB}, 0.3)`
               : "rgba(255, 255, 255, 0.1)",
           }}
           transition={{ 
@@ -102,7 +120,7 @@ export default function PersistentPersonaToggle() {
             boxShadow: isExpanded
               ? currentMode === "developer"
                 ? "0 0 30px rgba(34, 197, 94, 0.2)"
-                : "0 0 30px rgba(244, 63, 94, 0.2)"
+                : DESIGNER_GLOW(0.2)
               : "0 10px 30px rgba(0, 0, 0, 0.1)",
           }}
         >
@@ -110,24 +128,24 @@ export default function PersistentPersonaToggle() {
           <motion.div
             className="absolute inset-0 rounded-full"
             animate={{
-                             background: isTransitioning
-                 ? "linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(72, 24, 136, 0.15))"
-                 : currentMode === "developer"
-                 ? isExpanded 
-                   ? "rgba(34, 197, 94, 0.1)" 
-                   : "rgba(34, 197, 94, 0.05)"
-                 : isExpanded 
-                   ? "rgba(72, 24, 136, 0.1)" 
-                   : "rgba(72, 24, 136, 0.05)",
+              background: isTransitioning
+                ? DESIGNER_GRADIENT
+                : currentMode === "developer"
+                ? isExpanded 
+                  ? "rgba(34, 197, 94, 0.1)" 
+                  : "rgba(34, 197, 94, 0.05)"
+                : isExpanded 
+                  ? DESIGNER_BG(0.1)
+                  : DESIGNER_BG(0.05),
             }}
             transition={{ duration: 0.3 }}
-                         style={{
-               boxShadow: isExpanded
-                 ? currentMode === "developer"
-                   ? "0 0 30px rgba(34, 197, 94, 0.2)"
-                   : "0 0 30px rgba(72, 24, 136, 0.2)"
-                 : "0 10px 30px rgba(0, 0, 0, 0.1)",
-             }}
+            style={{
+              boxShadow: isExpanded
+                ? currentMode === "developer"
+                  ? "0 0 30px rgba(34, 197, 94, 0.2)"
+                  : DESIGNER_GLOW(0.2)
+                : "0 10px 30px rgba(0, 0, 0, 0.1)",
+            }}
           />
 
           {/* Enhanced matrix effect for developer mode */}
@@ -149,6 +167,9 @@ export default function PersistentPersonaToggle() {
                 className="designer-glow w-full h-full"
                 animate={{
                   opacity: isExpanded ? 0.3 : 0.15,
+                }}
+                style={{
+                  background: DESIGNER_BG(isExpanded ? 0.3 : 0.15),
                 }}
               />
             </div>
@@ -250,7 +271,7 @@ export default function PersistentPersonaToggle() {
                 background: hoveredSide === "developer" 
                   ? "linear-gradient(to bottom, transparent, #22c55e, transparent)"
                   : hoveredSide === "designer"
-                  ? "linear-gradient(to bottom, transparent, #481888, transparent)"
+                  ? DESIGNER_DIVIDER
                   : "linear-gradient(to bottom, transparent, #404040, transparent)",
                 opacity: isExpanded ? 1 : 0.7,
               }}
@@ -287,7 +308,7 @@ export default function PersistentPersonaToggle() {
               <motion.div
                 className="absolute inset-0 rounded-r-full"
                 style={{
-                  backgroundColor: currentMode === "designer" ? "rgba(72, 24, 136, 0.1)" : "transparent",
+                  backgroundColor: currentMode === "designer" ? DESIGNER_BG(0.1) : "transparent",
                 }}
                 animate={{
                   opacity: currentMode === "designer" ? 1 : 0,
@@ -299,7 +320,7 @@ export default function PersistentPersonaToggle() {
               <motion.div
                 className="absolute inset-0 rounded-r-full"
                 style={{
-                  backgroundColor: "rgba(138, 43, 226, 0.2)",
+                  backgroundColor: DESIGNER_HOVER_BG,
                 }}
                 animate={{
                   opacity: hoveredSide === "designer" ? 1 : 0,
@@ -312,7 +333,7 @@ export default function PersistentPersonaToggle() {
                 <motion.div
                   className="rounded-full transition-motion-blur-fast"
                   style={{
-                    backgroundColor: currentMode === "designer" ? "#481888" : "rgba(156, 163, 175, 0.3)",
+                    backgroundColor: currentMode === "designer" ? DESIGNER_STATUS_BG : DESIGNER_STATUS_BG_INACTIVE,
                   }}
                   animate={{
                     width: isExpanded ? "10px" : "8px",
@@ -320,8 +341,8 @@ export default function PersistentPersonaToggle() {
                     scale: currentMode === "designer" ? 1 : 0.7,
                     boxShadow: currentMode === "designer" 
                       ? isExpanded 
-                        ? "0 0 12px rgba(72, 24, 136, 0.6)" 
-                        : "0 0 8px rgba(72, 24, 136, 0.5)"
+                        ? DESIGNER_SHADOW(0.6)
+                        : DESIGNER_SHADOW(0.5)
                       : "none",
                   }}
                   transition={{ duration: 0.3 }}
@@ -331,17 +352,17 @@ export default function PersistentPersonaToggle() {
                   className="font-designer transition-motion-blur-fast"
                   style={{
                     color: currentMode === "designer" 
-                      ? "#481888" 
+                      ? DESIGNER_TEXT
                       : hoveredSide === "designer"
-                      ? "#6B21A8"
-                      : "#6B7280"
+                      ? DESIGNER_TEXT_HOVER
+                      : DESIGNER_TEXT_INACTIVE
                   }}
                   animate={{
                     fontSize: isExpanded ? "20px" : "18px",
                     textShadow: currentMode === "designer" 
                       ? isExpanded 
-                        ? "0 0 15px rgba(72, 24, 136, 0.4)" 
-                        : "0 0 10px rgba(72, 24, 136, 0.3)"
+                        ? DESIGNER_TEXT_SHADOW(0.4)
+                        : DESIGNER_TEXT_SHADOW_SMALL(0.3)
                       : "none",
                   }}
                   transition={{ duration: 0.3 }}
