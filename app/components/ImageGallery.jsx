@@ -1,8 +1,11 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useState } from "react"
 
 export default function ImageGallery({ onProjectClick }) {
+  const [currentPage, setCurrentPage] = useState(0)
+  const itemsPerPage = 6
   const images = [
     { 
       src: "/placeholder.svg?height=400&width=300", 
@@ -88,7 +91,127 @@ export default function ImageGallery({ onProjectClick }) {
       tools: ["Nikon D850", "Tilt-Shift Lenses", "Tripod System", "HDR Processing"],
       features: ["Perspective correction", "Lighting balance", "Geometric precision", "Environmental context"]
     },
+    { 
+      src: "/placeholder.svg?height=380&width=300", 
+      alt: "Fashion Editorial",
+      title: "Contemporary Fashion Series",
+      category: "FASHION",
+      description: "High-end fashion editorial exploring modern minimalism and bold statements",
+      concept: "Juxtaposing classic elegance with contemporary edge through lighting and composition",
+      philosophy: "Fashion as artistic expression that transcends trends",
+      client: "Harper's Bazaar",
+      year: "2024",
+      role: "Fashion Photographer",
+      tools: ["Hasselblad H6D", "Profoto Flash System", "Phase One", "Retouching Suite"],
+      features: ["Editorial storytelling", "High-fashion styling", "Studio mastery", "Creative direction"]
+    },
+    { 
+      src: "/placeholder.svg?height=320&width=400", 
+      alt: "Brand Identity",
+      title: "Luxury Brand System",
+      category: "BRANDING",
+      description: "Complete brand identity for luxury hospitality group",
+      concept: "Creating sophisticated visual language that embodies premium service and timeless elegance",
+      philosophy: "Great brands tell stories that resonate across cultures and generations",
+      client: "Ritz-Carlton Hotels",
+      year: "2024",
+      role: "Brand Designer",
+      tools: ["Adobe Creative Suite", "Sketch", "Figma", "Brand Guidelines"],
+      features: ["Logo design", "Typography system", "Color palette", "Brand applications"]
+    },
+    { 
+      src: "/placeholder.svg?height=450&width=300", 
+      alt: "Conceptual Art",
+      title: "Digital Abstractions",
+      category: "DIGITAL ART",
+      description: "Experimental digital art exploring the intersection of technology and human emotion",
+      concept: "Using digital tools to create organic, emotional expressions that bridge human and machine",
+      philosophy: "Technology amplifies creativity rather than replacing human touch",
+      client: "MoMA Digital",
+      year: "2024",
+      role: "Digital Artist",
+      tools: ["Blender", "Cinema 4D", "After Effects", "TouchDesigner"],
+      features: ["3D modeling", "Generative art", "Motion graphics", "Interactive installations"]
+    },
+    { 
+      src: "/placeholder.svg?height=340&width=350", 
+      alt: "Interior Design",
+      title: "Scandinavian Minimalism",
+      category: "INTERIOR",
+      description: "Contemporary interior design project emphasizing light, space, and natural materials",
+      concept: "Creating harmony between function and beauty through thoughtful material selection",
+      philosophy: "Spaces should enhance well-being and reflect personal identity",
+      client: "Private Residence",
+      year: "2023",
+      role: "Interior Designer",
+      tools: ["SketchUp", "V-Ray", "AutoCAD", "Material Libraries"],
+      features: ["Space planning", "Material selection", "Lighting design", "Custom furniture"]
+    },
+    { 
+      src: "/placeholder.svg?height=290&width=380", 
+      alt: "Web Design",
+      title: "Interactive Experience",
+      category: "DIGITAL",
+      description: "Award-winning website design for innovative tech startup",
+      concept: "Creating intuitive digital experiences that feel natural and engaging",
+      philosophy: "Good design is invisible - users should focus on content, not interface",
+      client: "TechFlow Innovations",
+      year: "2024",
+      role: "UX/UI Designer",
+      tools: ["Figma", "Framer", "Principle", "Code Editor"],
+      features: ["User research", "Wireframing", "Prototyping", "Responsive design"]
+    },
+    { 
+      src: "/placeholder.svg?height=360&width=320", 
+      alt: "Packaging Design",
+      title: "Artisan Coffee Series",
+      category: "PACKAGING",
+      description: "Premium coffee packaging design celebrating artisanal craft and sustainability",
+      concept: "Honoring traditional coffee culture while embracing modern environmental consciousness",
+      philosophy: "Packaging should tell the product's story and reflect its values",
+      client: "Blue Bottle Coffee",
+      year: "2024",
+      role: "Package Designer",
+      tools: ["Illustrator", "Photoshop", "Packaging Software", "Prototyping"],
+      features: ["Sustainable materials", "Structural design", "Brand storytelling", "Print production"]
+    },
+    { 
+      src: "/placeholder.svg?height=420&width=300", 
+      alt: "Typography Art",
+      title: "Experimental Typography",
+      category: "TYPOGRAPHY",
+      description: "Pushing the boundaries of letterform and meaning through experimental type design",
+      concept: "Typography as both functional communication and artistic expression",
+      philosophy: "Letters carry emotion and personality beyond their literal meaning",
+      client: "Type Directors Club",
+      year: "2024",
+      role: "Type Designer",
+      tools: ["Glyphs", "FontLab", "Illustrator", "InDesign"],
+      features: ["Custom typefaces", "Experimental layouts", "Cultural typography", "Digital applications"]
+    },
   ]
+
+  // Pagination logic
+  const totalPages = Math.ceil(images.length / itemsPerPage)
+  const startIndex = currentPage * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentImages = images.slice(startIndex, endIndex)
+
+  const nextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1)
+    }
+  }
+
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1)
+    }
+  }
+
+  const goToPage = (pageIndex) => {
+    setCurrentPage(pageIndex)
+  }
 
   const handleImageClick = (image) => {
     if (onProjectClick) {
@@ -115,14 +238,19 @@ export default function ImageGallery({ onProjectClick }) {
         >
           Visual Stories
         </motion.h2>
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-          {images.map((image, index) => (
+        <motion.div 
+          key={currentPage}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6"
+        >
+          {currentImages.map((image, index) => (
             <motion.div
-              key={index}
+              key={`${currentPage}-${index}`}
               initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.1 }}
-              viewport={{ once: true }}
               className="break-inside-avoid group cursor-pointer"
               onClick={() => handleImageClick(image)}
             >
@@ -139,7 +267,103 @@ export default function ImageGallery({ onProjectClick }) {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
+
+        {/* Pagination Controls */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="flex items-center justify-center gap-8 mt-16"
+        >
+          {/* Previous Button */}
+          <button
+            onClick={prevPage}
+            disabled={currentPage === 0}
+            className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 group disabled:opacity-30 disabled:cursor-not-allowed"
+            style={{
+              background: currentPage === 0 
+                ? "linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(248, 247, 245, 0.5))"
+                : "linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 247, 245, 0.9))",
+              border: "1px solid rgba(81, 106, 200, 0.2)",
+              backdropFilter: "blur(10px)",
+              boxShadow: currentPage === 0 ? "none" : "0 4px 16px rgba(0, 0, 0, 0.1)"
+            }}
+          >
+            <svg 
+              className={`w-5 h-5 transition-all duration-300 ${currentPage === 0 ? 'text-slate-400' : 'text-slate-700 group-hover:text-slate-900 group-hover:-translate-x-0.5'}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          {/* Page Indicators */}
+          <div className="flex items-center gap-3">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index}
+                onClick={() => goToPage(index)}
+                className={`transition-all duration-300 rounded-full ${
+                  index === currentPage 
+                    ? "w-10 h-3" 
+                    : "w-3 h-3 hover:w-6"
+                }`}
+                style={{
+                  background: index === currentPage 
+                    ? "rgba(255, 255, 255, 0.9)"
+                    : "rgba(255, 255, 255, 0.4)",
+                  border: index === currentPage 
+                    ? "1px solid rgba(255, 255, 255, 0.8)"
+                    : "1px solid rgba(255, 255, 255, 0.3)",
+                  boxShadow: index === currentPage 
+                    ? "0 2px 8px rgba(255, 255, 255, 0.3)" 
+                    : "0 1px 4px rgba(0, 0, 0, 0.1)"
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Next Button */}
+          <button
+            onClick={nextPage}
+            disabled={currentPage === totalPages - 1}
+            className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 group disabled:opacity-30 disabled:cursor-not-allowed"
+            style={{
+              background: currentPage === totalPages - 1
+                ? "linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(248, 247, 245, 0.5))"
+                : "linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 247, 245, 0.9))",
+              border: "1px solid rgba(81, 106, 200, 0.2)",
+              backdropFilter: "blur(10px)",
+              boxShadow: currentPage === totalPages - 1 ? "none" : "0 4px 16px rgba(0, 0, 0, 0.1)"
+            }}
+          >
+            <svg 
+              className={`w-5 h-5 transition-all duration-300 ${currentPage === totalPages - 1 ? 'text-slate-400' : 'text-slate-700 group-hover:text-slate-900 group-hover:translate-x-0.5'}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </motion.div>
+
+        {/* Page Info */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mt-8"
+        >
+          <p className="text-white/60 text-sm font-light">
+            Page {currentPage + 1} of {totalPages} • {images.length} total projects
+          </p>
+        </motion.div>
       </div>
     </section>
   )
