@@ -114,14 +114,6 @@ export default function Navigation() {
     return (
       <div className={styles.container}>
         <nav className={styles.menuContainer}>
-          <button
-            type="button"
-            className={styles.menuButton}
-            onClick={toggleMenu}
-          >
-            {isMenuOpen ? "close" : "menu"}
-          </button>
-          
           {navItems.map((item, index) => (
             <button
               key={index}
