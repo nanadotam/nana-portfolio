@@ -13,14 +13,14 @@ export default function ImageGallery() {
   ]
 
   return (
-    <section className="py-24 px-6 bg-white/5 backdrop-blur-sm">
+    <section className="py-24 px-6 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-5xl font-light text-center mb-16 text-gray-800 font-serif"
+          className="text-5xl font-light text-center mb-16 text-[#E8DDD0] font-serif"
         >
           Visual Stories
         </motion.h2>

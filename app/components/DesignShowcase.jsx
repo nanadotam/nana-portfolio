@@ -203,7 +203,7 @@ export default function DesignShowcase({ items }) {
   }
 
   return (
-    <section className="py-24 px-6 bg-white/10 backdrop-blur-sm">
+    <section className="py-24 px-6 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
@@ -212,18 +212,18 @@ export default function DesignShowcase({ items }) {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-5xl md:text-6xl font-light text-center mb-4 text-gray-800 font-serif"
+            className="text-5xl md:text-6xl font-light text-center mb-4 text-[#E8DDD0] font-serif"
           >
-            Featured Work
+            Just a few of my favorite projects
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-lg text-gray-700 font-light"
+            className="text-lg text-[#fefefa] font-light"
           >
-            Select recent and notable projects
+            See for yourself
           </motion.p>
         </div>
 

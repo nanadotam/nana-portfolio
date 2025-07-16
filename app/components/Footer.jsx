@@ -110,7 +110,7 @@ export default function Footer() {
             </ol>
           </nav>
 
-          <p className="footer-text">
+          <p className="footer-text text-[#E8DDD0]">
             &copy; <span>{currentYear}</span> • Designed & Developed by
             <a target="_blank" rel="noopener noreferrer" href="https://github.com/nanadotam">
               {" "}
