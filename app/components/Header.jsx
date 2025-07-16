@@ -32,6 +32,14 @@ export default function Header() {
             >
               See my work
             </a>
+            <a
+              href="/cv.pdf"
+              className="btn btn-secondary"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              See my CV
+            </a>
           </div>
         </div>
       </div>
