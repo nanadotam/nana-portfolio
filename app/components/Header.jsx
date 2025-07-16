@@ -24,14 +24,18 @@ export default function Header() {
             >
               Hire me
             </a>
-            <a
-              href="https://github.com/nanadotam"
+            <button
+              type="button"
               className="btn btn-secondary"
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={() => {
+                const projectsSection = document.querySelector("#projects");
+                if (projectsSection) {
+                  projectsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+              }}
             >
               See my work
-            </a>
+            </button>
             <a
               href="/cv.pdf"
               className="btn btn-secondary"
