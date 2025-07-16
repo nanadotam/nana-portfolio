@@ -1,11 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import ProjectModal from "./ProjectModal"
-
-export default function Projects() {
-  const [selectedProject, setSelectedProject] = useState(null)
-
+export default function Projects({ onProjectSelect }) {
   const featuredRepos = [
     {
       name: "NanoClip",
@@ -196,7 +191,7 @@ export default function Projects() {
       <h2 className="h2">Projects</h2>
       <div className="project-list" id="repo-container">
         {featuredRepos.map((repo, index) => (
-          <div key={index} className="project-card" onClick={() => setSelectedProject(repo)}>
+          <div key={index} className="project-card" onClick={() => onProjectSelect(repo)}>
           {/* <div key={index} className="project-card" onClick={() => handleProjectClick(repo.url)}> */}
             {/* <div className="project-image" style={{ backgroundImage: `url('${gradientImages[index % gradientImages.length]}')` }} /> */}
             <div
@@ -212,13 +207,6 @@ export default function Projects() {
           </div>
         ))}
       </div>
-
-        <ProjectModal
-          isOpen={!!selectedProject}
-          onClose={() => setSelectedProject(null)}
-          project={selectedProject}
-        />
-
     </section>
   )
 }

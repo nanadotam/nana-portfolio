@@ -83,7 +83,7 @@ export default function ScrollIndicator() {
             stiffness: 400,
             duration: 0.6 
           }}
-          className="fixed inset-0 z-25 flex items-end justify-center pb-32 pointer-events-auto"
+          className="fixed inset-0 z-25 flex items-end justify-center pb-32 pointer-events-none"
           style={{
             // Ensure it's positioned above persona toggle but below modals
             zIndex: 25
@@ -91,7 +91,7 @@ export default function ScrollIndicator() {
         >
           <motion.button
             onClick={handleScrollDown}
-            className="flex flex-col items-center space-y-3 group cursor-pointer bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-green-400/20 hover:border-green-400/40 transition-all duration-300"
+            className="flex flex-col items-center space-y-3 group cursor-pointer bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-green-400/20 hover:border-green-400/40 transition-all duration-300 pointer-events-auto"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             style={{

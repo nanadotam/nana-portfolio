@@ -40,7 +40,7 @@ export default function ProjectModal({ isOpen, onClose, project}) {
                         stiffness: 400,
                         duration: 0.5 
                     }}
-                    className="bg-[#0d0d0d] text-white rounded-2xl w-full max-w-4xl max-h-[90vh] border border-white/10 relative shadow-2xl overflow-hidden"
+                    className="bg-[#0d0d0d] text-white rounded-2xl w-full max-w-4xl max-h-[90vh] border border-white/10 relative shadow-2xl overflow-hidden flex flex-col"
                     onClick={(e) => e.stopPropagation()}
                     style={{
                         backdropFilter: "blur(20px)",
@@ -99,7 +99,7 @@ export default function ProjectModal({ isOpen, onClose, project}) {
                     </motion.button>
 
                     {/* Scrollable content container */}
-                    <div className="h-full overflow-y-auto custom-scrollbar">
+                    <div className="max-h-[70vh] overflow-y-auto custom-scrollbar">
                         {/* Content */}
                         <div className="p-6 md:p-8 relative z-10">
                             {/* Header Section */}

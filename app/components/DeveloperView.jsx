@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Navigation from "./Navigation"
 import Header from "./Header"
 import Projects from "./Projects"
@@ -9,8 +9,11 @@ import Contact from "./Contact"
 import Footer from "./Footer"
 import PersistentPersonaToggle from "./PersistentPersonaToggle"
 import ScrollIndicator from "./ScrollIndicator"
+import ProjectModal from "./ProjectModal"
 
 export default function DeveloperView() {
+  const [selectedProject, setSelectedProject] = useState(null)
+
   useEffect(() => {
     // Force dark theme for developer mode
     document.body.classList.add("dark")
@@ -32,7 +35,7 @@ export default function DeveloperView() {
       {/* Main Content */}
       <main>
         {/* Projects Section */}
-        <Projects />
+        <Projects onProjectSelect={setSelectedProject} />
 
         {/* About Section */}
         <About />
@@ -49,6 +52,13 @@ export default function DeveloperView() {
 
       {/* Persistent Persona Toggle */}
       <PersistentPersonaToggle />
+
+      {/* Project Modal - Rendered at top level for proper overlay */}
+      <ProjectModal
+        isOpen={!!selectedProject}
+        onClose={() => setSelectedProject(null)}
+        project={selectedProject}
+      />
     </div>
   )
 }

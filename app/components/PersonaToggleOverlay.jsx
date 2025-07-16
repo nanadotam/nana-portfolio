@@ -110,7 +110,7 @@ export default function PersonaToggleOverlay({ onSelect }) {
             className="mb-16"
           >
             <motion.h1 
-              className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent italic tracking-tight"
+              className="text-5xl md:text-9xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent italic tracking-tight"
               animate={{
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}
