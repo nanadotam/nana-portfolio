@@ -12,6 +12,7 @@ import { BackgroundGradientAnimation } from "@/components/ui/background-gradient
 function FloatingElements() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [revealedElements, setRevealedElements] = useState(new Set())
+  const [hoveredElement, setHoveredElement] = useState(null)
 
   const elements = [
     // Mix of photos and brand logos - scattered aesthetic pattern
@@ -20,6 +21,7 @@ function FloatingElements() {
       type: "photo",
       content: "/images/gallery/UBORA-104.jpg",
       alt: "Design Work 1",
+      tooltip: "Brand identity work for emerging fashion collective",
       x: "8%",
       y: "15%",
       delay: 0,
@@ -32,7 +34,8 @@ function FloatingElements() {
           <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.024-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.097.118.112.219.083.338-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.748-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"/>
         </svg>
       ),
-      alt: "McDonald's",
+      alt: "Pinterest",
+      tooltip: "Worked with Pinterest",
       x: "15%",
       y: "35%",
       delay: 0.3,
@@ -41,6 +44,7 @@ function FloatingElements() {
       type: "photo",
       content: "/placeholder.svg?height=80&width=80",
       alt: "Creative Project",
+      tooltip: "Creative direction for lifestyle brand campaign",
       x: "12%",
       y: "55%",
       delay: 0.6,
@@ -53,6 +57,7 @@ function FloatingElements() {
         </svg>
       ),
       alt: "Apple",
+      tooltip: "Worked with Apple",
       x: "18%",
       y: "75%",
       delay: 0.9,
@@ -66,7 +71,8 @@ function FloatingElements() {
           <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205 31.247 31.247 0 0 0 .016 12.002a31.247 31.247 0 0 0 .512 5.797 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.797 31.247 31.247 0 0 0-.5-5.797zM9.609 15.601V8.408l6.264 3.602z"/>
         </svg>
       ),
-      alt: "Microsoft",
+      alt: "YouTube",
+      tooltip: "Worked with YouTube",
       x: "35%",
       y: "10%",
       delay: 1.2,
@@ -75,6 +81,7 @@ function FloatingElements() {
       type: "photo",
       content: "/placeholder.svg?height=80&width=80",
       alt: "Portfolio Piece",
+      tooltip: "Visual design for tech startup launch",
       x: "45%",
       y: "25%",
       delay: 1.5,
@@ -88,6 +95,7 @@ function FloatingElements() {
         </svg>
       ),
       alt: "GitHub",
+      tooltip: "Worked with GitHub",
       x: "55%",
       y: "15%",
       delay: 1.8,
@@ -96,6 +104,7 @@ function FloatingElements() {
       type: "photo",
       content: "/placeholder.svg?height=80&width=80",
       alt: "Art Direction",
+      tooltip: "Art direction for luxury fashion editorial",
       x: "42%",
       y: "73%",
       delay: 2.1,
@@ -107,10 +116,13 @@ function FloatingElements() {
       type: "logo",
       content: (
         <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M11.99 0C5.362 0 0 5.362 0 12s5.362 12 11.99 12c6.628 0 11.99-5.362 11.99-12S18.618 0 11.99 0zm5.424 7.968l-5.458 7.932H8.033l3.458-5.025-3.458-5.025h3.923l5.458 7.118z"/>
+          <circle cx="12" cy="12" r="12" fill="#00704A"/>
+          <path d="M12 3.1c-4.9 0-8.9 4-8.9 8.9s4 8.9 8.9 8.9 8.9-4 8.9-8.9-4-8.9-8.9-8.9zm0 1.5c4.1 0 7.4 3.3 7.4 7.4s-3.3 7.4-7.4 7.4-7.4-3.3-7.4-7.4 3.3-7.4 7.4-7.4z" fill="#fff"/>
+          <path d="M12 6.1c-3.3 0-5.9 2.6-5.9 5.9s2.6 5.9 5.9 5.9 5.9-2.6 5.9-5.9-2.6-5.9-5.9-5.9z" fill="#00704A"/>
         </svg>
       ),
       alt: "Starbucks",
+      tooltip: "Worked with Starbucks",
       x: "78%",
       y: "20%",
       delay: 2.4,
@@ -119,6 +131,7 @@ function FloatingElements() {
       type: "photo",
       content: "/placeholder.svg?height=80&width=80",
       alt: "Brand Design",
+      tooltip: "Brand design for sustainable packaging solutions",
       x: "85%",
       y: "40%",
       delay: 2.7,
@@ -126,19 +139,12 @@ function FloatingElements() {
     {
       type: "logo",
       content: (
-        <svg width="50" height="50" viewBox="0 0 87.5 100" fill="currentColor">
-          <defs>
-            <clipPath id="a">
-              <path d="M0 0h87.5v100H0z"/>
-            </clipPath>
-          </defs>
-          <g clipPath="url(#a)">
-            <path d="M43.75 0C19.62 0 0 19.62 0 43.75S19.62 87.5 43.75 87.5 87.5 67.88 87.5 43.75 67.88 0 43.75 0z" fill="#00704A"/>
-            <path d="M43.75 84.38C21.34 84.38 3.13 66.16 3.13 43.75S21.35 3.13 43.75 3.13 84.38 21.34 84.38 43.75 66.16 84.38 43.75 84.38zM21.88 43.75c0-12.08 9.79-21.88 21.87-21.88S65.63 31.67 65.63 43.75 55.83 65.63 43.75 65.63 21.88 55.83 21.88 43.75z" fill="#FFF"/>
-          </g>
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12.036 5.339c-3.635 0-6.591 2.956-6.591 6.591s2.956 6.591 6.591 6.591 6.591-2.956 6.591-6.591-2.956-6.591-6.591-6.591zm0 10.724c-2.28 0-4.133-1.853-4.133-4.133s1.853-4.133 4.133-4.133 4.133 1.853 4.133 4.133-1.853 4.133-4.133 4.133zM19.853 4.339a1.54 1.54 0 1 1-3.08 0 1.54 1.54 0 0 1 3.08 0zM23.994 6.465c-.15-3.17-2.825-5.845-5.994-5.994C15.837.386 8.179.386 6.016.471 2.847.621.172 3.295.022 6.465c-.085 2.163-.085 9.821 0 11.984.15 3.17 2.825 5.845 5.994 5.994 2.163.085 9.821.085 11.984 0 3.169-.15 5.844-2.825 5.994-5.994.085-2.163.085-9.821 0-11.984zM21.94 18.767c-.996 2.508-2.93 4.441-5.438 5.437-2.117.837-7.129.646-9.462 0-2.508-.996-4.441-2.93-5.437-5.437-.837-2.117-.646-7.129 0-9.462.996-2.508 2.93-4.441 5.437-5.437 2.117-.837 7.129-.646 9.462 0 2.508.996 4.441 2.93 5.438 5.437.837 2.117.646 7.129 0 9.462z"/>
         </svg>
       ),
       alt: "McDonald's",
+      tooltip: "Worked with McDonald's",
       x: "88%",
       y: "65%",
       delay: 3.0,
@@ -147,6 +153,7 @@ function FloatingElements() {
       type: "photo",
       content: "/placeholder.svg?height=80&width=80",
       alt: "Visual Identity",
+      tooltip: "Visual identity system for wellness brand",
       x: "82%",
       y: "80%",
       delay: 3.3,
@@ -158,10 +165,11 @@ function FloatingElements() {
       type: "logo",
       content: (
         <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M0 0v24h24V0H0zm13.5 18h-3v-6h3v6zm-1.5-7.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
         </svg>
       ),
-      alt: "Apple",
+      alt: "LinkedIn",
+      tooltip: "Professional network collaborations",
       x: "25%",
       y: "90%",
       delay: 3.6,
@@ -170,6 +178,7 @@ function FloatingElements() {
       type: "photo",
       content: "/placeholder.svg?height=80&width=80",
       alt: "Design Excellence",
+      tooltip: "Award-winning packaging design concept",
       x: "70%",
       y: "5%",
       delay: 3.9,
@@ -253,7 +262,46 @@ function FloatingElements() {
               ease: "easeInOut",
             },
           }}
+          onMouseEnter={() => setHoveredElement(index)}
+          onMouseLeave={() => setHoveredElement(null)}
         >
+          {/* Tooltip */}
+          {hoveredElement === index && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.9 }}
+              transition={{
+                duration: 0.2,
+                ease: "easeOut",
+              }}
+              className="absolute -top-12 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none"
+            >
+              <div 
+                className="px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg border"
+                style={{
+                  background: "linear-gradient(135deg, rgba(248, 247, 245, 0.95), rgba(255, 253, 250, 0.95))",
+                  color: "#0F1939",
+                  borderColor: "rgba(15, 25, 57, 0.1)",
+                  borderRadius: "50px",
+                  backdropFilter: "blur(8px)",
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05)",
+                }}
+              >
+                {element.tooltip}
+                {/* Tooltip arrow */}
+                <div 
+                  className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0"
+                  style={{
+                    borderLeft: "5px solid transparent",
+                    borderRight: "5px solid transparent",
+                    borderTop: "5px solid rgba(248, 247, 245, 0.95)",
+                  }}
+                />
+              </div>
+            </motion.div>
+          )}
+
           {element.type === "logo" ? (
             <div className="relative group">
               <div
