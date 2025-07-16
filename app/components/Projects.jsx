@@ -23,6 +23,7 @@ export default function Projects({ onProjectSelect }) {
         "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&h=300&fit=crop"
       ],
       url: "https://nanoclip.vercel.app",
+      github: "https://github.com/nanadotam/nanoclip",
     },
     {
       name: "DSA File Explorers: Virtual File Management",
@@ -44,6 +45,7 @@ export default function Projects({ onProjectSelect }) {
         "https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=500&h=300&fit=crop"
       ],
       url: "https://github.com/nanadotam/DSA-File-Explorers",
+      github: "https://github.com/nanadotam/DSA-File-Explorers",
     },
     {
       name: "Ashesi Parking Management System",
@@ -61,6 +63,7 @@ export default function Projects({ onProjectSelect }) {
         "Admin dashboard with analytics"
       ],
       url: "https://github.com/nanadotam/apms",
+      github: "https://github.com/nanadotam/apms",
     },
     {
       name: "Kumi: Making Learning Fun",
@@ -83,6 +86,7 @@ export default function Projects({ onProjectSelect }) {
         "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&h=300&fit=crop"
       ],
       url: "https://github.com/nanadotam/kumi_fcln",
+      github: "https://github.com/nanadotam/kumi_fcln",
     },
     {
       name: "Recifree: Free Recipes",
@@ -100,6 +104,7 @@ export default function Projects({ onProjectSelect }) {
         "User ratings and reviews system"
       ],
       url: "https://github.com/nanadotam/Recifree",
+      github: "https://github.com/nanadotam/Recifree",
     },
     {
       name: "Volume Gesture Control App",
@@ -117,6 +122,7 @@ export default function Projects({ onProjectSelect }) {
         "Customizable gesture settings"
       ],
       url: "https://github.com/nanadotam/volume-gesture-control",
+      github: "https://github.com/nanadotam/volume-gesture-control",
     },
     {
       name: "Cocoa Price Prediction App",
@@ -134,6 +140,7 @@ export default function Projects({ onProjectSelect }) {
         "Historical price trend analysis"
       ],
       url: "https://github.com/nanadotam/Cocoa-Price-Prediction",
+      github: "https://github.com/nanadotam/Cocoa-Price-Prediction",
     },
     {
       name: "text clock by nanaamoako",
@@ -151,6 +158,7 @@ export default function Projects({ onProjectSelect }) {
         "Responsive design"
       ],
       url: "https://github.com/nanadotam/text-clock-by-nanaamoako",
+      github: "https://github.com/nanadotam/text-clock-by-nanaamoako",
     },
     {
       name: "Personal Pomodoro Timer",
@@ -168,6 +176,7 @@ export default function Projects({ onProjectSelect }) {
         "Minimalist, distraction-free interface"
       ],
       url: "https://github.com/nanadotam/personal-pomodoro-timer",
+      github: "https://github.com/nanadotam/personal-pomodoro-timer",
     },
   ]
 
@@ -182,24 +191,185 @@ export default function Projects({ onProjectSelect }) {
     "https://images.unsplash.com/photo-1579546929662-711aa81148cf?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   ]
 
-  const handleProjectClick = (url) => {
-    window.open(url, "_blank")
-  }
-
   return (
     <section id="projects" className="project-section">
       <h2 className="h2">Projects</h2>
       <div className="project-list" id="repo-container">
         {featuredRepos.map((repo, index) => (
-          <div key={index} className="project-card" onClick={() => onProjectSelect(repo)}>
-          {/* <div key={index} className="project-card" onClick={() => handleProjectClick(repo.url)}> */}
-            {/* <div className="project-image" style={{ backgroundImage: `url('${gradientImages[index % gradientImages.length]}')` }} /> */}
+          <div 
+            key={index} 
+            className="project-card"
+            onClick={() => onProjectSelect(repo)}
+            style={{ position: 'relative', overflow: 'hidden' }}
+          >
             <div
               className="project-image"
               style={{
                 backgroundImage: `url('${gradientImages[index % gradientImages.length]}')`,
               }}
             />
+            
+            {/* Hover Overlay */}
+            <div 
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                opacity: 0,
+                transform: 'translateY(100%)',
+                transition: 'all 0.5s ease',
+                borderRadius: 'inherit',
+                zIndex: 2
+              }}
+              className="project-hover-overlay"
+            >
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: '24px',
+                color: 'white'
+              }}>
+                {/* Year and Role */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '12px',
+                  opacity: 0,
+                  transform: 'translateY(20px)',
+                  transition: 'all 0.7s ease 0.1s'
+                }} className="overlay-year-role">
+                  <span style={{
+                    fontSize: '14px',
+                    fontFamily: 'JetBrains Mono, monospace',
+                    color: '#4ade80',
+                    backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    border: '1px solid rgba(74, 222, 128, 0.3)'
+                  }}>
+                    {repo.year}
+                  </span>
+                  <span style={{
+                    fontSize: '12px',
+                    color: '#d1d5db',
+                    fontWeight: '300'
+                  }}>
+                    {repo.role}
+                  </span>
+                </div>
+
+                {/* Project Name */}
+                <h3 style={{
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  marginBottom: '8px',
+                  opacity: 0,
+                  transform: 'translateY(20px)',
+                  transition: 'all 0.7s ease 0.2s'
+                }} className="overlay-title">
+                  {repo.name}
+                </h3>
+
+                {/* Tagline */}
+                <p style={{
+                  fontSize: '14px',
+                  color: '#d1d5db',
+                  marginBottom: '16px',
+                  opacity: 0,
+                  transform: 'translateY(20px)',
+                  transition: 'all 0.7s ease 0.3s'
+                }} className="overlay-tagline">
+                  {repo.tagline}
+                </p>
+
+                {/* Tech Stack */}
+                <div style={{
+                  marginBottom: '16px',
+                  opacity: 0,
+                  transform: 'translateY(20px)',
+                  transition: 'all 0.7s ease 0.4s'
+                }} className="overlay-tech">
+                  <div style={{
+                    fontSize: '12px',
+                    fontFamily: 'JetBrains Mono, monospace',
+                    color: '#9ca3af',
+                    marginBottom: '8px'
+                  }}>
+                    TECH STACK
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '4px'
+                  }}>
+                    {repo.tools?.slice(0, 4).map((tool, i) => (
+                      <span 
+                        key={i} 
+                        style={{
+                          fontSize: '12px',
+                          padding: '4px 8px',
+                          backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                          color: '#93c5fd',
+                          borderRadius: '4px',
+                          border: '1px solid rgba(59, 130, 246, 0.3)',
+                          fontFamily: 'JetBrains Mono, monospace'
+                        }}
+                      >
+                        {tool}
+                      </span>
+                    ))}
+                    {repo.tools?.length > 4 && (
+                      <span style={{
+                        fontSize: '12px',
+                        padding: '4px 8px',
+                        backgroundColor: 'rgba(107, 114, 128, 0.2)',
+                        color: '#d1d5db',
+                        borderRadius: '4px',
+                        border: '1px solid rgba(107, 114, 128, 0.3)',
+                        fontFamily: 'JetBrains Mono, monospace'
+                      }}>
+                        +{repo.tools.length - 4}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* CTA Button */}
+                <div style={{
+                  opacity: 0,
+                  transform: 'translateY(20px)',
+                  transition: 'all 0.7s ease 0.5s'
+                }} className="overlay-cta">
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '12px 16px',
+                    backgroundColor: '#000000',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    border: '1px solid rgba(255, 255, 255, 0.2)'
+                  }}>
+                    <span>Click to see more</span>
+                    <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="project-details">
               <h3>{repo.name}</h3>
               <p>{repo.description}</p>
@@ -207,6 +377,22 @@ export default function Projects({ onProjectSelect }) {
           </div>
         ))}
       </div>
+
+      <style jsx>{`
+        .project-card:hover .project-hover-overlay {
+          opacity: 1 !important;
+          transform: translateY(0%) !important;
+        }
+        
+        .project-card:hover .overlay-year-role,
+        .project-card:hover .overlay-title,
+        .project-card:hover .overlay-tagline,
+        .project-card:hover .overlay-tech,
+        .project-card:hover .overlay-cta {
+          opacity: 1 !important;
+          transform: translateY(0px) !important;
+        }
+      `}</style>
     </section>
   )
 }
