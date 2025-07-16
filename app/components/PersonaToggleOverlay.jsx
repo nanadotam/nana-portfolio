@@ -110,26 +110,36 @@ export default function PersonaToggleOverlay({ onSelect }) {
             className="mb-16"
           >
             <motion.h1 
-              className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent"
+              className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent italic"
               animate={{
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}
               transition={{
-                duration: 4,
+                duration: 0.5,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
             >
-              Two Sides, One Vision
+              I build cool stuff for a living.
             </motion.h1>
           <motion.h2
-            className="text-2xl md:text-3xl font-semibold text-gray-400"
+            className="text-2xl md:text-3xl font-semibold text-gray-200"
             initial={{ opacity: 0, y: -10, filter: "blur(4px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ delay: 0.35, duration: 0.4 }}
           >
             Take a look around
           </motion.h2>
+
+{/*           
+          <motion.h3
+            className="text-xl md:text-2xl font-semibold text-gray-400 italic"
+            initial={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.35, duration: 0.4 }}
+          >
+            Yes, I build cool stuff for a living
+          </motion.h3> */}
 
           </motion.div>
 
@@ -194,7 +204,7 @@ export default function PersonaToggleOverlay({ onSelect }) {
                         opacity: hoveredSide === "developer" ? 1 : 0.7,
                       }}
                     >
-                      Code that solves problems
+                      Programs that solve problems
                     </motion.p>
                   </div>
 
@@ -313,6 +323,7 @@ export default function PersonaToggleOverlay({ onSelect }) {
           </div>
         </AnimatedPersonaSection>
       </motion.div>
+
     </AnimatePresence>
   )
 } 
