@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react"
 // Navigation Arrow Components
 function LeftArrow() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-white">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-black">
       <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
@@ -14,7 +14,7 @@ function LeftArrow() {
 
 function RightArrow() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-white">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-black">
       <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
@@ -23,14 +23,14 @@ function RightArrow() {
 function PlayPauseIcon({ isPlaying }) {
   if (isPlaying) {
     return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-white">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-black">
         <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
         <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
       </svg>
     )
   }
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-white">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-black">
       <polygon points="5,3 19,12 5,21" fill="currentColor"/>
     </svg>
   )
@@ -105,16 +105,15 @@ function CarouselCard({ item, index, activeIndex, totalCards }) {
       aria-label={`${item.title}: ${item.description}`}
     >
       <div className="w-full h-full bg-white/85 backdrop-blur-md rounded-2xl shadow-[0_20px_40px_-12px_rgba(0,0,0,0.25)] overflow-hidden border border-white/30 cursor-pointer hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] transition-shadow duration-300">
-        <div className="relative w-full h-4/5 bg-gradient-to-br from-rose-100/80 to-amber-100/80">
+        <div className="relative w-full h-4/5 bg-white/20">
           <img
             src={item.image || "/placeholder.svg"}
             alt={item.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
         <div className="p-4 h-1/5 flex items-center justify-center bg-white/90 backdrop-blur-sm">
-          <span className="inline-block px-4 py-2 bg-gradient-to-r from-red-500 to-purple-600 text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md">
+          <span className="inline-block px-4 py-2 bg-white text-black text-xs font-bold uppercase tracking-wider rounded-full shadow-md border border-black/10">
             {item.category}
           </span>
         </div>
@@ -256,7 +255,7 @@ export default function DesignShowcase({ items }) {
             {/* Previous Button */}
             <button
               onClick={prevSlide}
-              className="w-12 h-12 bg-gradient-to-r from-red-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+              className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-black/10"
               aria-label="Previous project"
             >
               <LeftArrow />
@@ -265,7 +264,7 @@ export default function DesignShowcase({ items }) {
             {/* Play/Pause Button */}
             <button
               onClick={toggleAutoPlay}
-              className="w-10 h-10 bg-gray-800/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+              className="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-black/10"
               aria-label={isAutoPlaying ? "Pause autoplay" : "Start autoplay"}
             >
               <PlayPauseIcon isPlaying={isAutoPlaying} />
@@ -274,7 +273,7 @@ export default function DesignShowcase({ items }) {
             {/* Next Button */}
             <button
               onClick={nextSlide}
-              className="w-12 h-12 bg-gradient-to-r from-red-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+              className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-black/10"
               aria-label="Next project"
             >
               <RightArrow />
@@ -293,8 +292,8 @@ export default function DesignShowcase({ items }) {
                 }}
                 className={`transition-all duration-300 rounded-full ${
                   index === activeIndex 
-                    ? "w-8 h-3 bg-gradient-to-r from-red-500 to-purple-600" 
-                    : "w-3 h-3 bg-gray-400/60 hover:bg-gray-500/80"
+                    ? "w-8 h-3 bg-white border border-black/20" 
+                    : "w-3 h-3 bg-white/60 hover:bg-white/80 border border-black/10"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -310,17 +309,17 @@ export default function DesignShowcase({ items }) {
           transition={{ duration: 0.5 }}
           className="text-center mt-12 max-w-2xl mx-auto"
         >
-          <h3 className="text-3xl font-light text-gray-800 mb-3">
+          <h3 className="text-3xl font-light text-white mb-3">
             {items[activeIndex].title}
           </h3>
-          <p className="text-gray-700 leading-relaxed mb-6">
+          <p className="text-white/80 leading-relaxed mb-6">
             {items[activeIndex].description}
           </p>
           <div className="flex flex-wrap gap-2 justify-center">
             {items[activeIndex].tags.map((tag, tagIndex) => (
               <span
                 key={tagIndex}
-                className="px-4 py-2 bg-white/60 backdrop-blur-sm text-gray-800 text-sm rounded-full border border-white/30 shadow-sm"
+                className="px-4 py-2 bg-white/80 backdrop-blur-sm text-black text-sm rounded-full border border-white/20 shadow-sm"
               >
                 {tag}
               </span>
@@ -334,9 +333,9 @@ export default function DesignShowcase({ items }) {
           whileInView={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center text-gray-600 text-sm mt-8"
+          className="text-center text-white/60 text-sm mt-8"
         >
-          Scroll horizontally or use navigation buttons to explore projects
+          Scroll horizontally or use navigation buttons 
         </motion.p>
       </div>
     </section>
