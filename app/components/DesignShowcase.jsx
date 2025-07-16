@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { useState, useRef, useEffect } from "react"
+import DesignerProjectModal from "./DesignerProjectModal"
 
 // Navigation Arrow Components
 function LeftArrow() {
@@ -37,7 +38,7 @@ function PlayPauseIcon({ isPlaying }) {
 }
 
 // Individual Card Component
-function CarouselCard({ item, index, activeIndex, totalCards }) {
+function CarouselCard({ item, index, activeIndex, totalCards, onCardClick }) {
   const position = (index - activeIndex + totalCards) % totalCards
   const isActive = position === 0
   const isLeft = position === totalCards - 1
@@ -113,6 +114,7 @@ function CarouselCard({ item, index, activeIndex, totalCards }) {
         duration: 0.9,
         ease: [0.25, 0.75, 0.35, 1],
       }}
+      onClick={() => onCardClick && onCardClick(item)}
       aria-label={`${item.title}: ${item.description}`}
     >
       <div className="w-full h-full bg-white/85 backdrop-blur-md rounded-2xl shadow-[0_20px_40px_-12px_rgba(0,0,0,0.25)] overflow-hidden border border-white/30 cursor-pointer hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] transition-shadow duration-300">
@@ -137,6 +139,8 @@ export default function DesignShowcase({ items }) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const [isScrolling, setIsScrolling] = useState(false)
+  const [selectedProject, setSelectedProject] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const sectionRef = useRef(null)
   const autoPlayRef = useRef(null)
   const lastScrollTime = useRef(0)
@@ -212,6 +216,38 @@ export default function DesignShowcase({ items }) {
     setIsAutoPlaying(!isAutoPlaying)
   }
 
+  const handleCardClick = (project) => {
+    // Convert showcase item to project format expected by modal
+    const modalProject = {
+      title: project.title,
+      category: project.category,
+      description: project.description,
+      client: project.client || "Creative Studio",
+      year: project.year || "2024",
+      role: project.role || "Creative Director",
+      tools: project.tags || ["Adobe Creative Suite", "Figma", "Sketch"],
+      concept: project.concept,
+      philosophy: project.philosophy,
+      colors: project.colors,
+      headingFont: project.headingFont,
+      bodyFont: project.bodyFont,
+      features: project.features,
+      images: project.images || [project.image],
+      liveUrl: project.liveUrl,
+      caseStudyUrl: project.caseStudyUrl,
+      behanceUrl: project.behanceUrl
+    }
+    setSelectedProject(modalProject)
+    setIsModalOpen(true)
+    setIsAutoPlaying(false) // Pause carousel when modal opens
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedProject(null)
+    setIsAutoPlaying(true) // Resume carousel when modal closes
+  }
+
   return (
     <section className="py-24 px-6 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto">
@@ -257,6 +293,7 @@ export default function DesignShowcase({ items }) {
                 index={index}
                 activeIndex={activeIndex}
                 totalCards={items.length}
+                onCardClick={handleCardClick}
               />
             ))}
           </div>
@@ -349,6 +386,13 @@ export default function DesignShowcase({ items }) {
           Scroll horizontally or use navigation buttons 
         </motion.p>
       </div>
+
+      {/* Designer Project Modal */}
+      <DesignerProjectModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        project={selectedProject}
+      />
     </section>
   )
 }

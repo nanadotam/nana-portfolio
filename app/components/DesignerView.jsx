@@ -386,6 +386,25 @@ export default function DesignerView() {
       description: "Complete visual identity for a sustainable fashion startup featuring modern typography and cohesive color palette",
       image: "/placeholder.svg?height=400&width=600",
       tags: ["Logo Design", "Typography", "Color Theory"],
+      client: "Shake Shack Inc.",
+      year: "2024",
+      role: "Brand Designer",
+      concept: "Creating a fresh, approachable identity that reflects the brand's commitment to quality ingredients and community connection",
+      philosophy: "Great branding creates emotional connections that transcend the product itself",
+      colors: ["#66BB6A", "#FFA726", "#42A5F5", "#26A69A"],
+      headingFont: "Poppins",
+      bodyFont: "Open Sans",
+      features: [
+        "Comprehensive logo system",
+        "Typography hierarchy",
+        "Color palette development",
+        "Brand guidelines",
+        "Packaging applications",
+        "Digital asset creation"
+      ],
+      liveUrl: "https://shakeshack.com",
+      caseStudyUrl: "#",
+      behanceUrl: "#"
     },
     {
       title: "Mobile App UI/UX",
@@ -393,6 +412,25 @@ export default function DesignerView() {
       description: "Intuitive meditation app with calming user experience and seamless interaction design",
       image: "/placeholder.svg?height=400&width=600",
       tags: ["UI Design", "UX Research", "Prototyping"],
+      client: "Jaffa Wellness",
+      year: "2024",
+      role: "UX/UI Designer",
+      concept: "Designing a digital sanctuary that promotes mindfulness through thoughtful interactions and serene visual design",
+      philosophy: "Technology should enhance human well-being, not detract from it",
+      colors: ["#E8F5E8", "#B8E6B8", "#4A90A4", "#2C3E50"],
+      headingFont: "Inter",
+      bodyFont: "Source Sans Pro",
+      features: [
+        "User research & personas",
+        "Wireframing & prototyping",
+        "Visual design system",
+        "Micro-interactions",
+        "Accessibility compliance",
+        "Usability testing"
+      ],
+      liveUrl: "#",
+      caseStudyUrl: "#",
+      behanceUrl: "#"
     },
     {
       title: "Editorial Photography",
@@ -400,6 +438,25 @@ export default function DesignerView() {
       description: "Fashion editorial shoot for emerging designers showcasing contemporary styles",
       image: "/placeholder.svg?height=400&width=600",
       tags: ["Fashion", "Editorial", "Studio Lighting"],
+      client: "Vogue Italia",
+      year: "2023",
+      role: "Fashion Photographer",
+      concept: "Capturing the intersection of high fashion and street culture through dynamic compositions and lighting",
+      philosophy: "Fashion photography should tell stories that transcend clothing to reveal character and emotion",
+      colors: ["#1A1A1A", "#F5F5F5", "#C9A96E", "#8B4513"],
+      headingFont: "Playfair Display",
+      bodyFont: "Lato",
+      features: [
+        "Editorial storytelling",
+        "Studio lighting mastery",
+        "Model direction",
+        "Post-production expertise",
+        "Brand collaboration",
+        "Creative direction"
+      ],
+      liveUrl: "#",
+      caseStudyUrl: "#",
+      behanceUrl: "#"
     },
     {
       title: "Motion Graphics",
@@ -407,6 +464,25 @@ export default function DesignerView() {
       description: "Animated explainer video for tech startup with engaging visual storytelling",
       image: "/placeholder.svg?height=400&width=600",
       tags: ["Animation", "Motion Design", "Storytelling"],
+      client: "TechFlow Startup",
+      year: "2024",
+      role: "Motion Designer",
+      concept: "Transforming complex technical concepts into visually engaging narratives through kinetic typography and illustration",
+      philosophy: "Motion design bridges the gap between information and emotion",
+      colors: ["#6C5CE7", "#74B9FF", "#00B894", "#FDCB6E"],
+      headingFont: "Montserrat",
+      bodyFont: "Roboto",
+      features: [
+        "Storyboard development",
+        "Character animation",
+        "Kinetic typography",
+        "Sound design coordination",
+        "Brand integration",
+        "Multi-platform optimization"
+      ],
+      liveUrl: "#",
+      caseStudyUrl: "#",
+      behanceUrl: "#"
     },
     {
       title: "Package Design",
@@ -414,6 +490,25 @@ export default function DesignerView() {
       description: "Sustainable packaging solution for eco-friendly beauty brand",
       image: "/placeholder.svg?height=400&width=600",
       tags: ["Packaging", "Sustainability", "Brand"],
+      client: "EcoGlow Beauty",
+      year: "2024",
+      role: "Package Designer",
+      concept: "Merging environmental responsibility with premium aesthetics to create packaging that customers want to keep",
+      philosophy: "Sustainable design proves that environmental consciousness and beauty are not mutually exclusive",
+      colors: ["#8FBC8F", "#F5F5DC", "#DEB887", "#5F8A5F"],
+      headingFont: "Merriweather",
+      bodyFont: "Source Sans Pro",
+      features: [
+        "Sustainable materials research",
+        "Structural design innovation",
+        "Minimalist aesthetics",
+        "Unboxing experience",
+        "Production optimization",
+        "Cost-effective solutions"
+      ],
+      liveUrl: "#",
+      caseStudyUrl: "#",
+      behanceUrl: "#"
     },
   ]
 
