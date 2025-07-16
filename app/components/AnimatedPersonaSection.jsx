@@ -122,7 +122,7 @@ export function AnimatedPersonaSection({
 
         {/* Bible Verse Overlay at Bottom */}
         <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-50">
-          <div className="bg-black/60 rounded-[16px] px-4 py-2 shadow-lg max-w-md mx-auto mb-4">
+          <div className="bg-black/10 rounded-[16px] px-4 py-2 shadow-lg max-w-md mx-auto mb-4">
             <p className="italic text-base md:text-lg text-center font-serif text-gray-300">
               the LORD, has filled Nana Koaku Amoako<br />
               with the Spirit of God in wisdom and skill,<br />
