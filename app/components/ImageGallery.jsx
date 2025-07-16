@@ -1,12 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useState } from "react"
-import DesignerProjectModal from "./DesignerProjectModal"
 
-export default function ImageGallery() {
-  const [selectedProject, setSelectedProject] = useState(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+export default function ImageGallery({ onProjectClick }) {
   const images = [
     { 
       src: "/placeholder.svg?height=400&width=300", 
@@ -95,29 +91,16 @@ export default function ImageGallery() {
   ]
 
   const handleImageClick = (image) => {
-    const modalProject = {
-      title: image.title,
-      category: image.category,
-      description: image.description,
-      concept: image.concept,
-      philosophy: image.philosophy,
-      client: image.client,
-      year: image.year,
-      role: image.role,
-      tools: image.tools,
-      features: image.features,
-      images: [image.src],
-      colors: ["#F8F7F5", "#E3AF64", "#5166C8", "#0F1939"], // Default designer colors
-      headingFont: "Bricolage Grotesque",
-      bodyFont: "Inter"
+    if (onProjectClick) {
+      // Add default designer colors if not present
+      const imageWithDefaults = {
+        ...image,
+        colors: image.colors || ["#F8F7F5", "#E3AF64", "#5166C8", "#0F1939"],
+        headingFont: image.headingFont || "Bricolage Grotesque",
+        bodyFont: image.bodyFont || "Inter"
+      }
+      onProjectClick(imageWithDefaults)
     }
-    setSelectedProject(modalProject)
-    setIsModalOpen(true)
-  }
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-    setSelectedProject(null)
   }
 
   return (
@@ -158,13 +141,6 @@ export default function ImageGallery() {
           ))}
         </div>
       </div>
-
-      {/* Designer Project Modal */}
-      <DesignerProjectModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        project={selectedProject}
-      />
     </section>
   )
 }

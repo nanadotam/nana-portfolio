@@ -6,6 +6,7 @@ import DesignShowcase from "./DesignShowcase"
 import Footer from "./Footer"
 import PersistentPersonaToggle from "./PersistentPersonaToggle"
 import Navigation from "./Navigation"
+import DesignerProjectModal from "./DesignerProjectModal"
 import { useState, useEffect } from "react"
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation"
 
@@ -513,6 +514,38 @@ export default function DesignerView() {
   ]
 
   const [sparkles, setSparkles] = useState([])
+  const [selectedProject, setSelectedProject] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleProjectClick = (project) => {
+    // Convert project item to modal format
+    const modalProject = {
+      title: project.title,
+      category: project.category,
+      description: project.description,
+      client: project.client || "Creative Studio",
+      year: project.year || "2024",
+      role: project.role || "Creative Director",
+      tools: project.tags || project.tools || ["Adobe Creative Suite", "Figma", "Sketch"],
+      concept: project.concept,
+      philosophy: project.philosophy,
+      colors: project.colors,
+      headingFont: project.headingFont,
+      bodyFont: project.bodyFont,
+      features: project.features,
+      images: project.images || [project.image || project.src],
+      liveUrl: project.liveUrl,
+      caseStudyUrl: project.caseStudyUrl,
+      behanceUrl: project.behanceUrl
+    }
+    setSelectedProject(modalProject)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedProject(null)
+  }
 
   const handleHeroClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -631,12 +664,12 @@ export default function DesignerView() {
 
         {/* Portfolio Showcase */}
         <div id="featured-work">
-          <DesignShowcase items={portfolioItems} />
+          <DesignShowcase items={portfolioItems} onProjectClick={handleProjectClick} />
         </div>
 
         {/* Image Gallery */}
         <div id="gallery">
-          <ImageGallery />
+          <ImageGallery onProjectClick={handleProjectClick} />
         </div>
 
         {/* About Section */}
@@ -734,6 +767,13 @@ export default function DesignerView() {
         {/* Persistent Persona Toggle */}
         <PersistentPersonaToggle />
       </div>
+
+      {/* Designer Project Modal - At top level for proper z-index */}
+      <DesignerProjectModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        project={selectedProject}
+      />
     </div>
   )
 }

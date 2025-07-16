@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion"
 import { useState, useRef, useEffect } from "react"
-import DesignerProjectModal from "./DesignerProjectModal"
 
 // Navigation Arrow Components
 function LeftArrow() {
@@ -135,12 +134,10 @@ function CarouselCard({ item, index, activeIndex, totalCards, onCardClick }) {
   )
 }
 
-export default function DesignShowcase({ items }) {
+export default function DesignShowcase({ items, onProjectClick }) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const [isScrolling, setIsScrolling] = useState(false)
-  const [selectedProject, setSelectedProject] = useState(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const sectionRef = useRef(null)
   const autoPlayRef = useRef(null)
   const lastScrollTime = useRef(0)
@@ -217,35 +214,15 @@ export default function DesignShowcase({ items }) {
   }
 
   const handleCardClick = (project) => {
-    // Convert showcase item to project format expected by modal
-    const modalProject = {
-      title: project.title,
-      category: project.category,
-      description: project.description,
-      client: project.client || "Creative Studio",
-      year: project.year || "2024",
-      role: project.role || "Creative Director",
-      tools: project.tags || ["Adobe Creative Suite", "Figma", "Sketch"],
-      concept: project.concept,
-      philosophy: project.philosophy,
-      colors: project.colors,
-      headingFont: project.headingFont,
-      bodyFont: project.bodyFont,
-      features: project.features,
-      images: project.images || [project.image],
-      liveUrl: project.liveUrl,
-      caseStudyUrl: project.caseStudyUrl,
-      behanceUrl: project.behanceUrl
+    if (onProjectClick) {
+      onProjectClick(project)
+      setIsAutoPlaying(false) // Pause carousel when modal opens
+      
+      // Resume auto-play after a delay
+      setTimeout(() => {
+        setIsAutoPlaying(true)
+      }, 5000)
     }
-    setSelectedProject(modalProject)
-    setIsModalOpen(true)
-    setIsAutoPlaying(false) // Pause carousel when modal opens
-  }
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-    setSelectedProject(null)
-    setIsAutoPlaying(true) // Resume carousel when modal closes
   }
 
   return (
@@ -386,13 +363,6 @@ export default function DesignShowcase({ items }) {
           Scroll horizontally or use navigation buttons 
         </motion.p>
       </div>
-
-      {/* Designer Project Modal */}
-      <DesignerProjectModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        project={selectedProject}
-      />
     </section>
   )
 }
