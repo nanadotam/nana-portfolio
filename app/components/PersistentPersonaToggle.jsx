@@ -12,6 +12,7 @@ export default function PersistentPersonaToggle() {
   const [hoveredSide, setHoveredSide] = useState(null)
   const [isAtBottom, setIsAtBottom] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   // Designer color constants (dark blue theme)
   const DESIGNER_MAIN = "#0E0C90"
@@ -30,6 +31,18 @@ export default function PersistentPersonaToggle() {
   const DESIGNER_TEXT_SHADOW = (alpha) => `0 0 15px rgba(${DESIGNER_MAIN_RGB}, ${alpha})`
   const DESIGNER_TEXT_SHADOW_SMALL = (alpha) => `0 0 10px rgba(${DESIGNER_MAIN_RGB}, ${alpha})`
   const DESIGNER_ALT = "#0A087D"
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Detect current mode from pathname
   useEffect(() => {
@@ -51,15 +64,70 @@ export default function PersistentPersonaToggle() {
       const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100
       setIsAtBottom(isNearBottom)
       
-      // Expand the toggle when at bottom or when hovered
-      setIsExpanded(isNearBottom || hoveredSide !== null)
+      // Expand the toggle when at bottom or when hovered (but not on mobile for hover)
+      setIsExpanded(isNearBottom || (!isMobile && hoveredSide !== null))
     }
 
     window.addEventListener('scroll', handleScroll)
     handleScroll() // Check initial state
     
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [hoveredSide])
+  }, [hoveredSide, isMobile])
+
+  // Mobile-specific sizing and scaling configuration
+  const getMobileConfig = () => {
+    if (isMobile) {
+      return {
+        // Mobile: much smaller scale factors to fit viewport
+        scaleAtBottom: 1.6, // Instead of 2.8
+        scaleOnHover: 1.1,  // Instead of 1.4
+        scaleDefault: 1,
+        // Mobile: smaller base width with proper margins
+        minWidth: "280px",  // Instead of 340px
+        minHeight: "56px",  // Instead of 64px
+        // Mobile: adjusted positioning
+        bottomOffset: "16px", // Instead of 24px (6 * 4px = 24px)
+        yOffsetAtBottom: -80, // Instead of -125
+        // Mobile: smaller padding
+        paddingExpanded: "8px 16px", // Instead of 12px 24px
+        paddingDefault: "6px 12px",  // Instead of 8px 16px
+        // Mobile: smaller font sizes
+        fontSizeExpanded: "16px", // Instead of 20px
+        fontSizeDefault: "14px",  // Instead of 18px
+        // Mobile: smaller status indicators
+        statusSizeExpanded: "8px", // Instead of 10px
+        statusSizeDefault: "6px",  // Instead of 8px
+        // Mobile: smaller inner padding
+        innerPaddingExpanded: "20px", // Instead of 32px
+        innerPaddingDefault: "16px",  // Instead of 24px
+        innerPaddingVerticalExpanded: "12px", // Instead of 16px
+        innerPaddingVerticalDefault: "8px",   // Instead of 12px
+      }
+    } else {
+      return {
+        // Desktop: original values
+        scaleAtBottom: 2.8,
+        scaleOnHover: 1.4,
+        scaleDefault: 1,
+        minWidth: "340px",
+        minHeight: "64px",
+        bottomOffset: "24px",
+        yOffsetAtBottom: -125,
+        paddingExpanded: "12px 24px",
+        paddingDefault: "8px 16px",
+        fontSizeExpanded: "20px",
+        fontSizeDefault: "18px",
+        statusSizeExpanded: "10px",
+        statusSizeDefault: "8px",
+        innerPaddingExpanded: "32px",
+        innerPaddingDefault: "24px",
+        innerPaddingVerticalExpanded: "16px",
+        innerPaddingVerticalDefault: "12px",
+      }
+    }
+  }
+
+  const config = getMobileConfig()
 
   const handleSwitch = (targetMode) => {
     if (targetMode === currentMode || isTransitioning) return
@@ -83,9 +151,17 @@ export default function PersistentPersonaToggle() {
   // Don't show on home page
   if (pathname === "/") return null
 
-  // Stick the pill to the bottom center of the screen
+  // Stick the pill to the bottom center of the screen with responsive margins
   return (
-    <div className="fixed bottom-6 left-0 right-0 z-40 flex justify-center pointer-events-none">
+    <div 
+      className="fixed left-0 right-0 z-40 flex justify-center pointer-events-none"
+      style={{ 
+        bottom: config.bottomOffset,
+        // Add horizontal margins on mobile to prevent overflow
+        paddingLeft: isMobile ? "16px" : "0",
+        paddingRight: isMobile ? "16px" : "0",
+      }}
+    >
       <motion.div
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -93,10 +169,10 @@ export default function PersistentPersonaToggle() {
         className="relative pointer-events-auto"
       >
         <motion.div
-          className="relative backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full min-w-[340px] min-h-[64px] flex items-center"
+          className="relative backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full flex items-center"
           animate={{
-            scale: isAtBottom ? 2.8 : (hoveredSide ? 1.4 : 1),
-            y: isAtBottom ? -125 : 0,
+            scale: isAtBottom ? config.scaleAtBottom : (hoveredSide ? config.scaleOnHover : config.scaleDefault),
+            y: isAtBottom ? config.yOffsetAtBottom : 0,
             background: isExpanded 
               ? "rgba(0, 0, 0, 0.15)" 
               : "rgba(0, 0, 0, 0.05)",
@@ -112,11 +188,13 @@ export default function PersistentPersonaToggle() {
             stiffness: 400,
             duration: 0.3 
           }}
-          onMouseEnter={() => setIsExpanded(true)}
-          onMouseLeave={() => setIsExpanded(isAtBottom)}
+          onMouseEnter={() => !isMobile && setIsExpanded(true)}
+          onMouseLeave={() => !isMobile && setIsExpanded(isAtBottom)}
           style={{
             // Make the pill look more like a bill: wide, not too tall, very rounded
-            padding: isExpanded ? "12px 24px" : "8px 16px",
+            minWidth: config.minWidth,
+            minHeight: config.minHeight,
+            padding: isExpanded ? config.paddingExpanded : config.paddingDefault,
             boxShadow: isExpanded
               ? currentMode === "developer"
                 ? "0 0 30px rgba(34, 197, 94, 0.2)"
@@ -185,17 +263,17 @@ export default function PersistentPersonaToggle() {
             {/* Developer Side */}
             <motion.button
               onClick={() => handleSwitch("developer")}
-              onMouseEnter={() => setHoveredSide("developer")}
-              onMouseLeave={() => setHoveredSide(null)}
+              onMouseEnter={() => !isMobile && setHoveredSide("developer")}
+              onMouseLeave={() => !isMobile && setHoveredSide(null)}
               className="relative rounded-l-full transition-motion-blur-fast overflow-hidden"
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: isMobile ? 1 : 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={isTransitioning}
               animate={{
-                paddingLeft: isExpanded ? "32px" : "24px",
-                paddingRight: isExpanded ? "32px" : "24px",
-                paddingTop: isExpanded ? "16px" : "12px",
-                paddingBottom: isExpanded ? "16px" : "12px",
+                paddingLeft: isExpanded ? config.innerPaddingExpanded : config.innerPaddingDefault,
+                paddingRight: isExpanded ? config.innerPaddingExpanded : config.innerPaddingDefault,
+                paddingTop: isExpanded ? config.innerPaddingVerticalExpanded : config.innerPaddingVerticalDefault,
+                paddingBottom: isExpanded ? config.innerPaddingVerticalExpanded : config.innerPaddingVerticalDefault,
               }}
               transition={{ duration: 0.3 }}
               style={{
@@ -231,7 +309,7 @@ export default function PersistentPersonaToggle() {
                       : "text-gray-500"
                   }`}
                   animate={{
-                    fontSize: isExpanded ? "20px" : "18px",
+                    fontSize: isExpanded ? config.fontSizeExpanded : config.fontSizeDefault,
                     textShadow: currentMode === "developer" 
                       ? isExpanded 
                         ? "0 0 15px rgba(34, 197, 94, 0.2)" 
@@ -249,8 +327,8 @@ export default function PersistentPersonaToggle() {
                     currentMode === "developer" ? "bg-green-400" : "bg-gray-400/30"
                   }`}
                   animate={{
-                    width: isExpanded ? "10px" : "8px",
-                    height: isExpanded ? "10px" : "8px",
+                    width: isExpanded ? config.statusSizeExpanded : config.statusSizeDefault,
+                    height: isExpanded ? config.statusSizeExpanded : config.statusSizeDefault,
                     scale: currentMode === "developer" ? 1 : 0.7,
                     boxShadow: currentMode === "developer" 
                       ? isExpanded 
@@ -286,17 +364,17 @@ export default function PersistentPersonaToggle() {
             {/* Designer Side */}
             <motion.button
               onClick={() => handleSwitch("designer")}
-              onMouseEnter={() => setHoveredSide("designer")}
-              onMouseLeave={() => setHoveredSide(null)}
+              onMouseEnter={() => !isMobile && setHoveredSide("designer")}
+              onMouseLeave={() => !isMobile && setHoveredSide(null)}
               className="relative rounded-r-full transition-motion-blur-fast overflow-hidden"
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: isMobile ? 1 : 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={isTransitioning}
               animate={{
-                paddingLeft: isExpanded ? "32px" : "24px",
-                paddingRight: isExpanded ? "32px" : "24px",
-                paddingTop: isExpanded ? "16px" : "12px",
-                paddingBottom: isExpanded ? "16px" : "12px",
+                paddingLeft: isExpanded ? config.innerPaddingExpanded : config.innerPaddingDefault,
+                paddingRight: isExpanded ? config.innerPaddingExpanded : config.innerPaddingDefault,
+                paddingTop: isExpanded ? config.innerPaddingVerticalExpanded : config.innerPaddingVerticalDefault,
+                paddingBottom: isExpanded ? config.innerPaddingVerticalExpanded : config.innerPaddingVerticalDefault,
               }}
               transition={{ duration: 0.3 }}
               style={{
@@ -336,8 +414,8 @@ export default function PersistentPersonaToggle() {
                     backgroundColor: currentMode === "designer" ? DESIGNER_STATUS_BG : DESIGNER_STATUS_BG_INACTIVE,
                   }}
                   animate={{
-                    width: isExpanded ? "10px" : "8px",
-                    height: isExpanded ? "10px" : "8px",
+                    width: isExpanded ? config.statusSizeExpanded : config.statusSizeDefault,
+                    height: isExpanded ? config.statusSizeExpanded : config.statusSizeDefault,
                     scale: currentMode === "designer" ? 1 : 0.7,
                     boxShadow: currentMode === "designer" 
                       ? isExpanded 
@@ -358,7 +436,7 @@ export default function PersistentPersonaToggle() {
                       : DESIGNER_TEXT_INACTIVE
                   }}
                   animate={{
-                    fontSize: isExpanded ? "20px" : "18px",
+                    fontSize: isExpanded ? config.fontSizeExpanded : config.fontSizeDefault,
                     textShadow: currentMode === "designer" 
                       ? isExpanded 
                         ? DESIGNER_TEXT_SHADOW(0.4)
@@ -386,8 +464,8 @@ export default function PersistentPersonaToggle() {
                   className="border-2 border-white/30 border-t-white rounded-full"
                   animate={{ 
                     rotate: 360,
-                    width: isExpanded ? "20px" : "16px",
-                    height: isExpanded ? "20px" : "16px",
+                    width: isExpanded ? (isMobile ? "16px" : "20px") : (isMobile ? "12px" : "16px"),
+                    height: isExpanded ? (isMobile ? "16px" : "20px") : (isMobile ? "12px" : "16px"),
                   }}
                   transition={{ 
                     rotate: { duration: 1, repeat: Infinity, ease: "linear" },
@@ -409,7 +487,7 @@ export default function PersistentPersonaToggle() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               className="absolute left-1/2 transform -translate-x-1/2"
-              style={{ bottom: "calc(100% + 60px)" }}
+              style={{ bottom: isMobile ? "calc(100% + 40px)" : "calc(100% + 60px)" }}
             >
               <motion.div
                 className="text-center"
