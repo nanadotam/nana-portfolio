@@ -61,7 +61,7 @@ export default function Navigation() {
   const designerNavItems = [
     { label: "home", target: "#designer-home" },
     { label: "featured work", target: "#featured-work" },
-    { label: "gallery", target: "#gallery" },
+    { label: "projects", target: "#gallery" },
     { label: "about", target: "#designer-about" },
     { label: "contact", target: "#designer-contact" },
   ]
