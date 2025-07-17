@@ -7,8 +7,20 @@ export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [currentView, setCurrentView] = useState("developer")
+  const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Detect current view from pathname
   useEffect(() => {
@@ -72,24 +84,26 @@ export default function Navigation() {
   const getNavStyles = () => {
     if (currentView === "designer") {
       return {
-        container: `fixed top-6 left-0 right-0 z-50 flex justify-center items-center transition-all duration-500 ${isScrolled ? "top-4" : "top-6"}`,
+        container: `fixed ${isMobile ? 'top-4' : isScrolled ? "top-4" : "top-6"} left-0 right-0 z-50 flex justify-center items-center transition-all duration-500 ${isMobile ? 'px-4' : ''}`,
         menuContainer: `
-          flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
+          flex items-center ${isMobile ? 'flex-wrap justify-center gap-1 px-3 py-2' : 'gap-2 px-6 py-3'} rounded-full transition-all duration-300
           ${isScrolled 
             ? "backdrop-blur-md bg-gradient-to-r from-white/10 to-white/5 border border-white/20 shadow-2xl" 
             : "backdrop-blur-sm bg-gradient-to-r from-white/5 to-white/3 border border-white/10 shadow-xl"
           }
+          ${isMobile ? 'max-w-[calc(100vw-32px)] w-full' : ''}
         `,
         button: `
-          px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 relative overflow-hidden
+          ${isMobile ? 'px-2 py-1 text-xs' : 'px-4 py-2 text-sm'} font-medium rounded-full transition-all duration-300 relative overflow-hidden
           text-white/90 hover:text-white backdrop-blur-sm
           hover:bg-gradient-to-r hover:from-blue-400/20 hover:to-purple-400/20
           hover:border-white/30 border border-transparent
           hover:shadow-lg hover:shadow-blue-400/20
           ${isScrolled ? "text-white/95" : "text-white/80"}
+          ${isMobile ? 'min-w-0 flex-shrink whitespace-nowrap' : ''}
         `,
         menuButton: `
-          px-4 py-2 text-sm font-medium rounded-full transition-all duration-300
+          ${isMobile ? 'px-2 py-1 text-xs' : 'px-4 py-2 text-sm'} font-medium rounded-full transition-all duration-300
           text-white/90 hover:text-white backdrop-blur-sm
           ${isMenuOpen 
             ? "bg-gradient-to-r from-blue-400/30 to-purple-400/30 border-white/40 text-white shadow-lg" 
