@@ -72,6 +72,14 @@ export default function Contact() {
               <a href="https://www.linkedin.com/in/nanaamoako/" target="_blank" rel="noopener noreferrer">
                 LinkedIn
               </a>
+              {/* tiktok */}
+              <a href="https://www.tiktok.com/@nanaamoako" target="_blank" rel="noopener noreferrer">
+                TikTok
+              </a>
+              {/* instagram */}
+              <a href="https://www.instagram.com/nanaamoako" target="_blank" rel="noopener noreferrer">
+                Instagram
+              </a>
             </div>
           </div>
         </div>
