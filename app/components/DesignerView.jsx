@@ -382,6 +382,7 @@ function SparkleEffect({ x, y, show, onComplete }) {
 
 export default function DesignerView() {
   const [portfolioItems, setPortfolioItems] = useState([]);
+  const [nonFeaturedProjects, setNonFeaturedProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -390,20 +391,34 @@ export default function DesignerView() {
         setLoading(true);
         const supabase = createClient();
         
-        const { data: projects, error } = await supabase
+        // Fetch featured projects for DesignShowcase
+        const { data: featuredProjects, error: featuredError } = await supabase
           .from('projects')
           .select('*')
           .eq('project_type', 'designer')
+          .eq('is_featured', true)
           .order('sort_order', { ascending: true });
         
-        if (error) {
-          throw error;
+        if (featuredError) {
+          throw featuredError;
         }
         
-        // Transform Supabase data to match the expected format
-        const transformedProjects = projects?.map(project => {
+        // Fetch non-featured projects for ImageGallery
+        const { data: nonFeaturedProjectsData, error: nonFeaturedError } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('project_type', 'designer')
+          .eq('is_featured', false)
+          .order('created_at', { ascending: false });
+        
+        if (nonFeaturedError) {
+          throw nonFeaturedError;
+        }
+        
+        // Transform featured projects for DesignShowcase
+        const transformedFeaturedProjects = featuredProjects?.map(project => {
           // Debug logging for images
-          console.log(`Project: ${project.name}`, {
+          console.log(`Featured Project: ${project.name}`, {
             images: project.images,
             imagesType: typeof project.images,
             imagesLength: project.images?.length,
@@ -433,15 +448,50 @@ export default function DesignerView() {
           }
         }) || [];
         
-        setPortfolioItems(transformedProjects);
+        // Transform non-featured projects for ImageGallery
+        const transformedNonFeaturedProjects = nonFeaturedProjectsData?.map(project => {
+          console.log(`Non-Featured Project: ${project.name}`, {
+            images: project.images,
+            imagesType: typeof project.images,
+            imagesLength: project.images?.length,
+            firstImage: project.images?.[0]
+          })
+          
+          return {
+            src: project.images && project.images.length > 0 ? project.images[0] : "/placeholder.svg",
+            alt: project.name,
+            title: project.name,
+            category: project.category || 'DESIGN',
+            description: project.description,
+            concept: project.concept,
+            philosophy: project.philosophy,
+            client: project.client,
+            year: project.year,
+            role: project.role,
+            tools: project.tools || [],
+            features: project.features || [],
+            colors: project.colors && project.colors.length > 0 ? project.colors : null,
+            headingFont: project.heading_font && project.heading_font.trim() ? project.heading_font : null,
+            bodyFont: project.body_font && project.body_font.trim() ? project.body_font : null,
+            images: project.images || [],
+            liveUrl: project.live_url,
+            caseStudyUrl: project.case_study_url,
+            behanceUrl: project.behance_url,
+            id: project.id
+          }
+        }) || [];
+        
+        setPortfolioItems(transformedFeaturedProjects);
+        setNonFeaturedProjects(transformedNonFeaturedProjects);
+        
       } catch (error) {
         console.error('Error fetching designer projects:', error);
         // Fallback to sample data if there's an error
         setPortfolioItems([
           {
-            title: "Sample Design Project",
+            title: "Sample Featured Project",
             category: "PORTFOLIO",
-            description: "Add your design projects to Supabase to see them here",
+            description: "Add your featured design projects to Supabase to see them here",
             image: "/placeholder.svg?height=400&width=600",
             tags: ["Design", "Portfolio"],
             client: "Your Client",
@@ -452,6 +502,23 @@ export default function DesignerView() {
             colors: ["#66BB6A", "#FFA726", "#42A5F5", "#26A69A"],
             headingFont: "Inter",
             bodyFont: "Source Sans Pro",
+            features: []
+          }
+        ]);
+        
+        setNonFeaturedProjects([
+          {
+            src: "/placeholder.svg?height=400&width=300",
+            alt: "Sample Non-Featured Project",
+            title: "Sample Gallery Project",
+            category: "GALLERY",
+            description: "Add your non-featured design projects to see them in the Visual Stories section",
+            concept: "Projects marked as non-featured appear here",
+            philosophy: "All work tells a story",
+            client: "Sample Client",
+            year: "2024",
+            role: "Designer",
+            tools: ["Adobe Creative Suite"],
             features: []
           }
         ]);
@@ -639,55 +706,77 @@ export default function DesignerView() {
 
         {/* Image Gallery */}
         <div id="gallery">
-          <ImageGallery onProjectClick={handleProjectClick} />
+          <ImageGallery projects={nonFeaturedProjects} onProjectClick={handleProjectClick} />
         </div>
 
         {/* About Section */}
-        <motion.section
-          id="designer-about"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="py-24 px-6"
-        >
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-16 items-center">
-              <div>
-                <h2 className="text-4xl font-light mb-8 font-serif" style={{ color: "#F8F7F5" }}>About My Creative Process</h2>
-                <p className="text-lg leading-relaxed mb-6" style={{ color: "#F8F7F5" }}>
-                  I believe in the power of visual storytelling to create emotional connections. My approach combines
-                  strategic thinking with artistic intuition, ensuring every design decision serves both aesthetic and
-                  functional purposes.
-                </p>
-                <p className="text-lg leading-relaxed" style={{ color: "#F8F7F5" }}>
-                  From concept to execution, I focus on creating cohesive brand experiences that stand out in today's
-                  saturated visual landscape while remaining timeless and authentic.
-                </p>
-              </div>
-              <div className="relative">
-                <div 
-                  className="aspect-square rounded-3xl p-8 backdrop-blur-sm border"
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(81, 106, 200, 0.2), rgba(227, 175, 100, 0.2))",
-                    borderColor: "rgba(248, 247, 245, 0.2)",
-                    boxShadow: "inset 0 0 0.5px rgba(255,255,255,0.05)"
-                  }}
-                >
-                  <div 
-                    className="w-full h-full rounded-2xl backdrop-blur-sm flex items-center justify-center"
-                    style={{ background: "rgba(248, 247, 245, 0.5)" }}
+        {(() => {
+          const { useState } = require("react");
+          const { motion, AnimatePresence } = require("framer-motion");
+          const [hovered, setHovered] = useState(false);
+
+          const aboutImages = [
+            {
+              src: "/images/CREATIVE-PROCESS.jpg",
+              alt: "Creative Process",
+            },
+            {
+              src: "/images/CREATIVE-PROCESS-2.jpeg",
+              alt: "Creative Process Alternate",
+            },
+          ];
+
+          return (
+            <motion.section
+              id="designer-about"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="py-24 px-6"
+            >
+              <div className="max-w-6xl mx-auto">
+                <div className="grid md:grid-cols-2 gap-16 items-center">
+                  <div>
+                    <h2 className="text-4xl font-light mb-8 font-serif" style={{ color: "#F8F7F5" }}>About My Creative Process</h2>
+                    <p className="text-lg leading-relaxed mb-6" style={{ color: "#F8F7F5" }}>
+                      I believe in the power of visual storytelling to create emotional connections. My approach combines
+                      strategic thinking with artistic intuition, ensuring every design decision serves both aesthetic and
+                      functional purposes.
+                    </p>
+                    <p className="text-lg leading-relaxed" style={{ color: "#F8F7F5" }}>
+                      From concept to execution, I focus on creating cohesive brand experiences that stand out in today's
+                      saturated visual landscape while remaining timeless and authentic.
+                    </p>
+                  </div>
+                  <div
+                    className="relative flex items-center justify-center"
+                    onMouseEnter={() => setHovered(true)}
+                    onMouseLeave={() => setHovered(false)}
+                    style={{ cursor: "pointer" }}
                   >
-                    <div className="text-center">
-                      <div className="text-6xl mb-4">🎨</div>
-                      <p className="font-medium" style={{ color: "#0F1939" }}>Creative Excellence</p>
-                    </div>
+                    <AnimatePresence initial={false} mode="wait">
+                      <motion.img
+                        key={hovered ? aboutImages[1].src : aboutImages[0].src}
+                        src={hovered ? aboutImages[1].src : aboutImages[0].src}
+                        alt={hovered ? aboutImages[1].alt : aboutImages[0].alt}
+                        className="rounded-3xl w-full object-cover aspect-square shadow-lg border border-white/10"
+                        style={{
+                          background: "linear-gradient(135deg, rgba(81, 106, 200, 0.2), rgba(227, 175, 100, 0.2))"
+                        }}
+                        loading="lazy"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.18 }}
+                      />
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </motion.section>
+            </motion.section>
+          );
+        })()}
 
         {/* Contact Section */}
         <motion.section
