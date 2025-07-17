@@ -23,8 +23,7 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import AdminLayout from "../components/AdminLayout"
-import AddProjectForm from "../components/AddProjectForm"
-import EditProjectModal from "../components/EditProjectModal"
+import UniversalProjectModal from "../components/UniversalProjectModal"
 import { createClient } from "@/utils/supabase/client"
 import { toast } from "sonner"
 import "../admin.css"
@@ -36,8 +35,7 @@ export default function DeveloperProjectsPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
-  const [addModalOpen, setAddModalOpen] = useState(false)
-  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
   const [selectedProject, setSelectedProject] = useState(null)
 
   const supabase = createClient()
@@ -67,36 +65,23 @@ export default function DeveloperProjectsPage() {
     fetchDeveloperProjects()
   }, [])
 
-  // Handle project creation
-  const handleProjectCreated = () => {
+  // Handle project success (create/update)
+  const handleProjectSuccess = () => {
     fetchDeveloperProjects()
-    setAddModalOpen(false)
-    toast.success('Developer project created successfully!')
+    setModalOpen(false)
+    setSelectedProject(null)
+  }
+
+  // Handle add new project
+  const handleAddProject = () => {
+    setSelectedProject(null)
+    setModalOpen(true)
   }
 
   // Handle project edit
   const handleEditProject = (project) => {
     setSelectedProject(project)
-    setEditModalOpen(true)
-  }
-
-  // Handle project update
-  const handleUpdateProject = async (updatedProject) => {
-    try {
-      const { error } = await supabase
-        .from('projects')
-        .update(updatedProject)
-        .eq('id', selectedProject.id)
-
-      if (error) throw error
-
-      toast.success('Project updated successfully')
-      fetchDeveloperProjects()
-      setEditModalOpen(false)
-    } catch (error) {
-      console.error('Error updating project:', error)
-      toast.error('Failed to update project')
-    }
+    setModalOpen(true)
   }
 
   // Handle project deletion
@@ -131,7 +116,7 @@ export default function DeveloperProjectsPage() {
   // Project status icon
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'live':
+      case 'completed':
         return <CheckCircle className="h-4 w-4 text-green-500" />
       case 'draft':
         return <Clock className="h-4 w-4 text-yellow-500" />
@@ -144,15 +129,18 @@ export default function DeveloperProjectsPage() {
 
   // Project Card Component
   const ProjectCard = ({ project }) => (
-    <Card className="admin-card hover:border-green-500/50 transition-all duration-200">
+    <Card 
+      className="admin-card hover:border-green-500/50 transition-all duration-200 cursor-pointer group"
+      onClick={() => handleEditProject(project)}
+    >
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded bg-green-500/20">
+            <div className="p-2 rounded bg-green-500/20 group-hover:bg-green-500/30 transition-colors">
               <Code className="h-5 w-5 text-green-400" />
             </div>
             <div>
-              <CardTitle className="text-white text-lg">{project.name}</CardTitle>
+              <CardTitle className="text-white text-lg group-hover:text-green-300 transition-colors">{project.name}</CardTitle>
               {project.tagline && (
                 <p className="text-gray-400 text-sm mt-1">{project.tagline}</p>
               )}
@@ -161,8 +149,8 @@ export default function DeveloperProjectsPage() {
           <div className="flex items-center gap-2">
             {getStatusIcon(project.status)}
             <Badge 
-              variant={project.status === 'live' ? 'default' : 'secondary'}
-              className={project.status === 'live' ? 'bg-green-500' : 'bg-gray-600'}
+              variant={project.status === 'completed' ? 'default' : 'secondary'}
+              className={project.status === 'completed' ? 'bg-green-500' : 'bg-gray-600'}
             >
               {project.status}
             </Badge>
@@ -188,7 +176,7 @@ export default function DeveloperProjectsPage() {
             <span>{project.year}</span> • <span>{project.role}</span>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
             {project.live_url && (
               <Button
                 variant="ghost"
@@ -213,7 +201,10 @@ export default function DeveloperProjectsPage() {
               variant="ghost"
               size="sm"
               className="text-gray-400 hover:text-blue-400"
-              onClick={() => handleEditProject(project)}
+              onClick={(e) => {
+                e.stopPropagation()
+                handleEditProject(project)
+              }}
             >
               <Edit3 className="h-4 w-4" />
             </Button>
@@ -223,6 +214,7 @@ export default function DeveloperProjectsPage() {
                   variant="ghost"
                   size="sm"
                   className="text-gray-400 hover:text-red-400"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -279,7 +271,7 @@ export default function DeveloperProjectsPage() {
               Refresh
             </Button>
             <Button 
-              onClick={() => setAddModalOpen(true)}
+              onClick={handleAddProject}
               className="bg-green-500 hover:bg-green-600"
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -307,7 +299,7 @@ export default function DeveloperProjectsPage() {
             </SelectTrigger>
             <SelectContent className="bg-gray-800 border-gray-700">
               <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="live">Live</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
               <SelectItem value="draft">Draft</SelectItem>
               <SelectItem value="in-progress">In Progress</SelectItem>
             </SelectContent>
@@ -334,7 +326,7 @@ export default function DeveloperProjectsPage() {
             </p>
             {!searchTerm && statusFilter === "all" && (
               <Button 
-                onClick={() => setAddModalOpen(true)}
+                onClick={handleAddProject}
                 className="bg-green-500 hover:bg-green-600"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -350,30 +342,16 @@ export default function DeveloperProjectsPage() {
           </div>
         )}
 
-        {/* Add Project Modal */}
-        {addModalOpen && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
-              <div className="p-6 border-b border-gray-700">
-                <h2 className="text-xl font-semibold text-white">Add Developer Project</h2>
-              </div>
-              <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
-                <AddProjectForm
-                  projectType="developer"
-                  onSuccess={handleProjectCreated}
-                  onCancel={() => setAddModalOpen(false)}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Edit Project Modal */}
-        <EditProjectModal
-          isOpen={editModalOpen}
-          onClose={() => setEditModalOpen(false)}
+        {/* Universal Project Modal */}
+        <UniversalProjectModal
+          isOpen={modalOpen}
+          onClose={() => {
+            setModalOpen(false)
+            setSelectedProject(null)
+          }}
           project={selectedProject}
-          onUpdate={handleUpdateProject}
+          projectType="developer"
+          onSuccess={handleProjectSuccess}
         />
       </div>
     </AdminLayout>
