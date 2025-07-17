@@ -359,87 +359,97 @@ export default function DesignerProjectModal({ isOpen, onClose, project }) {
                                 </div>
                             </motion.div>
 
-                            {/* Color Palette & Typography */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5, duration: 0.6 }}
-                                className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10"
-                            >
-                                {/* Color Palette */}
-                                <div 
-                                    className="p-8 rounded-2xl backdrop-blur-sm"
-                                    style={{
-                                        background: darkMode 
-                                            ? "linear-gradient(135deg, rgba(55, 65, 81, 0.7), rgba(31, 41, 55, 0.9))"
-                                            : "linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(248, 247, 245, 0.9))",
-                                        border: darkMode 
-                                            ? "1px solid rgba(99, 102, 241, 0.2)"
-                                            : "1px solid rgba(81, 106, 200, 0.15)",
-                                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-                                    }}
-                                >
-                                    <h3 className={`text-xl font-light mb-6 font-serif ${
-                                        darkMode ? 'text-white' : 'text-gray-900'
-                                    }`}>
-                                        Color Palette
-                                    </h3>
-                                    <div className="grid grid-cols-4 gap-3">
-                                        {(project.colors || (darkMode ? ["#6366F1", "#A855F7", "#1F2937", "#374151"] : ["#5166C8", "#E3AF64", "#0F1939", "#F8F7F5"])).map((color, i) => (
-                                            <div key={i} className="text-center">
-                                                <div 
-                                                    className="w-full h-16 rounded-lg mb-2 border border-white/30 shadow-sm"
-                                                    style={{backgroundColor: color}}
-                                                />
-                                                <span className={`text-xs font-mono ${
-                                                    darkMode ? 'text-gray-400' : 'text-slate-600'
-                                                }`}>{color}</span>
-                                            </div>
-                                        ))}
+                                        {/* Color Palette & Typography - Only show if they have content */}
+            {(project.colors || project.headingFont || project.bodyFont) && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.6 }}
+                    className={`grid grid-cols-1 ${(project.colors && (project.headingFont || project.bodyFont)) ? 'md:grid-cols-2' : ''} gap-8 mb-10`}
+                >
+                    {/* Color Palette - Only show if colors exist */}
+                    {project.colors && project.colors.length > 0 && (
+                        <div 
+                            className="p-8 rounded-2xl backdrop-blur-sm"
+                            style={{
+                                background: darkMode 
+                                    ? "linear-gradient(135deg, rgba(55, 65, 81, 0.7), rgba(31, 41, 55, 0.9))"
+                                    : "linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(248, 247, 245, 0.9))",
+                                border: darkMode 
+                                    ? "1px solid rgba(99, 102, 241, 0.2)"
+                                    : "1px solid rgba(81, 106, 200, 0.15)",
+                                boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.1)"
+                            }}
+                        >
+                            <h3 className={`text-xl font-light mb-6 font-serif ${
+                                darkMode ? 'text-white' : 'text-gray-900'
+                            }`}>
+                                Color Palette
+                            </h3>
+                            <div className="grid grid-cols-4 gap-3">
+                                {project.colors.map((color, i) => (
+                                    <div key={i} className="text-center">
+                                        <div 
+                                            className="w-full h-16 rounded-lg mb-2 border border-white/30 shadow-sm"
+                                            style={{backgroundColor: color}}
+                                        />
+                                        <span className={`text-xs font-mono ${
+                                            darkMode ? 'text-gray-400' : 'text-slate-600'
+                                        }`}>{color}</span>
                                     </div>
-                                </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-                                {/* Typography */}
-                                <div 
-                                    className="p-8 rounded-2xl backdrop-blur-sm"
-                                    style={{
-                                        background: darkMode 
-                                            ? "linear-gradient(135deg, rgba(55, 65, 81, 0.7), rgba(31, 41, 55, 0.9))"
-                                            : "linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(248, 247, 245, 0.9))",
-                                        border: darkMode 
-                                            ? "1px solid rgba(99, 102, 241, 0.2)"
-                                            : "1px solid rgba(81, 106, 200, 0.15)",
-                                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-                                    }}
-                                >
-                                    <h3 className={`text-xl font-light mb-6 font-serif ${
-                                        darkMode ? 'text-white' : 'text-gray-900'
-                                    }`}>
-                                        Typography
-                                    </h3>
-                                    <div className="space-y-4">
-                                        <div>
-                                            <div className={`text-2xl font-serif mb-1 ${
-                                                darkMode ? 'text-white' : 'text-gray-900'
-                                            }`}>Heading Font</div>
-                                            <div className={`text-sm ${
-                                                darkMode ? 'text-gray-400' : 'text-slate-600'
-                                            }`}>{project.headingFont || "Bricolage Grotesque"}</div>
-                                        </div>
-                                        <div>
-                                            <div className={`text-lg font-light mb-1 ${
-                                                darkMode ? 'text-white' : 'text-gray-900'
-                                            }`}>Body Font</div>
-                                            <div className={`text-sm ${
-                                                darkMode ? 'text-gray-400' : 'text-slate-600'
-                                            }`}>{project.bodyFont || "Inter"}</div>
-                                        </div>
+                    {/* Typography - Only show if fonts exist */}
+                    {(project.headingFont || project.bodyFont) && (
+                        <div 
+                            className="p-8 rounded-2xl backdrop-blur-sm"
+                            style={{
+                                background: darkMode 
+                                    ? "linear-gradient(135deg, rgba(55, 65, 81, 0.7), rgba(31, 41, 55, 0.9))"
+                                    : "linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(248, 247, 245, 0.9))",
+                                border: darkMode 
+                                    ? "1px solid rgba(99, 102, 241, 0.2)"
+                                    : "1px solid rgba(81, 106, 200, 0.15)",
+                                boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.1)"
+                            }}
+                        >
+                            <h3 className={`text-xl font-light mb-6 font-serif ${
+                                darkMode ? 'text-white' : 'text-gray-900'
+                            }`}>
+                                Typography
+                            </h3>
+                            <div className="space-y-4">
+                                {project.headingFont && (
+                                    <div>
+                                        <div className={`text-2xl font-serif mb-1 ${
+                                            darkMode ? 'text-white' : 'text-gray-900'
+                                        }`}>Heading Font</div>
+                                        <div className={`text-sm ${
+                                            darkMode ? 'text-gray-400' : 'text-slate-600'
+                                        }`}>{project.headingFont}</div>
                                     </div>
-                                </div>
-                            </motion.div>
+                                )}
+                                {project.bodyFont && (
+                                    <div>
+                                        <div className={`text-lg font-light mb-1 ${
+                                            darkMode ? 'text-white' : 'text-gray-900'
+                                        }`}>Body Font</div>
+                                        <div className={`text-sm ${
+                                            darkMode ? 'text-gray-400' : 'text-slate-600'
+                                        }`}>{project.bodyFont}</div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </motion.div>
+            )}
 
                             {/* Design Features */}
-                            {project.features && (
+                            {/* {project.features && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -491,7 +501,7 @@ export default function DesignerProjectModal({ isOpen, onClose, project }) {
                                         ))}
                                     </div>
                                 </motion.div>
-                            )}
+                            )} */}
 
                             {/* Image Gallery */}
                             {project.images && project.images.length > 0 && (

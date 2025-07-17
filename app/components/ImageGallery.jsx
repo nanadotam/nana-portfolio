@@ -213,16 +213,16 @@ export default function ImageGallery({ onProjectClick }) {
     setCurrentPage(pageIndex)
   }
 
-  const handleImageClick = (image) => {
+      const handleImageClick = (image) => {
     if (onProjectClick) {
-      // Add default designer colors if not present
-      const imageWithDefaults = {
+      // Only add defaults if they don't exist, otherwise keep as null for optional display
+      const imageWithOptionals = {
         ...image,
-        colors: image.colors || ["#F8F7F5", "#E3AF64", "#5166C8", "#0F1939"],
-        headingFont: image.headingFont || "Bricolage Grotesque",
-        bodyFont: image.bodyFont || "Inter"
+        colors: image.colors && image.colors.length > 0 ? image.colors : null,
+        headingFont: image.headingFont && image.headingFont.trim() ? image.headingFont : null,
+        bodyFont: image.bodyFont && image.bodyFont.trim() ? image.bodyFont : null
       }
-      onProjectClick(imageWithDefaults)
+      onProjectClick(imageWithOptionals)
     }
   }
 

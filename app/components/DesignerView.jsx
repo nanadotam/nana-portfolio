@@ -401,26 +401,37 @@ export default function DesignerView() {
         }
         
         // Transform Supabase data to match the expected format
-        const transformedProjects = projects?.map(project => ({
-          title: project.name,
-          category: project.category || 'DESIGN',
-          description: project.description,
-          image: project.images?.[0] || "/placeholder.svg?height=400&width=600",
-          tags: project.tools || [],
-          client: project.client,
-          year: project.year,
-          role: project.role,
-          concept: project.concept,
-          philosophy: project.philosophy,
-          colors: project.colors || [],
-          headingFont: project.heading_font || "Inter",
-          bodyFont: project.body_font || "Source Sans Pro",
-          features: project.features || [],
-          liveUrl: project.live_url,
-          caseStudyUrl: project.case_study_url,
-          behanceUrl: project.behance_url,
-          id: project.id
-        })) || [];
+        const transformedProjects = projects?.map(project => {
+          // Debug logging for images
+          console.log(`Project: ${project.name}`, {
+            images: project.images,
+            imagesType: typeof project.images,
+            imagesLength: project.images?.length,
+            firstImage: project.images?.[0]
+          })
+          
+          return {
+            title: project.name,
+            category: project.category || 'DESIGN',
+            description: project.description,
+            image: project.images && project.images.length > 0 ? project.images[0] : "/placeholder.svg?height=400&width=600",
+            images: project.images || [],
+            tags: project.tools || [],
+            client: project.client,
+            year: project.year,
+            role: project.role,
+            concept: project.concept,
+            philosophy: project.philosophy,
+            colors: project.colors && project.colors.length > 0 ? project.colors : null,
+            headingFont: project.heading_font && project.heading_font.trim() ? project.heading_font : null,
+            bodyFont: project.body_font && project.body_font.trim() ? project.body_font : null,
+            features: project.features || [],
+            liveUrl: project.live_url,
+            caseStudyUrl: project.case_study_url,
+            behanceUrl: project.behance_url,
+            id: project.id
+          }
+        }) || [];
         
         setPortfolioItems(transformedProjects);
       } catch (error) {

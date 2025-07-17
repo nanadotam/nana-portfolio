@@ -251,7 +251,25 @@ export default function UniversalProjectModal({
   const addColor = () => addToArray("colors", newColor, setNewColor)
   const addTool = () => addToArray("tools", newTool, setNewTool)
   const addFeature = () => addToArray("features", newFeature, setNewFeature)
-  const addImage = () => addToArray("images", newImageUrl, setNewImageUrl)
+  const addImage = () => {
+    const url = newImageUrl.trim()
+    if (url) {
+      // Basic URL validation
+      try {
+        new URL(url)
+        console.log('Adding valid image URL:', url)
+        addToArray("images", url, setNewImageUrl)
+      } catch (error) {
+        // If it's not a valid URL, check if it's a relative path
+        if (url.startsWith('/') || url.startsWith('./')) {
+          console.log('Adding relative image path:', url)
+          addToArray("images", url, setNewImageUrl)
+        } else {
+          toast.error('Please enter a valid image URL or path')
+        }
+      }
+    }
+  }
 
   // Get project theme colors
   const themeColors = formData.project_type === "developer" 
@@ -575,7 +593,9 @@ export default function UniversalProjectModal({
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor="heading_font" className="text-white">Heading Font</Label>
+                            <Label htmlFor="heading_font" className="text-white">
+                              Heading Font <span className="text-gray-400 text-sm font-normal">(Optional)</span>
+                            </Label>
                             <Input
                               id="heading_font"
                               value={formData.heading_font}
@@ -586,7 +606,9 @@ export default function UniversalProjectModal({
                           </div>
 
                           <div>
-                            <Label htmlFor="body_font" className="text-white">Body Font</Label>
+                            <Label htmlFor="body_font" className="text-white">
+                              Body Font <span className="text-gray-400 text-sm font-normal">(Optional)</span>
+                            </Label>
                             <Input
                               id="body_font"
                               value={formData.body_font}
@@ -601,7 +623,7 @@ export default function UniversalProjectModal({
                         <div>
                           <Label className="text-white flex items-center gap-2 mb-2">
                             <Palette className="h-4 w-4" />
-                            Color Palette
+                            Color Palette <span className="text-gray-400 text-sm font-normal">(Optional)</span>
                           </Label>
                           <div className="flex gap-2 mb-3">
                             <Input

@@ -122,6 +122,10 @@ function CarouselCard({ item, index, activeIndex, totalCards, onCardClick }) {
             src={item.image || "/placeholder.svg"}
             alt={item.title}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              console.log(`Image failed to load: ${item.image}`)
+              e.target.src = "/placeholder.svg"
+            }}
           />
         </div>
         <div className="p-4 h-1/5 flex items-center justify-center bg-white/90 backdrop-blur-sm">
