@@ -142,9 +142,16 @@ export default function DesignShowcase({ items, onProjectClick }) {
   const autoPlayRef = useRef(null)
   const lastScrollTime = useRef(0)
   
+  // Reset activeIndex when items change or if it goes out of bounds
+  useEffect(() => {
+    if (items.length > 0 && activeIndex >= items.length) {
+      setActiveIndex(0)
+    }
+  }, [items.length, activeIndex])
+  
   // Auto-scroll functionality
   useEffect(() => {
-    if (isAutoPlaying) {
+    if (isAutoPlaying && items.length > 0) {
       autoPlayRef.current = setInterval(() => {
         setActiveIndex((prev) => (prev + 1) % items.length)
       }, 4000) // Change slide every 4 seconds
@@ -198,12 +205,14 @@ export default function DesignShowcase({ items, onProjectClick }) {
   }, [items.length, isScrolling])
 
   const nextSlide = () => {
+    if (items.length === 0) return
     setActiveIndex((prev) => (prev + 1) % items.length)
     setIsAutoPlaying(false)
     setTimeout(() => setIsAutoPlaying(true), 3000)
   }
 
   const prevSlide = () => {
+    if (items.length === 0) return
     setActiveIndex((prev) => (prev - 1 + items.length) % items.length)
     setIsAutoPlaying(false)
     setTimeout(() => setIsAutoPlaying(true), 3000)
@@ -223,6 +232,36 @@ export default function DesignShowcase({ items, onProjectClick }) {
         setIsAutoPlaying(true)
       }, 5000)
     }
+  }
+
+  // Show loading state if no items
+  if (items.length === 0) {
+    return (
+      <section className="py-24 px-6 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="text-5xl md:text-6xl font-light text-center mb-4 text-[#E8DDD0] font-serif"
+            >
+              Just a few of my favorite projects
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-lg text-[#fefefa] font-light"
+            >
+              Loading projects...
+            </motion.p>
+          </div>
+        </div>
+      </section>
+    )
   }
 
   return (
@@ -327,30 +366,32 @@ export default function DesignShowcase({ items, onProjectClick }) {
         </div>
 
         {/* Active Project Details */}
-        <motion.div 
-          key={activeIndex}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mt-12 max-w-2xl mx-auto"
-        >
-          <h3 className="text-3xl font-light text-white mb-3">
-            {items[activeIndex].title}
-          </h3>
-          <p className="text-white/80 leading-relaxed mb-6">
-            {items[activeIndex].description}
-          </p>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {items[activeIndex].tags.map((tag, tagIndex) => (
-              <span
-                key={tagIndex}
-                className="px-4 py-2 bg-white/80 backdrop-blur-sm text-black text-sm rounded-full border border-white/20 shadow-sm"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </motion.div>
+        {items.length > 0 && items[activeIndex] && (
+          <motion.div 
+            key={activeIndex}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center mt-12 max-w-2xl mx-auto"
+          >
+            <h3 className="text-3xl font-light text-white mb-3">
+              {items[activeIndex].title}
+            </h3>
+            <p className="text-white/80 leading-relaxed mb-6">
+              {items[activeIndex].description}
+            </p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {items[activeIndex].tags?.map((tag, tagIndex) => (
+                <span
+                  key={tagIndex}
+                  className="px-4 py-2 bg-white/80 backdrop-blur-sm text-black text-sm rounded-full border border-white/20 shadow-sm"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Instruction Text */}
         <motion.p 

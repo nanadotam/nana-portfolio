@@ -35,7 +35,7 @@ export default function DeveloperView() {
       {/* Main Content */}
       <main>
         {/* Projects Section */}
-        <Projects onProjectSelect={setSelectedProject} />
+        <Projects onProjectSelect={setSelectedProject} projectType="developer" />
 
         {/* About Section */}
         <About />

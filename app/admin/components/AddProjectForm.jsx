@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { 
   Save, 
@@ -14,7 +14,10 @@ import {
   FileText,
   Calendar,
   User,
-  Tag
+  Tag,
+  ArrowLeft,
+  Globe,
+  AlertCircle
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -25,36 +28,55 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Switch } from "@/components/ui/switch"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { createClient } from "@/utils/supabase/client"
+import { toast } from "sonner"
 
-export default function AddProjectForm() {
+export default function AddProjectForm({ projectType = "developer", onSuccess, onCancel }) {
   const [formData, setFormData] = useState({
     name: "",
     tagline: "",
-    year: new Date().getFullYear(),
+    description: "",
+    category: "", // for designer projects
+    project_type: projectType,
+    year: new Date().getFullYear().toString(),
     role: "",
-    type: "developer",
+    client: "",
     team: "",
+    is_featured: false,
+    status: "draft",
+    sort_order: 0,
+    
+    // Developer/Designer specific
     problem: "",
     solution: "",
     concept: "",
     philosophy: "",
+    heading_font: "",
+    body_font: "",
+    colors: [],
     tools: [],
     features: [],
-    colors: [],
-    headingFont: "",
-    bodyFont: "",
     images: [],
-    liveUrl: "",
-    githubUrl: "",
-    behanceUrl: "",
-    caseStudyUrl: "",
-    status: "draft",
-    metadata: ""
+
+    // Links
+    live_url: "",
+    github_url: "",
+    case_study_url: "",
+    behance_url: "",
+
+    // Flexible data
+    json_data: {}
   })
 
   const [newTool, setNewTool] = useState("")
   const [newFeature, setNewFeature] = useState("")
   const [newColor, setNewColor] = useState("#516AC8")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errors, setErrors] = useState({})
+
+  const supabase = createClient()
 
   const colors = {
     primary: "#516AC8",
@@ -62,11 +84,35 @@ export default function AddProjectForm() {
     background: "#F8F7F5"
   }
 
+  const validateForm = () => {
+    const newErrors = {}
+
+    // Required fields
+    if (!formData.name.trim()) newErrors.name = "Project name is required"
+    if (!formData.tagline.trim()) newErrors.tagline = "Tagline is required"
+    if (!formData.description.trim()) newErrors.description = "Description is required"
+    if (!formData.role.trim()) newErrors.role = "Role is required"
+    if (!formData.year) newErrors.year = "Year is required"
+
+    // Project type specific validations
+    if (projectType === "designer" && !formData.category.trim()) {
+      newErrors.category = "Category is required for design projects"
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }))
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: null }))
+    }
   }
 
   const addTool = () => {
@@ -136,44 +182,141 @@ export default function AddProjectForm() {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e, statusOverride = null) => {
     e.preventDefault()
-    console.log("Project data:", formData)
-    // Here you would send the data to your API
-    alert("Project saved successfully!")
+    
+    if (!validateForm()) {
+      toast.error("Please fix the errors below")
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      // Prepare data for database
+      const submitData = {
+        ...formData,
+        status: statusOverride || formData.status,
+        year: parseInt(formData.year),
+        sort_order: parseInt(formData.sort_order),
+        project_type: projectType, // Ensure project type is set correctly
+        updated_at: new Date().toISOString()
+      }
+
+      const { data, error } = await supabase
+        .from('projects')
+        .insert([submitData])
+        .select()
+
+      if (error) throw error
+
+      toast.success(`Project ${statusOverride === 'live' ? 'published' : 'saved'} successfully!`)
+      
+      if (onSuccess) {
+        onSuccess()
+      }
+      
+      // Reset form
+      setFormData({
+        name: "",
+        tagline: "",
+        description: "",
+        category: "",
+        project_type: projectType,
+        year: new Date().getFullYear().toString(),
+        role: "",
+        client: "",
+        team: "",
+        is_featured: false,
+        status: "draft",
+        sort_order: 0,
+        problem: "",
+        solution: "",
+        concept: "",
+        philosophy: "",
+        heading_font: "",
+        body_font: "",
+        colors: [],
+        tools: [],
+        features: [],
+        images: [],
+        live_url: "",
+        github_url: "",
+        case_study_url: "",
+        behance_url: "",
+        json_data: {}
+      })
+
+    } catch (error) {
+      console.error('Error saving project:', error)
+      toast.error('Failed to save project: ' + error.message)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
-  const handleSaveDraft = () => {
-    const draftData = { ...formData, status: "draft" }
-    console.log("Draft saved:", draftData)
-    alert("Draft saved!")
+  const handleSaveDraft = (e) => {
+    handleSubmit(e, 'draft')
+  }
+
+  const handlePublish = (e) => {
+    handleSubmit(e, 'live')
   }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Add New Project</h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Create a new {formData.type} project for your portfolio
-          </p>
+        <div className="flex items-center gap-4">
+          {onCancel && (
+            <Button variant="ghost" onClick={onCancel} className="p-2">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          )}
+          <div>
+            <h1 className="text-2xl font-semibold flex items-center gap-2">
+              {projectType === 'developer' ? (
+                <Code className="h-6 w-6 text-purple-600" />
+              ) : (
+                <Paintbrush className="h-6 w-6 text-pink-600" />
+              )}
+              Add New {projectType === 'developer' ? 'Developer' : 'Designer'} Project
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Create a new {projectType} project for your portfolio
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleSaveDraft}>
+          <Button 
+            variant="outline" 
+            onClick={handleSaveDraft}
+            disabled={isSubmitting}
+          >
             Save Draft
           </Button>
           <Button 
-            onClick={handleSubmit}
+            onClick={handlePublish}
+            disabled={isSubmitting}
             className="bg-gradient-to-r from-[#516AC8] to-[#E3AF64] hover:from-[#4553A8] hover:to-[#D19944] text-white"
           >
-            <Save className="mr-2 h-4 w-4" />
-            Publish Project
+            <Globe className="mr-2 h-4 w-4" />
+            {isSubmitting ? 'Publishing...' : 'Publish Project'}
           </Button>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Error Summary */}
+      {Object.keys(errors).length > 0 && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Please fix the following errors: {Object.values(errors).join(', ')}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <form onSubmit={handlePublish} className="space-y-6">
         <Tabs defaultValue="basic" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
@@ -200,33 +343,27 @@ export default function AddProjectForm() {
                       value={formData.name}
                       onChange={(e) => handleInputChange("name", e.target.value)}
                       placeholder="Enter project name"
+                      className={errors.name ? "border-red-500" : ""}
                       required
                     />
+                    {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="type">Project Type *</Label>
+                    <Label htmlFor="year">Year *</Label>
                     <Select 
-                      value={formData.type} 
-                      onValueChange={(value) => handleInputChange("type", value)}
+                      value={formData.year} 
+                      onValueChange={(value) => handleInputChange("year", value)}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className={errors.year ? "border-red-500" : ""}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="developer">
-                          <div className="flex items-center gap-2">
-                            <Code className="h-4 w-4" />
-                            Developer
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="designer">
-                          <div className="flex items-center gap-2">
-                            <Paintbrush className="h-4 w-4" />
-                            Designer
-                          </div>
-                        </SelectItem>
+                        {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                          <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
+                    {errors.year && <p className="text-sm text-red-500">{errors.year}</p>}
                   </div>
                 </div>
 
@@ -237,60 +374,92 @@ export default function AddProjectForm() {
                     value={formData.tagline}
                     onChange={(e) => handleInputChange("tagline", e.target.value)}
                     placeholder="Brief description of the project"
+                    className={errors.tagline ? "border-red-500" : ""}
                     required
                   />
+                  {errors.tagline && <p className="text-sm text-red-500">{errors.tagline}</p>}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="year">Year *</Label>
-                    <Input
-                      id="year"
-                      type="number"
-                      value={formData.year}
-                      onChange={(e) => handleInputChange("year", parseInt(e.target.value))}
-                      min="2000"
-                      max={new Date().getFullYear() + 1}
-                      required
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description *</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => handleInputChange("description", e.target.value)}
+                    placeholder="Detailed description of the project"
+                    rows={4}
+                    className={errors.description ? "border-red-500" : ""}
+                    required
+                  />
+                  {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="role">Your Role *</Label>
                     <Input
                       id="role"
                       value={formData.role}
                       onChange={(e) => handleInputChange("role", e.target.value)}
-                      placeholder="e.g., Lead Developer, Designer"
+                      placeholder="e.g., Lead Developer, Brand Designer"
+                      className={errors.role ? "border-red-500" : ""}
                       required
+                    />
+                    {errors.role && <p className="text-sm text-red-500">{errors.role}</p>}
+                  </div>
+                  {projectType === "designer" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="category">Category *</Label>
+                      <Select 
+                        value={formData.category} 
+                        onValueChange={(value) => handleInputChange("category", value)}
+                      >
+                        <SelectTrigger className={errors.category ? "border-red-500" : ""}>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="branding">Branding</SelectItem>
+                          <SelectItem value="ui-ux">UI/UX Design</SelectItem>
+                          <SelectItem value="web-design">Web Design</SelectItem>
+                          <SelectItem value="print">Print Design</SelectItem>
+                          <SelectItem value="illustration">Illustration</SelectItem>
+                          <SelectItem value="packaging">Packaging</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {errors.category && <p className="text-sm text-red-500">{errors.category}</p>}
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="client">Client/Company</Label>
+                    <Input
+                      id="client"
+                      value={formData.client}
+                      onChange={(e) => handleInputChange("client", e.target.value)}
+                      placeholder="e.g., Company name, Personal project"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="status">Status</Label>
-                    <Select 
-                      value={formData.status} 
-                      onValueChange={(value) => handleInputChange("status", value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="draft">Draft</SelectItem>
-                        <SelectItem value="live">Live</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="archived">Archived</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="team">Team</Label>
+                    <Input
+                      id="team"
+                      value={formData.team}
+                      onChange={(e) => handleInputChange("team", e.target.value)}
+                      placeholder="e.g., Solo project, 4 developers"
+                    />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="team">Team or Client</Label>
-                  <Input
-                    id="team"
-                    value={formData.team}
-                    onChange={(e) => handleInputChange("team", e.target.value)}
-                    placeholder="e.g., Solo project, Company name, Team size"
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_featured"
+                    checked={formData.is_featured}
+                    onCheckedChange={(checked) => handleInputChange("is_featured", checked)}
                   />
+                  <Label htmlFor="is_featured">Featured project</Label>
                 </div>
               </CardContent>
             </Card>
@@ -303,7 +472,7 @@ export default function AddProjectForm() {
                 <CardTitle>Project Content</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {formData.type === "developer" ? (
+                {projectType === "developer" ? (
                   <>
                     <div className="space-y-2">
                       <Label htmlFor="problem">Problem Statement</Label>
@@ -463,20 +632,20 @@ export default function AddProjectForm() {
                 {/* Typography */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="headingFont">Heading Font</Label>
+                    <Label htmlFor="heading_font">Heading Font</Label>
                     <Input
-                      id="headingFont"
-                      value={formData.headingFont}
-                      onChange={(e) => handleInputChange("headingFont", e.target.value)}
+                      id="heading_font"
+                      value={formData.heading_font}
+                      onChange={(e) => handleInputChange("heading_font", e.target.value)}
                       placeholder="e.g., Poppins, Inter"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="bodyFont">Body Font</Label>
+                    <Label htmlFor="body_font">Body Font</Label>
                     <Input
-                      id="bodyFont"
-                      value={formData.bodyFont}
-                      onChange={(e) => handleInputChange("bodyFont", e.target.value)}
+                      id="body_font"
+                      value={formData.body_font}
+                      onChange={(e) => handleInputChange("body_font", e.target.value)}
                       placeholder="e.g., Open Sans, Roboto"
                     />
                   </div>
@@ -498,46 +667,46 @@ export default function AddProjectForm() {
                 {/* Links */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="liveUrl">Live URL</Label>
+                    <Label htmlFor="live_url">Live URL</Label>
                     <Input
-                      id="liveUrl"
+                      id="live_url"
                       type="url"
-                      value={formData.liveUrl}
-                      onChange={(e) => handleInputChange("liveUrl", e.target.value)}
+                      value={formData.live_url}
+                      onChange={(e) => handleInputChange("live_url", e.target.value)}
                       placeholder="https://example.com"
                     />
                   </div>
-                  {formData.type === "developer" && (
+                  {projectType === "developer" && (
                     <div className="space-y-2">
-                      <Label htmlFor="githubUrl">GitHub URL</Label>
+                      <Label htmlFor="github_url">GitHub URL</Label>
                       <Input
-                        id="githubUrl"
+                        id="github_url"
                         type="url"
-                        value={formData.githubUrl}
-                        onChange={(e) => handleInputChange("githubUrl", e.target.value)}
+                        value={formData.github_url}
+                        onChange={(e) => handleInputChange("github_url", e.target.value)}
                         placeholder="https://github.com/username/repo"
                       />
                     </div>
                   )}
-                  {formData.type === "designer" && (
+                  {projectType === "designer" && (
                     <div className="space-y-2">
-                      <Label htmlFor="behanceUrl">Behance URL</Label>
+                      <Label htmlFor="behance_url">Behance URL</Label>
                       <Input
-                        id="behanceUrl"
+                        id="behance_url"
                         type="url"
-                        value={formData.behanceUrl}
-                        onChange={(e) => handleInputChange("behanceUrl", e.target.value)}
+                        value={formData.behance_url}
+                        onChange={(e) => handleInputChange("behance_url", e.target.value)}
                         placeholder="https://behance.net/project"
                       />
                     </div>
                   )}
                   <div className="space-y-2">
-                    <Label htmlFor="caseStudyUrl">Case Study URL</Label>
+                    <Label htmlFor="case_study_url">Case Study URL</Label>
                     <Input
-                      id="caseStudyUrl"
+                      id="case_study_url"
                       type="url"
-                      value={formData.caseStudyUrl}
-                      onChange={(e) => handleInputChange("caseStudyUrl", e.target.value)}
+                      value={formData.case_study_url}
+                      onChange={(e) => handleInputChange("case_study_url", e.target.value)}
                       placeholder="https://case-study.com"
                     />
                   </div>
@@ -593,22 +762,6 @@ export default function AddProjectForm() {
                       ))}
                     </div>
                   )}
-                </div>
-
-                {/* Metadata */}
-                <div className="space-y-2">
-                  <Label htmlFor="metadata">Additional Metadata (JSON)</Label>
-                  <Textarea
-                    id="metadata"
-                    value={formData.metadata}
-                    onChange={(e) => handleInputChange("metadata", e.target.value)}
-                    placeholder='{"custom_field": "value", "tags": ["tag1", "tag2"]}'
-                    rows={3}
-                    className="font-mono text-sm"
-                  />
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Optional: Add custom fields as JSON for advanced functionality
-                  </p>
                 </div>
               </CardContent>
             </Card>

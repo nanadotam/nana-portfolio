@@ -7,7 +7,7 @@ import { FolderOpen, Plus, Settings, Menu, X, Sun, Moon, Home } from "lucide-rea
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
-export default function AdminLayout({ children, activeView, setActiveView, theme, setTheme }) {
+export default function AdminLayout({ children, activeView, setActiveView, theme, setTheme, navigation: customNavigation }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -40,7 +40,8 @@ export default function AdminLayout({ children, activeView, setActiveView, theme
     document.body.className = theme
   }, [theme])
 
-  const navigation = [
+  // Default navigation if none provided
+  const defaultNavigation = [
     {
       id: "projects",
       label: "Projects",
@@ -60,6 +61,8 @@ export default function AdminLayout({ children, activeView, setActiveView, theme
       description: "Dashboard settings"
     }
   ]
+
+  const navigation = customNavigation || defaultNavigation
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light")

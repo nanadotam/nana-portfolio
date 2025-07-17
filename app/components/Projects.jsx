@@ -1,184 +1,46 @@
 "use client"
 
-export default function Projects({ onProjectSelect }) {
-  const featuredRepos = [
-    {
-      name: "NanoClip",
-      tagline: "Universal clipboard for seamless device-to-device transfers",
-      description: "A file transfer and universal clipboard sharing platform that allows you to send files from device to device similar to AirDrop.",
-      year: "2024",
-      role: "Full-Stack Developer",
-      tools: ["React", "Node.js", "Socket.io", "Express", "MongoDB"],
-      team: "Solo project",
-      problem: "Traditional file sharing methods are cumbersome and require multiple steps, making quick transfers between devices inefficient.",
-      solution: "Built a real-time platform that enables instant file and text sharing across devices using WebRTC and WebSocket connections.",
-      features: [
-        "Real-time file transfers without size limits",
-        "Universal clipboard synchronization",
-        "Cross-platform compatibility"
-      ],
-      images: [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&h=300&fit=crop"
-      ],
-      url: "https://nanoclip.vercel.app",
-      github: "https://github.com/nanadotam/nanoclip",
-    },
-    {
-      name: "DSA File Explorers: Virtual File Management",
-      tagline: "Advanced file system with CLI and GUI interfaces",
-      description: "A file management system with CLI and GUI built using Java.",
-      year: "2023",
-      role: "Lead Developer",
-      tools: ["Java", "Swing", "Data Structures", "Algorithms"],
-      team: "4-person team",
-      problem: "Students needed hands-on experience with file system operations and data structure implementations.",
-      solution: "Developed a comprehensive file management system that demonstrates key DSA concepts through practical application.",
-      features: [
-        "Command-line and graphical interfaces",
-        "Advanced search and sorting algorithms",
-        "Custom data structure implementations"
-      ],
-      images: [
-        "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=500&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=500&h=300&fit=crop"
-      ],
-      url: "https://github.com/nanadotam/DSA-File-Explorers",
-      github: "https://github.com/nanadotam/DSA-File-Explorers",
-    },
-    {
-      name: "Ashesi Parking Management System",
-      tagline: "Smart parking solution for campus management",
-      description: "Advanced property management system for real estate.",
-      year: "2023",
-      role: "Full-Stack Developer",
-      tools: ["PHP", "MySQL", "Bootstrap", "JavaScript"],
-      team: "3-person team",
-      problem: "Campus parking was chaotic with no system to track availability or manage reservations.",
-      solution: "Created a comprehensive parking management system with real-time tracking and automated allocation.",
-      features: [
-        "Real-time parking space monitoring",
-        "Automated reservation system",
-        "Admin dashboard with analytics"
-      ],
-      url: "https://github.com/nanadotam/apms",
-      github: "https://github.com/nanadotam/apms",
-    },
-    {
-      name: "Kumi: Making Learning Fun",
-      tagline: "Gamified educational platform for collaborative learning",
-      description: "An educational platform for collaborative learning.",
-      year: "2023",
-      role: "UI/UX Designer & Frontend Developer",
-      tools: ["React", "Node.js", "MongoDB", "Socket.io"],
-      team: "5-person team",
-      problem: "Traditional learning platforms lack engagement and collaborative features for students.",
-      solution: "Built an interactive platform that gamifies learning through collaborative challenges and real-time interaction.",
-      features: [
-        "Gamified learning modules",
-        "Real-time collaboration tools",
-        "Progress tracking and rewards system"
-      ],
-      images: [
-        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=500&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&h=300&fit=crop"
-      ],
-      url: "https://github.com/nanadotam/kumi_fcln",
-      github: "https://github.com/nanadotam/kumi_fcln",
-    },
-    {
-      name: "Recifree: Free Recipes",
-      tagline: "Community-driven recipe sharing platform",
-      description: "A recipe sharing platform with admin dashboard features.",
-      year: "2022",
-      role: "Full-Stack Developer",
-      tools: ["React", "Node.js", "Express", "MongoDB"],
-      team: "Solo project",
-      problem: "Finding quality, free recipes online is difficult due to paywalls and poor organization.",
-      solution: "Created a community platform where users can share, rate, and discover recipes with powerful search features.",
-      features: [
-        "Community recipe sharing",
-        "Advanced search and filtering",
-        "User ratings and reviews system"
-      ],
-      url: "https://github.com/nanadotam/Recifree",
-      github: "https://github.com/nanadotam/Recifree",
-    },
-    {
-      name: "Volume Gesture Control App",
-      tagline: "Control your computer volume with hand gestures",
-      description: "Control volume with hand gestures using computer vision.",
-      year: "2022",
-      role: "Computer Vision Developer",
-      tools: ["Python", "OpenCV", "MediaPipe", "NumPy"],
-      team: "Solo project",
-      problem: "Physical volume controls are inconvenient when working from a distance or during presentations.",
-      solution: "Developed a hands-free volume control system using computer vision and gesture recognition.",
-      features: [
-        "Real-time hand gesture recognition",
-        "Smooth volume adjustment",
-        "Customizable gesture settings"
-      ],
-      url: "https://github.com/nanadotam/volume-gesture-control",
-      github: "https://github.com/nanadotam/volume-gesture-control",
-    },
-    {
-      name: "Cocoa Price Prediction App",
-      tagline: "AI-powered cocoa market price forecasting",
-      description: "Machine learning model to predict cocoa market prices.",
-      year: "2022",
-      role: "Data Scientist & ML Engineer",
-      tools: ["Python", "Scikit-learn", "Pandas", "Matplotlib"],
-      team: "Solo project",
-      problem: "Farmers and traders need accurate price predictions to make informed decisions in the cocoa market.",
-      solution: "Built a machine learning model that analyzes historical data to predict future cocoa price trends.",
-      features: [
-        "Time series forecasting model",
-        "Interactive data visualizations",
-        "Historical price trend analysis"
-      ],
-      url: "https://github.com/nanadotam/Cocoa-Price-Prediction",
-      github: "https://github.com/nanadotam/Cocoa-Price-Prediction",
-    },
-    {
-      name: "text clock by nanaamoako",
-      tagline: "Creative text-based clock with dynamic animations",
-      description: "A creative text-based clock implemented with JavaScript.",
-      year: "2021",
-      role: "Frontend Developer",
-      tools: ["JavaScript", "CSS3", "HTML5"],
-      team: "Solo project",
-      problem: "Traditional digital clocks lack personality and creative expression.",
-      solution: "Designed an artistic clock that displays time through animated text with smooth transitions.",
-      features: [
-        "Dynamic text animations",
-        "Customizable color schemes",
-        "Responsive design"
-      ],
-      url: "https://github.com/nanadotam/text-clock-by-nanaamoako",
-      github: "https://github.com/nanadotam/text-clock-by-nanaamoako",
-    },
-    {
-      name: "Personal Pomodoro Timer",
-      tagline: "Productivity-focused timer with customizable work sessions",
-      description: "A custom Pomodoro timer for productivity enthusiasts.",
-      year: "2021",
-      role: "Frontend Developer",
-      tools: ["JavaScript", "CSS3", "HTML5", "Local Storage"],
-      team: "Solo project",
-      problem: "Existing Pomodoro apps lack customization and distract users with unnecessary features.",
-      solution: "Created a minimalist, highly customizable timer focused solely on productivity enhancement.",
-      features: [
-        "Customizable work/break intervals",
-        "Session history tracking",
-        "Minimalist, distraction-free interface"
-      ],
-      url: "https://github.com/nanadotam/personal-pomodoro-timer",
-      github: "https://github.com/nanadotam/personal-pomodoro-timer",
-    },
-  ]
+import { useState, useEffect } from 'react';
+import { createClient } from '../../utils/supabase/client';
+
+export default function Projects({ onProjectSelect, projectType = null }) {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        setLoading(true);
+        const supabase = createClient();
+        
+        let query = supabase
+          .from('projects')
+          .select('*')
+          .order('sort_order', { ascending: true });
+        
+        // Filter by project type if specified
+        if (projectType) {
+          query = query.eq('project_type', projectType);
+        }
+        
+        const { data, error } = await query;
+        
+        if (error) {
+          throw error;
+        }
+        
+        setProjects(data || []);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProjects();
+  }, [projectType]);
 
   const gradientImages = [
     "https://images.unsplash.com/photo-1614854262409-bc319cba5802?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -189,23 +51,76 @@ export default function Projects({ onProjectSelect }) {
     "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.unsplash.com/photo-1579546929662-711aa81148cf?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  ]
+  ];
+
+  if (loading) {
+    return (
+      <section id="projects" className="project-section">
+        <h2 className="h2">Projects</h2>
+        <div className="project-list" style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
+          <div style={{ 
+            color: '#666', 
+            fontSize: '16px',
+            fontFamily: 'JetBrains Mono, monospace'
+          }}>
+            Loading projects...
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="projects" className="project-section">
+        <h2 className="h2">Projects</h2>
+        <div className="project-list" style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
+          <div style={{ 
+            color: '#ef4444', 
+            fontSize: '16px',
+            fontFamily: 'JetBrains Mono, monospace'
+          }}>
+            Error loading projects: {error}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (projects.length === 0) {
+    return (
+      <section id="projects" className="project-section">
+        <h2 className="h2">Projects</h2>
+        <div className="project-list" style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
+          <div style={{ 
+            color: '#666', 
+            fontSize: '16px',
+            fontFamily: 'JetBrains Mono, monospace'
+          }}>
+            No projects found.
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="projects" className="project-section">
       <h2 className="h2">Projects</h2>
       <div className="project-list" id="repo-container">
-        {featuredRepos.map((repo, index) => (
+        {projects.map((project, index) => (
           <div 
-            key={index} 
+            key={project.id} 
             className="project-card"
-            onClick={() => onProjectSelect(repo)}
+            onClick={() => onProjectSelect(project)}
             style={{ position: 'relative', overflow: 'hidden' }}
           >
             <div
               className="project-image"
               style={{
-                backgroundImage: `url('${gradientImages[index % gradientImages.length]}')`,
+                backgroundImage: project.images && project.images.length > 0 
+                  ? `url('${project.images[0]}')` 
+                  : `url('${gradientImages[index % gradientImages.length]}')`,
               }}
             />
             
@@ -255,14 +170,14 @@ export default function Projects({ onProjectSelect }) {
                     borderRadius: '4px',
                     border: '1px solid rgba(74, 222, 128, 0.3)'
                   }}>
-                    {repo.year}
+                    {project.year}
                   </span>
                   <span style={{
                     fontSize: '12px',
                     color: '#d1d5db',
                     fontWeight: '300'
                   }}>
-                    {repo.role}
+                    {project.role}
                   </span>
                 </div>
 
@@ -275,7 +190,7 @@ export default function Projects({ onProjectSelect }) {
                   transform: 'translateY(20px)',
                   transition: 'all 0.7s ease 0.2s'
                 }} className="overlay-title">
-                  {repo.name}
+                  {project.name}
                 </h3>
 
                 {/* Tagline */}
@@ -287,7 +202,7 @@ export default function Projects({ onProjectSelect }) {
                   transform: 'translateY(20px)',
                   transition: 'all 0.7s ease 0.3s'
                 }} className="overlay-tagline">
-                  {repo.tagline}
+                  {project.tagline}
                 </p>
 
                 {/* Tech Stack */}
@@ -310,7 +225,7 @@ export default function Projects({ onProjectSelect }) {
                     flexWrap: 'wrap',
                     gap: '4px'
                   }}>
-                    {repo.tools?.slice(0, 4).map((tool, i) => (
+                    {project.tools?.slice(0, 4).map((tool, i) => (
                       <span 
                         key={i} 
                         style={{
@@ -326,7 +241,7 @@ export default function Projects({ onProjectSelect }) {
                         {tool}
                       </span>
                     ))}
-                    {repo.tools?.length > 4 && (
+                    {project.tools?.length > 4 && (
                       <span style={{
                         fontSize: '12px',
                         padding: '4px 8px',
@@ -336,7 +251,7 @@ export default function Projects({ onProjectSelect }) {
                         border: '1px solid rgba(107, 114, 128, 0.3)',
                         fontFamily: 'JetBrains Mono, monospace'
                       }}>
-                        +{repo.tools.length - 4}
+                        +{project.tools.length - 4}
                       </span>
                     )}
                   </div>
@@ -371,9 +286,9 @@ export default function Projects({ onProjectSelect }) {
                   </div>
                   
                   {/* GitHub Button */}
-                  {repo.github && (
+                  {project.github_url && (
                     <a
-                      href={repo.github}
+                      href={project.github_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
@@ -412,8 +327,8 @@ export default function Projects({ onProjectSelect }) {
             </div>
 
             <div className="project-details">
-              <h3>{repo.name}</h3>
-              <p>{repo.description}</p>
+              <h3>{project.name}</h3>
+              <p>{project.description}</p>
             </div>
           </div>
         ))}
@@ -435,5 +350,5 @@ export default function Projects({ onProjectSelect }) {
         }
       `}</style>
     </section>
-  )
+  );
 }
