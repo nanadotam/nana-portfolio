@@ -1,44 +1,49 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { 
   Plus, 
   Database, 
   Settings, 
   Code, 
   Paintbrush, 
-  Upload, 
-  FileUp,
   BarChart3,
-  Folder,
   Eye,
   RefreshCw,
-  CheckCircle
+  CheckCircle,
+  FileText,
+  Globe,
+  Users,
+  Calendar,
+  Bell,
+  Moon,
+  Sun,
+  Filter
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 import AdminLayout from "./components/AdminLayout"
-import ProjectsTable from "./components/ProjectsTable"
-import AddProjectForm from "./components/AddProjectForm"
-import SettingsPanel from "./components/SettingsPanel"
+import EditProjectModal from "./components/EditProjectModal"
 import { createClient } from "@/utils/supabase/client"
 import { toast } from "sonner"
+import "./admin.css"
 
-export default function AdminPage() {
+export default function AdminDashboard() {
   const [activeView, setActiveView] = useState("dashboard")
-  const [theme, setTheme] = useState("light")
+  const [theme, setTheme] = useState("dark")
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedProject, setSelectedProject] = useState(null)
+  const [editModalOpen, setEditModalOpen] = useState(false)
   const [stats, setStats] = useState({
     total: 0,
     developer: 0,
     designer: 0,
     published: 0,
-    drafts: 0
+    drafts: 0,
+    featured: 0
   })
 
   const supabase = createClient()
@@ -62,8 +67,9 @@ export default function AdminPage() {
       const designer = data?.filter(p => p.project_type === 'designer').length || 0
       const published = data?.filter(p => p.status === 'live').length || 0
       const drafts = data?.filter(p => p.status === 'draft').length || 0
+      const featured = data?.filter(p => p.featured === true).length || 0
 
-      setStats({ total, developer, designer, published, drafts })
+      setStats({ total, developer, designer, published, drafts, featured })
     } catch (error) {
       console.error('Error fetching projects:', error)
       toast.error('Failed to fetch projects')
@@ -72,359 +78,145 @@ export default function AdminPage() {
     }
   }
 
-  // Publish/unpublish project
-  const togglePublishStatus = async (projectId, currentStatus) => {
-    try {
-      const newStatus = currentStatus === 'live' ? 'completed' : 'live'
-      const { error } = await supabase
-        .from('projects')
-        .update({ status: newStatus, updated_at: new Date().toISOString() })
-        .eq('id', projectId)
-
-      if (error) throw error
-
-      toast.success(`Project ${newStatus === 'live' ? 'published' : 'unpublished'} successfully`)
-      fetchProjects() // Refresh data
-    } catch (error) {
-      console.error('Error updating project status:', error)
-      toast.error('Failed to update project status')
-    }
-  }
-
-  // Delete project
-  const deleteProject = async (projectId) => {
-    try {
-      const { error } = await supabase
-        .from('projects')
-        .delete()
-        .eq('id', projectId)
-
-      if (error) throw error
-
-      toast.success('Project deleted successfully')
-      fetchProjects() // Refresh data
-    } catch (error) {
-      console.error('Error deleting project:', error)
-      toast.error('Failed to delete project')
-    }
-  }
-
   useEffect(() => {
     fetchProjects()
   }, [])
 
-  const StatCard = ({ title, value, icon: Icon, description, color = "blue" }) => (
-    <Card className="relative overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-          {title}
-        </CardTitle>
-        <Icon className={`h-4 w-4 text-${color}-600`} />
-      </CardHeader>
-      <CardContent>
-        <div className={`text-2xl font-bold text-${color}-600`}>{value}</div>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          {description}
-        </p>
-      </CardContent>
-    </Card>
-  )
+  // Handle project edit
+  const handleEditProject = (project) => {
+    setSelectedProject(project)
+    setEditModalOpen(true)
+  }
 
-  const QuickActions = ({ projectType }) => (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          {projectType === 'developer' ? (
-            <Code className="h-5 w-5 text-purple-600" />
-          ) : (
-            <Paintbrush className="h-5 w-5 text-pink-600" />
-          )}
-          {projectType === 'developer' ? 'Developer' : 'Designer'} Projects
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-4 border rounded-lg">
-            <div className={`text-2xl font-bold ${projectType === 'developer' ? 'text-purple-600' : 'text-pink-600'}`}>
-              {projectType === 'developer' ? stats.developer : stats.designer}
-            </div>
-            <div className="text-sm text-gray-500">Total Projects</div>
-          </div>
-          <div className="text-center p-4 border rounded-lg">
-            <div className="text-2xl font-bold text-green-600">
-              {projects.filter(p => p.project_type === projectType && p.status === 'live').length}
-            </div>
-            <div className="text-sm text-gray-500">Published</div>
-          </div>
-        </div>
-        
-        <Separator />
-        
-        <div className="space-y-2">
-          <Button 
-            className="w-full justify-start gap-2"
-            onClick={() => setActiveView(`add-${projectType}`)}
-          >
-            <Plus className="h-4 w-4" />
-            Add New {projectType === 'developer' ? 'Dev' : 'Design'} Project
-          </Button>
-          <Button 
-            variant="outline" 
-            className="w-full justify-start gap-2"
-            onClick={() => setActiveView(`${projectType}-projects`)}
-          >
-            <Folder className="h-4 w-4" />
-            Manage {projectType === 'developer' ? 'Dev' : 'Design'} Projects
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  )
+  // Handle project update
+  const handleUpdateProject = async (updatedProject) => {
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .update(updatedProject)
+        .eq('id', selectedProject.id)
 
-  const renderActiveView = () => {
-    switch (activeView) {
-      case "dashboard":
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold">Portfolio Dashboard</h1>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Manage your developer and designer projects
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={fetchProjects} disabled={loading}>
-                  <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                  Refresh
-                </Button>
-                <Button 
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                  onClick={() => setActiveView("bulk-upload")}
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Bulk Upload
-                </Button>
-              </div>
-            </div>
+      if (error) throw error
 
-            {/* Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <StatCard
-                title="Total Projects"
-                value={stats.total}
-                icon={Database}
-                description="All projects in portfolio"
-                color="blue"
-              />
-              <StatCard
-                title="Published"
-                value={stats.published}
-                icon={CheckCircle}
-                description="Live projects"
-                color="green"
-              />
-              <StatCard
-                title="Drafts"
-                value={stats.drafts}
-                icon={FileUp}
-                description="Unpublished projects"
-                color="yellow"
-              />
-              <StatCard
-                title="Developer"
-                value={stats.developer}
-                icon={Code}
-                description="Development projects"
-                color="purple"
-              />
-              <StatCard
-                title="Designer"
-                value={stats.designer}
-                icon={Paintbrush}
-                description="Design projects"
-                color="pink"
-              />
-            </div>
-
-            {/* Quick Actions */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <QuickActions projectType="developer" />
-              <QuickActions projectType="designer" />
-            </div>
-
-            {/* Recent Projects */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  Recent Projects
-                  <Button variant="outline" size="sm" onClick={() => setActiveView("all-projects")}>
-                    <Eye className="h-4 w-4 mr-2" />
-                    View All
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <div className="text-center py-8 text-gray-500">Loading projects...</div>
-                ) : projects.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    No projects found. Create your first project!
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {projects.slice(0, 5).map((project) => (
-                      <div key={project.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center gap-4">
-                          <div className={`p-2 rounded ${
-                            project.project_type === 'developer' 
-                              ? 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300'
-                              : 'bg-pink-100 text-pink-600 dark:bg-pink-900 dark:text-pink-300'
-                          }`}>
-                            {project.project_type === 'developer' ? (
-                              <Code className="h-4 w-4" />
-                            ) : (
-                              <Paintbrush className="h-4 w-4" />
-                            )}
-                          </div>
-                          <div>
-                            <h3 className="font-medium">{project.name}</h3>
-                            <p className="text-sm text-gray-500">{project.tagline}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={project.status === 'live' ? 'default' : 'secondary'}>
-                            {project.status}
-                          </Badge>
-                          <Button
-                            size="sm"
-                            variant={project.status === 'live' ? 'outline' : 'default'}
-                            onClick={() => togglePublishStatus(project.id, project.status)}
-                          >
-                            {project.status === 'live' ? 'Unpublish' : 'Publish'}
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        )
-      
-      case "all-projects":
-        return (
-          <ProjectsTable 
-            projects={projects}
-            loading={loading}
-            onRefresh={fetchProjects}
-            onDelete={deleteProject}
-            onTogglePublish={togglePublishStatus}
-          />
-        )
-      
-      case "developer-projects":
-        return (
-          <ProjectsTable 
-            projects={projects.filter(p => p.project_type === 'developer')}
-            loading={loading}
-            onRefresh={fetchProjects}
-            onDelete={deleteProject}
-            onTogglePublish={togglePublishStatus}
-            projectType="developer"
-          />
-        )
-      
-      case "designer-projects":
-        return (
-          <ProjectsTable 
-            projects={projects.filter(p => p.project_type === 'designer')}
-            loading={loading}
-            onRefresh={fetchProjects}
-            onDelete={deleteProject}
-            onTogglePublish={togglePublishStatus}
-            projectType="designer"
-          />
-        )
-      
-      case "add-developer":
-        return (
-          <AddProjectForm 
-            projectType="developer" 
-            onSuccess={fetchProjects}
-            onCancel={() => setActiveView("dashboard")}
-          />
-        )
-      
-      case "add-designer":
-        return (
-          <AddProjectForm 
-            projectType="designer" 
-            onSuccess={fetchProjects}
-            onCancel={() => setActiveView("dashboard")}
-          />
-        )
-      
-      case "settings":
-        return <SettingsPanel theme={theme} setTheme={setTheme} />
-      
-      default:
-        return (
-          <div className="text-center py-12">
-            <h2 className="text-xl font-semibold mb-4">Feature Coming Soon</h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              This feature is under development.
-            </p>
-          </div>
-        )
+      toast.success('Project updated successfully')
+      fetchProjects() // Refresh data
+      setEditModalOpen(false)
+    } catch (error) {
+      console.error('Error updating project:', error)
+      toast.error('Failed to update project')
     }
   }
 
-  const navigation = [
-    {
-      id: "dashboard",
-      label: "Dashboard",
-      icon: BarChart3,
-      description: "Overview & analytics"
-    },
-    {
-      id: "all-projects", 
-      label: "All Projects",
-      icon: Database,
-      description: "Manage all projects"
-    },
-    {
-      id: "developer-projects",
-      label: "Dev Projects", 
-      icon: Code,
-      description: "Development projects"
-    },
-    {
-      id: "designer-projects",
-      label: "Design Projects",
-      icon: Paintbrush, 
-      description: "Design projects"
-    },
-    {
-      id: "add-developer",
-      label: "Add Dev Project",
-      icon: Plus,
-      description: "Create developer project"
-    },
-    {
-      id: "add-designer", 
-      label: "Add Design Project",
-      icon: Plus,
-      description: "Create design project"
-    },
-    {
-      id: "settings",
-      label: "Settings",
-      icon: Settings,
-      description: "Dashboard settings"
-    }
-  ]
+  // Stats Card Component
+  const StatCard = ({ title, value, icon: Icon, description, color = "blue", trend }) => (
+    <Card className="admin-card hover:scale-105 transition-transform duration-200">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium text-gray-400">
+          {title}
+        </CardTitle>
+        <Icon className={`h-5 w-5 text-${color}-400`} />
+      </CardHeader>
+      <CardContent>
+        <div className={`text-3xl font-bold text-white mb-1`}>{value}</div>
+        <p className="text-xs text-gray-500">
+          {description}
+        </p>
+        {trend && (
+          <div className="flex items-center mt-2">
+            <span className="text-xs text-green-400">{trend}</span>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+
+  // Quick Action Card Component
+  const QuickActionCard = ({ title, description, icon: Icon, onClick, color = "blue" }) => (
+    <Card 
+      className="admin-card cursor-pointer hover:scale-105 transition-all duration-200"
+      onClick={onClick}
+    >
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
+            <p className="text-sm text-gray-400">{description}</p>
+          </div>
+          <div className={`p-3 rounded-full bg-${color}-500/20`}>
+            <Icon className={`h-6 w-6 text-${color}-400`} />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+
+  // Recent Projects Component
+  const RecentProjectsList = () => (
+    <Card className="admin-card">
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between text-white">
+          Recent Projects
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setActiveView("all-projects")}
+            className="text-gray-400 hover:text-white border-gray-600"
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            View All
+          </Button>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {loading ? (
+          <div className="text-center py-8 text-gray-500">Loading projects...</div>
+        ) : projects.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            No projects found. Create your first project!
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {projects.slice(0, 5).map((project) => (
+              <div 
+                key={project.id} 
+                className="flex items-center justify-between p-4 border border-gray-700 rounded-lg hover:border-orange-500/50 transition-colors cursor-pointer"
+                onClick={() => handleEditProject(project)}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`p-2 rounded ${
+                    project.project_type === 'developer' 
+                      ? 'bg-green-500/20 text-green-400'
+                      : 'bg-purple-500/20 text-purple-400'
+                  }`}>
+                    {project.project_type === 'developer' ? (
+                      <Code className="h-4 w-4" />
+                    ) : (
+                      <Paintbrush className="h-4 w-4" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-white">{project.name}</h3>
+                    <p className="text-sm text-gray-400">{project.tagline}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge 
+                    variant={project.status === 'live' ? 'default' : 'secondary'}
+                    className={project.status === 'live' ? 'bg-green-500' : 'bg-gray-600'}
+                  >
+                    {project.status}
+                  </Badge>
+                  {project.featured && (
+                    <Badge className="bg-orange-500">Featured</Badge>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
 
   return (
     <AdminLayout 
@@ -432,17 +224,188 @@ export default function AdminPage() {
       setActiveView={setActiveView}
       theme={theme}
       setTheme={setTheme}
-      navigation={navigation}
     >
-      <motion.div
-        key={activeView}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.2 }}
-      >
-        {renderActiveView()}
-      </motion.div>
+      <div className="admin-dashboard min-h-screen">
+        {/* Top Bar */}
+        <div className="admin-topbar">
+          <div>
+            <h1 className="text-2xl font-bold text-white">Portfolio Dashboard</h1>
+            <p className="text-gray-400">Manage your developer and designer projects</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-gray-400 hover:text-white"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-gray-400 hover:text-white relative"
+            >
+              <Bell className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </Button>
+            <Button 
+              onClick={fetchProjects} 
+              disabled={loading}
+              variant="outline"
+              className="text-gray-400 hover:text-white border-gray-600"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            <div className="admin-avatar">NA</div>
+          </div>
+        </div>
+
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatCard
+            title="Total Projects"
+            value={stats.total}
+            icon={Database}
+            description="All projects in portfolio"
+            color="blue"
+            trend="+12% from last month"
+          />
+          <StatCard
+            title="Published"
+            value={stats.published}
+            icon={Globe}
+            description="Live on website"
+            color="green"
+            trend="+3 this week"
+          />
+          <StatCard
+            title="Featured"
+            value={stats.featured}
+            icon={CheckCircle}
+            description="Highlighted projects"
+            color="orange"
+          />
+          <StatCard
+            title="Draft"
+            value={stats.drafts}
+            icon={FileText}
+            description="Work in progress"
+            color="yellow"
+          />
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <QuickActionCard
+            title="Add Developer Project"
+            description="Create a new development project"
+            icon={Code}
+            onClick={() => setActiveView("add-developer")}
+            color="green"
+          />
+          <QuickActionCard
+            title="Add Designer Project"
+            description="Create a new design project"
+            icon={Paintbrush}
+            onClick={() => setActiveView("add-designer")}
+            color="purple"
+          />
+          <QuickActionCard
+            title="View All Projects"
+            description="Manage all projects"
+            icon={Database}
+            onClick={() => setActiveView("all-projects")}
+            color="blue"
+          />
+          <QuickActionCard
+            title="Settings"
+            description="Configure dashboard"
+            icon={Settings}
+            onClick={() => setActiveView("settings")}
+            color="gray"
+          />
+        </div>
+
+        {/* Project Type Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <Card className="admin-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Code className="h-5 w-5 text-green-400" />
+                Developer Projects ({stats.developer})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Published</span>
+                  <span className="text-green-400">
+                    {projects.filter(p => p.project_type === 'developer' && p.status === 'live').length}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Drafts</span>
+                  <span className="text-yellow-400">
+                    {projects.filter(p => p.project_type === 'developer' && p.status === 'draft').length}
+                  </span>
+                </div>
+                <Button 
+                  className="w-full bg-green-500 hover:bg-green-600"
+                  onClick={() => setActiveView("developer-projects")}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Developer Projects
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="admin-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Paintbrush className="h-5 w-5 text-purple-400" />
+                Designer Projects ({stats.designer})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Published</span>
+                  <span className="text-green-400">
+                    {projects.filter(p => p.project_type === 'designer' && p.status === 'live').length}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Drafts</span>
+                  <span className="text-yellow-400">
+                    {projects.filter(p => p.project_type === 'designer' && p.status === 'draft').length}
+                  </span>
+                </div>
+                <Button 
+                  className="w-full bg-purple-500 hover:bg-purple-600"
+                  onClick={() => setActiveView("designer-projects")}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Designer Projects
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Recent Projects */}
+        <RecentProjectsList />
+
+        {/* Edit Project Modal */}
+        <EditProjectModal
+          isOpen={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          project={selectedProject}
+          onUpdate={handleUpdateProject}
+        />
+      </div>
     </AdminLayout>
   )
 } 

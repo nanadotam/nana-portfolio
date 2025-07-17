@@ -28,3 +28,4 @@ next-env.d.ts
 
 
 DB.sql
+setup-supabase.sql
