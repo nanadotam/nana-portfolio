@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { BackgroundGradientAnimation } from "../../components/ui/background-gradient-animation"
 import Image from "next/image"
@@ -10,6 +10,20 @@ export function AnimatedPersonaSection({
   hoveredPersona = null, 
   selectedPersona = null 
 }) {
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   // Color configurations for different persona states
   const getGradientConfig = () => {
     if (selectedPersona === "developer" || hoveredPersona === "developer") {
@@ -78,9 +92,11 @@ export function AnimatedPersonaSection({
         interactive={true}
         containerClassName="h-full w-full"
       >
-        {/* Logo and Name in top-left */}
+        {/* Logo and Name in top-left - Mobile Responsive */}
         <motion.div 
-          className="absolute z-20 top-6 left-6 flex items-center space-x-3"
+          className={`absolute z-20 flex items-center space-x-2 sm:space-x-3 ${
+            isMobile ? "top-4 left-4" : "top-6 left-6"
+          }`}
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.4 }}
@@ -92,8 +108,8 @@ export function AnimatedPersonaSection({
           >
             <Image 
               src="/logo/nana-amoako-logo-white.png"
-              width={36} 
-              height={36} 
+              width={isMobile ? 28 : 36} 
+              height={isMobile ? 28 : 36} 
               alt="Nana Amoako Logo" 
               className="drop-shadow-lg"
             />
@@ -101,7 +117,9 @@ export function AnimatedPersonaSection({
 
           {/* Name */}
           <motion.span 
-            className="text-white font-bold text-xl md:text-2xl tracking-tight font-sans drop-shadow-lg"
+            className={`text-white font-bold tracking-tight font-sans drop-shadow-lg ${
+              isMobile ? "text-base sm:text-lg" : "text-xl md:text-2xl"
+            }`}
             animate={{
               textShadow: hoveredPersona === "developer" 
                 ? "0 0 20px rgba(34, 197, 94, 0.5)"
@@ -111,7 +129,7 @@ export function AnimatedPersonaSection({
             }}
             transition={{ duration: 0.3 }}
           >
-            Nana Amoako {/* Replace with your actual name */}
+            Nana Amoako
           </motion.span>
         </motion.div>
 
@@ -120,16 +138,24 @@ export function AnimatedPersonaSection({
           {children}
         </div>
 
-        {/* Bible Verse Overlay at Bottom */}
-        <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-10">
-          <div className="bg-black/10 rounded-[16px] px-4 py-2 shadow-lg max-w-md mx-auto mb-4">
-            <p className="italic text-xs md:text-[10px] text-center font-serif text-gray-300">
+        {/* Bible Verse Overlay at Bottom - Mobile Responsive */}
+        <div className={`absolute inset-x-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-10 ${
+          isMobile ? "px-4 pb-4" : "px-6 pb-6"
+        }`}>
+          <div className={`bg-black/10 rounded-[16px] shadow-lg mx-auto ${
+            isMobile ? "px-3 py-2 max-w-xs mb-3" : "px-4 py-2 max-w-md mb-4"
+          }`}>
+            <p className={`italic text-center font-serif text-gray-300 ${
+              isMobile ? "text-[10px] leading-tight" : "text-xs md:text-[10px]"
+            }`}>
               the LORD, has filled Nana Koaku Amoako<br />
               with the Spirit of God in wisdom and skill,<br />
               in understanding and intelligence, in knowledge,<br />
               and in all kinds of craftsmanship
             </p>
-            <p className="mt-2 text-center font-serif text-[10px] text-gray-400">
+            <p className={`mt-2 text-center font-serif text-gray-400 ${
+              isMobile ? "text-[8px]" : "text-[10px]"
+            }`}>
               <span className="font-bold text-gray-200">Exodus 31:3</span>
             </p>
           </div>
@@ -146,13 +172,13 @@ export function AnimatedPersonaSection({
             {/* Matrix-like dots effect */}
             <div className="matrix-dots w-full h-full opacity-20" />
             
-            {/* Animated code-like lines */}
-            {[...Array(12)].map((_, i) => (
+            {/* Animated code-like lines - Fewer on mobile */}
+            {[...Array(isMobile ? 8 : 12)].map((_, i) => (
               <motion.div
                 key={i}
                 className="absolute w-px bg-green-400/10"
                 style={{ 
-                  left: `${(i * 8) % 100}%`,
+                  left: `${(i * (isMobile ? 12 : 8)) % 100}%`,
                   height: "100%"
                 }}
                 animate={{
@@ -176,16 +202,16 @@ export function AnimatedPersonaSection({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {/* Organic floating shapes */}
-            {[...Array(8)].map((_, i) => (
+            {/* Organic floating shapes - Fewer on mobile */}
+            {[...Array(isMobile ? 5 : 8)].map((_, i) => (
               <motion.div
                 key={i}
                 className="absolute rounded-full bg-gradient-to-br from-rose-200/5 to-pink-200/5 blur-xl"
                 style={{
                   left: `${(i * 15) % 80}%`,
                   top: `${(i * 20) % 70}%`,
-                  width: `${60 + Math.random() * 100}px`,
-                  height: `${60 + Math.random() * 100}px`,
+                  width: `${(isMobile ? 40 : 60) + Math.random() * (isMobile ? 60 : 100)}px`,
+                  height: `${(isMobile ? 40 : 60) + Math.random() * (isMobile ? 60 : 100)}px`,
                 }}
                 animate={{
                   scale: [1, 1.3, 1],
