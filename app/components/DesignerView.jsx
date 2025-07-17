@@ -719,7 +719,7 @@ export default function DesignerView() {
 
           const aboutImages = [
             {
-              src: "/images/CREATIVE-PROCESS.jpg",
+              src: "/images/CREATIVE-PROCESS.jpeg",
               alt: "Creative Process",
             },
             {
