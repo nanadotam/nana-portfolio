@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap location (update when you add a sitemap)
+Sitemap: https://nanaamoako.dev/sitemap.xml
+
+# Disallow sensitive areas
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /api/ 

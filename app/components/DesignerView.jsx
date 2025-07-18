@@ -676,7 +676,7 @@ export default function DesignerView() {
               className="text-2xl md:text-3xl font-bricolage font-light mb-8 font-serif"
               style={{ color: "#E3AF64" }}
             >
-              Visual Designer & Creative Director
+              Designer • Marketing & Public Relations • Creative Director 
             </motion.p>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -685,8 +685,13 @@ export default function DesignerView() {
               className="text-lg max-w-2xl mx-auto leading-relaxed mb-8"
               style={{ color: "#F8F7F5" }}
             >
-              Crafting meaningful experiences through thoughtful design, compelling visuals, and authentic storytelling
-              that resonates with audiences and drives engagement.
+              I’m the full-stack creative who blends
+              <span className="font-bold"> photography</span>, <span className="font-bold">filmmaking</span>, <span className="font-bold">design</span>, <span className="font-bold">creative direction</span>, 
+              and <span className="font-bold">digital strategy.</span> 
+
+              <br />
+              <br />
+              I care about the <span className="italic">little</span> <span className="font-bold">details</span> — that’s why I'm the <span className="font-italic">right</span> fit for your needs.
             </motion.p>
 
             <motion.p

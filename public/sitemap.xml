@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Main Pages -->
+  <url>
+    <loc>https://nanaamoako.dev/</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://nanaamoako.dev/images/og-hero-card.png</image:loc>
+      <image:title>Nana Amoako - Developer &amp; Designer Portfolio</image:title>
+      <image:caption>Portfolio showcasing full-stack development and creative design work</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Developer Portfolio -->
+  <url>
+    <loc>https://nanaamoako.dev/developer</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://nanaamoako.dev/images/dev-profile.jpeg</image:loc>
+      <image:title>Developer Portfolio - Nana Amoako</image:title>
+      <image:caption>Full-stack development projects and technical expertise</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Designer Portfolio -->
+  <url>
+    <loc>https://nanaamoako.dev/designer</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://nanaamoako.dev/images/CREATIVE-PROCESS.jpeg</image:loc>
+      <image:title>Designer Portfolio - Nana Amoako</image:title>
+      <image:caption>Creative design work and visual storytelling</image:caption>
+    </image:image>
+  </url>
+
+  
+  <!-- Static Assets -->
+  <url>
+    <loc>https://nanaamoako.dev/cv.pdf</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset> 
