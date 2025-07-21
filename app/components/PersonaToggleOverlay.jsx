@@ -126,10 +126,10 @@ export default function PersonaToggleOverlay({ onSelect }) {
                 className="mb-8 sm:mb-12 md:mb-16"
               >
                 <motion.h1 
-                  className={`font-bold mb-2 sm:mb-4 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent italic tracking-tight leading-tight ${
+                  className={`font-bold mb-1 sm:mb-2 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent italic tracking-tight leading-snug ${
                     isMobile 
-                      ? "text-3xl sm:text-4xl" 
-                      : "text-5xl md:text-7xl lg:text-9xl"
+                      ? "text-2xl sm:text-3xl" 
+                      : "text-4xl md:text-5xl lg:text-7xl"
                   }`}
                   animate={{
                     backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
@@ -140,7 +140,7 @@ export default function PersonaToggleOverlay({ onSelect }) {
                     ease: "easeInOut",
                   }}
                   style={{
-                    lineHeight: isMobile ? "1.1" : "1.2"
+                    lineHeight: isMobile ? "1.05" : "1.1"
                   }}
                 >
                   I build cool stuff for a living.
