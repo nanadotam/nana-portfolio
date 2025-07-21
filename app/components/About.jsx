@@ -22,27 +22,27 @@ export default function About() {
         <div className="stats-grid">
           <div className="stat-card">
             <h3>LeetCode</h3>
-            <p>100 Problems Solved</p>
+            <p>65+ Problems Solved</p>
           </div>
           <div className="stat-card">
             <h3>Projects</h3>
-            <p>15 Completed</p>
+            <p>20+ Completed</p>
           </div>
           <div className="stat-card">
             <h3>GitHub Repos</h3>
-            <p>30+ Public Repos</p>
+            <p>60+ Public Repos</p>
           </div>
           <div className="stat-card">
             <h3>Years of Experience</h3>
-            <p>6+ Years</p>
+            <p>5+ Years</p>
           </div>
           <div className="stat-card">
             <h3>Tech Stack</h3>
-            <p>JavaScript, Python, Java, C++, </p>
+            <p>JavaScript, Python, Java, C++, React, Node.js, Express, MongoDB, SQL, Git, Docker, AWS, Linux, Bash, HTML, CSS, Go</p>
           </div>
           <div className="stat-card">
             <h3>Certifications</h3>
-            <p>Google IT Support, AWS Cloud Practitioner</p>
+            <p>Ongoing CS50x</p>
           </div>
         </div>
       </section>
