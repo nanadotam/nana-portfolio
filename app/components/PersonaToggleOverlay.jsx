@@ -126,7 +126,7 @@ export default function PersonaToggleOverlay({ onSelect }) {
                 className="mb-8 sm:mb-12 md:mb-16"
               >
                 <motion.h1 
-                  className={`font-bold mb-4 sm:mb-6 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent italic tracking-tight leading-tight ${
+                  className={`font-bold mb-2 sm:mb-4 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent italic tracking-tight leading-tight ${
                     isMobile 
                       ? "text-3xl sm:text-4xl" 
                       : "text-5xl md:text-7xl lg:text-9xl"

@@ -833,10 +833,10 @@ export default function DesignerView() {
                 <a href="https://www.linkedin.com/in/nanaamoako/" target="_blank" rel="noopener noreferrer">
                   LinkedIn
                 </a>
-                <a href="https://www.tiktok.com/@nanaamoako" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.tiktok.com/@unclesettings" target="_blank" rel="noopener noreferrer">
                   TikTok
                 </a>
-                <a href="https://www.instagram.com/nanaamoako" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.instagram.com/unclesettings" target="_blank" rel="noopener noreferrer">
                   Instagram
                 </a>
               </div>

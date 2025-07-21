@@ -73,11 +73,11 @@ export default function Contact() {
                 LinkedIn
               </a>
               {/* tiktok */}
-              <a href="https://www.tiktok.com/@nanaamoako" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.tiktok.com/@unclesettings" target="_blank" rel="noopener noreferrer">
                 TikTok
               </a>
               {/* instagram */}
-              <a href="https://www.instagram.com/nanaamoako" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.instagram.com/unclesettings" target="_blank" rel="noopener noreferrer">
                 Instagram
               </a>
             </div>

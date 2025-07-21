@@ -88,7 +88,7 @@ export default function Footer() {
               <li className="footer-link">
                 <a
                   title="Instagram"
-                  href="https://instagram.com/nanadotam"
+                  href="https://instagram.com/unclesettings"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
@@ -99,7 +99,7 @@ export default function Footer() {
               <li className="footer-link">
                 <a
                   title="TikTok"
-                  href="https://tiktok.com/@nanadotam"
+                  href="https://tiktok.com/@unclesettings"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="TikTok"
