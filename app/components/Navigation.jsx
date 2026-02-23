@@ -65,6 +65,7 @@ export default function Navigation() {
   // Navigation items for each view
   const developerNavItems = [
     { label: "home", target: "#home" },
+    { label: "spotlight", target: "#spotlight" },
     { label: "projects", target: "#projects" },
     { label: "about", target: "#about" },
     { label: "contact", target: "#contact" },

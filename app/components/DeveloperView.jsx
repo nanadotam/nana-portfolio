@@ -10,6 +10,7 @@ import Footer from "./Footer"
 import PersistentPersonaToggle from "./PersistentPersonaToggle"
 import ScrollIndicator from "./ScrollIndicator"
 import ProjectModal from "./ProjectModal"
+import FeaturedSpotlight from "./FeaturedSpotlight"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function DeveloperView() {
@@ -36,6 +37,9 @@ export default function DeveloperView() {
 
       {/* Main Content */}
       <main>
+        {/* Featured Projects Spotlight */}
+        <FeaturedSpotlight />
+
         {/* Projects Section */}
         <Projects onProjectSelect={setSelectedProject} projectType="developer" />
 

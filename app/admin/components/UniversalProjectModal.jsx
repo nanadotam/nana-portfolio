@@ -25,7 +25,8 @@ import {
   Eye,
   Clock,
   CheckCircle,
-  Sparkles
+  Sparkles,
+  Video
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -96,6 +97,7 @@ export default function UniversalProjectModal({
   const [newTool, setNewTool] = useState("")
   const [newFeature, setNewFeature] = useState("")
   const [newImageUrl, setNewImageUrl] = useState("")
+  const [videoUrl, setVideoUrl] = useState("")
 
   // Initialize form data when project changes
   useEffect(() => {
@@ -113,7 +115,7 @@ export default function UniversalProjectModal({
         is_featured: project.is_featured || false,
         status: project.status || "draft",
         sort_order: project.sort_order || 0,
-        
+
         problem: project.problem || "",
         solution: project.solution || "",
         concept: project.concept || "",
@@ -124,14 +126,15 @@ export default function UniversalProjectModal({
         tools: project.tools || [],
         features: project.features || [],
         images: project.images || [],
-        
+
         live_url: project.live_url || "",
         github_url: project.github_url || "",
         case_study_url: project.case_study_url || "",
         behance_url: project.behance_url || "",
-        
+
         json_data: project.json_data || {}
       })
+      setVideoUrl(project.json_data?.video_url || "")
     } else {
       // Reset form for new project
       setFormData({
@@ -166,6 +169,7 @@ export default function UniversalProjectModal({
         
         json_data: {}
       })
+      setVideoUrl("")
     }
     setErrors({})
   }, [project, projectType])
@@ -208,11 +212,20 @@ export default function UniversalProjectModal({
 
     setLoading(true)
     try {
+      // Merge videoUrl into json_data before saving
+      const dataToSave = {
+        ...formData,
+        json_data: {
+          ...formData.json_data,
+          video_url: videoUrl || undefined
+        }
+      }
+
       let result
       if (isEditing) {
-        result = await updateProject(project.id, formData)
+        result = await updateProject(project.id, dataToSave)
       } else {
-        result = await createProject(formData)
+        result = await createProject(dataToSave)
       }
 
       if (result.error) {
@@ -772,6 +785,60 @@ export default function UniversalProjectModal({
                       </div>
                     </CardContent>
                   </Card>
+
+                  {/* Video Demo (developer projects only) */}
+                  {formData.project_type === "developer" && (
+                    <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700">
+                      <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                          <Video className="h-5 w-5 text-green-400" />
+                          Video Demo
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div>
+                          <Label htmlFor="video_url" className="text-white">Video URL</Label>
+                          <Input
+                            id="video_url"
+                            value={videoUrl}
+                            onChange={(e) => setVideoUrl(e.target.value)}
+                            placeholder="https://www.youtube.com/watch?v=... or direct .mp4 link"
+                            className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-green-500 transition-colors"
+                          />
+                          <p className="text-gray-500 text-xs mt-1.5">
+                            Supports YouTube, Vimeo, Loom, and direct mp4/webm files. Used in the Featured Spotlight carousel.
+                          </p>
+                        </div>
+                        {videoUrl && (
+                          <div className="aspect-video rounded-lg overflow-hidden border border-gray-600 bg-black">
+                            {(() => {
+                              // Inline preview logic
+                              const url = videoUrl
+                              const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+                              if (ytMatch) {
+                                return <iframe src={`https://www.youtube.com/embed/${ytMatch[1]}?rel=0`} title="Video preview" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ border: 0 }} />
+                              }
+                              const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)
+                              if (vimeoMatch) {
+                                return <iframe src={`https://player.vimeo.com/video/${vimeoMatch[1]}`} title="Video preview" className="w-full h-full" allowFullScreen style={{ border: 0 }} />
+                              }
+                              const loomMatch = url.match(/loom\.com\/share\/([a-zA-Z0-9]+)/)
+                              if (loomMatch) {
+                                return <iframe src={`https://www.loom.com/embed/${loomMatch[1]}`} title="Video preview" className="w-full h-full" allowFullScreen style={{ border: 0 }} />
+                              }
+                              if (/\.(mp4|webm|ogg)(\?|$)/i.test(url)) {
+                                return <video src={url} controls className="w-full h-full object-contain" />
+                              }
+                              if (url.includes("embed") || url.includes("player")) {
+                                return <iframe src={url} title="Video preview" className="w-full h-full" allowFullScreen style={{ border: 0 }} />
+                              }
+                              return <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">Could not parse video URL</div>
+                            })()}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
 
                   {/* Project Links */}
                   <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700">
