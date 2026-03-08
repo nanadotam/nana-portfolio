@@ -29,3 +29,10 @@ next-env.d.ts
 
 DB.sql
 setup-supabase.sql
+PRD.md
+.DS_Store
+skills/
+.gitignore
+app/.DS_Store
+public/.DS_Store
+ui-improvement-implementation-plan.md
