@@ -21,7 +21,7 @@ import {
   ChevronDown,
   Command,
 } from "lucide-react";
-import CustomCursor from "./CustomCursor";
+
 
 const columnHelper = createColumnHelper();
 
@@ -196,8 +196,6 @@ export default function CVPanel({ data, onSelectEntry }) {
       ref={panelRef}
       className="relative h-full flex flex-col bg-[#FAFAFA] dark:bg-[#0c0a0a] overflow-hidden"
     >
-      <CustomCursor containerRef={panelRef} />
-
       {/* ─── Table Container ─── */}
       <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700">
         <table className="w-full border-collapse min-w-[900px]">

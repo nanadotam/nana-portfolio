@@ -19,8 +19,19 @@ export default function MasterCVView() {
     document.documentElement.classList.remove("dark");
     document.body.classList.remove("dark");
     document.body.style.background = "#F2F1F0";
+
+    // Custom cursor for all master-cv pages
+    const style = document.createElement("style");
+    style.textContent = `
+      *, *::before, *::after {
+        cursor: url('/cursor/Custom%20Nana%20Amoako%20Cursor.svg'), auto !important;
+      }
+    `;
+    document.head.appendChild(style);
+
     return () => {
       document.body.style.background = "";
+      document.head.removeChild(style);
     };
   }, []);
 
