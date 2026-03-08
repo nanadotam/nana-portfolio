@@ -54,6 +54,19 @@ export default function Navigation() {
     setIsMenuOpen(!isMenuOpen)
   }
 
+  const handleNavClick = (item) => {
+    if (item.isRoute) {
+      router.push(item.target)
+      setIsMenuOpen(false)
+      return
+    }
+    const element = document.querySelector(item.target)
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" })
+      setIsMenuOpen(false)
+    }
+  }
+
   const scrollToSection = (sectionId) => {
     const element = document.querySelector(sectionId)
     if (element) {
@@ -69,6 +82,7 @@ export default function Navigation() {
     { label: "projects", target: "#projects" },
     { label: "about", target: "#about" },
     { label: "contact", target: "#contact" },
+    { label: "master cv", target: "/master-cv", isRoute: true },
   ]
 
   const designerNavItems = [
@@ -77,6 +91,7 @@ export default function Navigation() {
     { label: "projects", target: "#gallery" },
     { label: "about", target: "#designer-about" },
     { label: "contact", target: "#designer-contact" },
+    { label: "master cv", target: "/master-cv", isRoute: true },
   ]
 
   const navItems = currentView === "designer" ? designerNavItems : developerNavItems
@@ -134,7 +149,7 @@ export default function Navigation() {
               key={index}
               type="button"
               className={styles.button}
-              onClick={() => scrollToSection(item.target)}
+              onClick={() => handleNavClick(item)}
             >
               {item.label}
             </button>

@@ -5,6 +5,8 @@ import ImageGallery from "./ImageGallery"
 import DesignShowcase from "./DesignShowcase"
 import Footer from "./Footer"
 import PersistentPersonaToggle from "./PersistentPersonaToggle"
+import EasterEggReveal from "./EasterEggReveal"
+import WantMorePopup from "./WantMorePopup"
 import Navigation from "./Navigation"
 import DesignerProjectModal from "./DesignerProjectModal"
 import ContactForm from "./ContactForm"
@@ -803,6 +805,10 @@ export default function DesignerView() {
 
         {/* Extra spacing for giant toggle */}
         <div className="h-80"></div>
+
+        {/* Easter Egg + Want More Popup */}
+        <EasterEggReveal />
+        <WantMorePopup />
 
         {/* Persistent Persona Toggle */}
         <PersistentPersonaToggle />
