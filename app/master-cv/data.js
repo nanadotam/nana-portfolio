@@ -420,7 +420,7 @@ export const masterCVData = [
     description:
       "Proficient in building responsive, accessible, and performant web interfaces. Deep expertise in React ecosystem, modern CSS, animation libraries, and design system architecture.",
     achievements: [
-      "5+ years of experience with HTML, CSS, JavaScript",
+      "6+ years of experience with HTML, CSS, JavaScript",
       "3+ years with React, Next.js, TypeScript",
       "Built 20+ production web applications",
       "Expertise in Framer Motion, GSAP, CSS animations",
@@ -514,7 +514,7 @@ export const categoryConfig = {
 // Stats derived from data
 export const masterCVStats = {
   projects: "20+",
-  experience: "5+ Years",
+  experience: "8+ Years",
   satisfaction: "95%",
   technologies: "30+",
 };

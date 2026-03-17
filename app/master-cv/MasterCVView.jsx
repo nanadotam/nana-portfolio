@@ -1,26 +1,23 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { AnimatePresence } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import LandingPanel from "./components/LandingPanel";
 import CVPanel from "./components/CVPanel";
 import DetailModal from "./components/DetailModal";
 import { masterCVData } from "./data";
+import { X, Minimize2 } from "lucide-react";
 
 export default function MasterCVView() {
   const [showCV, setShowCV] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
-  const [splitRatio, setSplitRatio] = useState(30);
-  const containerRef = useRef(null);
-  const isDragging = useRef(false);
 
-  // Force light mode — developer view sets dark on body
+  // Force light mode
   useEffect(() => {
     document.documentElement.classList.remove("dark");
     document.body.classList.remove("dark");
     document.body.style.background = "#F2F1F0";
 
-    // Custom cursor for all master-cv pages
     const style = document.createElement("style");
     style.textContent = `
       *, *::before, *::after {
@@ -35,124 +32,199 @@ export default function MasterCVView() {
     };
   }, []);
 
-  const handleRevealCV = useCallback(() => {
-    console.log("=== REVEAL CV CLICKED ===");
-    console.log("masterCVData length:", masterCVData.length);
-    console.log("First entry:", masterCVData[0]?.title);
-    setShowCV(true);
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }, []);
-
-  // Drag to resize
-  const handleDragStart = useCallback((e) => {
-    e.preventDefault();
-    isDragging.current = true;
-    document.body.style.cursor = "col-resize";
-    document.body.style.userSelect = "none";
-  }, []);
-
+  // Lock body scroll when CV modal is open
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (!isDragging.current || !containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const pct = Math.min(Math.max((x / rect.width) * 100, 15), 50);
-      setSplitRatio(pct);
-    };
-    const handleMouseUp = () => {
-      if (!isDragging.current) return;
-      isDragging.current = false;
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
+    if (showCV) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.overflow = "";
     };
+  }, [showCV]);
+
+  const handleRevealCV = useCallback(() => {
+    setShowCV(true);
   }, []);
 
-  console.log("MasterCVView render — showCV:", showCV);
+  const handleCloseCV = useCallback(() => {
+    setShowCV(false);
+    setSelectedEntry(null);
+  }, []);
+
+  // Close on Escape
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        if (selectedEntry) {
+          setSelectedEntry(null);
+        } else if (showCV) {
+          handleCloseCV();
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showCV, selectedEntry, handleCloseCV]);
 
   return (
-    <div ref={containerRef} style={{ background: "#F2F1F0", minHeight: "100vh" }}>
-      {/* ─── PHASE 1: Full Landing Page ─── */}
-      {!showCV && (
-        <LandingPanel mode="full" onRevealCV={handleRevealCV} />
-      )}
+    <div style={{ background: "#F2F1F0", minHeight: "100vh" }}>
+      {/* Landing Page — always rendered */}
+      <LandingPanel mode="full" onRevealCV={handleRevealCV} />
 
-      {/* ─── PHASE 2: Split View ─── */}
-      {showCV && (
-        <>
-          {/* DEBUG: visible marker to confirm this branch renders */}
-          <div style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 9999,
-            background: "lime",
-            color: "black",
-            padding: 8,
-            textAlign: "center",
-            fontSize: 14,
-            fontWeight: "bold",
-          }}>
-            SPLIT VIEW ACTIVE — {masterCVData.length} entries loaded
-          </div>
-
-          {/* The actual split layout */}
-          <div style={{
-            display: "flex",
-            flexDirection: "row",
-            height: "100vh",
-            width: "100vw",
-            paddingTop: 40, /* space for debug bar */
-          }}>
-            {/* LEFT: Condensed landing */}
-            <div style={{
-              width: `${splitRatio}%`,
-              minWidth: 200,
-              height: "100%",
-              overflow: "hidden",
-              flexShrink: 0,
-              borderRight: "1px solid rgba(0,0,0,0.1)",
-            }}>
-              <LandingPanel mode="condensed" onRevealCV={handleRevealCV} />
-            </div>
-
-            {/* DRAG HANDLE */}
-            <div
-              onMouseDown={handleDragStart}
+      {/* CV Modal Overlay — slides down from top */}
+      <AnimatePresence>
+        {showCV && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={handleCloseCV}
               style={{
-                width: 6,
-                cursor: "col-resize",
-                background: "rgba(0,0,0,0.05)",
-                flexShrink: 0,
+                position: "fixed",
+                inset: 0,
+                zIndex: 40,
+                backgroundColor: "rgba(0, 0, 0, 0.4)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
               }}
             />
 
-            {/* RIGHT: CV Table */}
-            <div style={{
-              flex: 1,
-              height: "100%",
-              overflow: "auto",
-              background: "#FAFAFA",
-            }}>
-              <CVPanel
-                data={masterCVData}
-                onSelectEntry={(entry) => {
-                  console.log("Entry selected:", entry.title);
-                  setSelectedEntry(entry);
+            {/* CV Panel Container */}
+            <motion.div
+              initial={{ y: "-100%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: "-100%", opacity: 0 }}
+              transition={{
+                type: "spring",
+                damping: 32,
+                stiffness: 280,
+                mass: 0.9,
+              }}
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 45,
+                height: "82vh",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {/* Glass header bar */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "16px 24px",
+                  background: "rgba(255, 255, 255, 0.85)",
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                  borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
                 }}
-              />
-            </div>
-          </div>
-        </>
-      )}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <img
+                    src="/logo/nana-amoako-logo-white.png"
+                    alt="Nana Amoako"
+                    style={{ width: 28, height: 28, filter: "invert(1)", opacity: 0.7 }}
+                  />
+                  <div>
+                    <h2
+                      style={{
+                        margin: 0,
+                        fontSize: 16,
+                        fontWeight: 700,
+                        color: "#000",
+                        fontFamily: "'Inter', sans-serif",
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      Master CV
+                    </h2>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: 11,
+                        color: "#999",
+                        fontFamily: "'Inter', sans-serif",
+                        letterSpacing: "0.04em",
+                      }}
+                    >
+                      {masterCVData.length} entries
+                    </p>
+                  </div>
+                </div>
 
-      {/* Detail Modal */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {/* Keyboard hint */}
+                  <span
+                    style={{
+                      fontSize: 10,
+                      color: "#bbb",
+                      fontFamily: "'Inter', sans-serif",
+                      padding: "3px 8px",
+                      borderRadius: 6,
+                      border: "1px solid rgba(0,0,0,0.08)",
+                      background: "rgba(0,0,0,0.03)",
+                    }}
+                  >
+                    ESC
+                  </span>
+                  <button
+                    onClick={handleCloseCV}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: 32,
+                      height: 32,
+                      borderRadius: 8,
+                      border: "1px solid rgba(0,0,0,0.08)",
+                      background: "rgba(0,0,0,0.03)",
+                      cursor: "pointer",
+                      transition: "all 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "rgba(0,0,0,0.08)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(0,0,0,0.03)";
+                    }}
+                  >
+                    <X style={{ width: 16, height: 16, color: "#666" }} />
+                  </button>
+                </div>
+              </div>
+
+              {/* CV Table Body */}
+              <div
+                style={{
+                  flex: 1,
+                  overflow: "hidden",
+                  background: "#FAFAFA",
+                  borderBottomLeftRadius: 20,
+                  borderBottomRightRadius: 20,
+                  boxShadow: "0 25px 60px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0,0,0,0.05)",
+                }}
+              >
+                <CVPanel
+                  data={masterCVData}
+                  onSelectEntry={(entry) => setSelectedEntry(entry)}
+                />
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Detail Modal — side panel for entry details */}
       <AnimatePresence>
         {selectedEntry && (
           <DetailModal

@@ -16,8 +16,9 @@ export default function EasterEggReveal() {
   const { scrollY } = useScroll();
 
   // Push the ENTIRE page content down when panel is active
+  // Use marginTop instead of transform so that position:fixed children
+  // (including this panel) stay fixed relative to the viewport.
   useEffect(() => {
-    // Target the outermost content wrapper
     const pageContent = document.querySelector(".min-h-screen");
     if (!pageContent) return;
 
@@ -25,11 +26,11 @@ export default function EasterEggReveal() {
     if (panelState === "peeking") height = 200;
     if (panelState === "expanded") height = 340;
 
-    pageContent.style.transition = "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
-    pageContent.style.transform = height > 0 ? `translateY(${height}px)` : "translateY(0)";
+    pageContent.style.transition = "margin-top 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
+    pageContent.style.marginTop = height > 0 ? `${height}px` : "0px";
 
     return () => {
-      pageContent.style.transform = "";
+      pageContent.style.marginTop = "";
       pageContent.style.transition = "";
     };
   }, [panelState]);

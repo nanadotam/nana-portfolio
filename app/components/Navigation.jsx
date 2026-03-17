@@ -177,7 +177,7 @@ export default function Navigation() {
             key={index}
             type="button"
             className={styles.button}
-            onClick={() => scrollToSection(item.target)}
+            onClick={() => handleNavClick(item)}
           >
             {item.label}
           </button>
