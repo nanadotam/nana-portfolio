@@ -3,20 +3,21 @@
 import { useState, useEffect } from "react"
 import "../admin.css"
 import { motion, AnimatePresence } from "framer-motion"
-import { 
-  FolderOpen, 
-  Plus, 
-  Settings, 
-  Menu, 
-  X, 
-  Sun, 
-  Moon, 
+import {
+  FolderOpen,
+  Plus,
+  Settings,
+  Menu,
+  X,
+  Sun,
+  Moon,
   Home,
   BarChart3,
   Code,
   Paintbrush,
   Database,
-  User
+  User,
+  Upload
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -76,10 +77,16 @@ export default function AdminLayout({ children, activeView, setActiveView, theme
       description: "Create developer project"
     },
     {
-      id: "add-designer", 
+      id: "add-designer",
       label: "Add Design Project",
       icon: Plus,
       description: "Create design project"
+    },
+    {
+      id: "csv-import",
+      label: "CSV Import",
+      icon: Upload,
+      description: "Import Master CV data from CSV"
     },
     {
       id: "settings",

@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { 
-  Plus, 
-  Database, 
-  Settings, 
-  Code, 
-  Paintbrush, 
+import {
+  Plus,
+  Database,
+  Settings,
+  Code,
+  Paintbrush,
   BarChart3,
   Eye,
   RefreshCw,
@@ -19,13 +19,15 @@ import {
   Bell,
   Moon,
   Sun,
-  Filter
+  Filter,
+  Upload
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import AdminLayout from "./components/AdminLayout"
 import EditProjectModal from "./components/EditProjectModal"
+import CSVUploadManager from "./components/CSVUploadManager"
 import { createClient } from "@/utils/supabase/client"
 import { toast } from "sonner"
 import "./admin.css"
@@ -226,6 +228,35 @@ export default function AdminDashboard() {
       setTheme={setTheme}
     >
       <div className="admin-dashboard min-h-screen">
+        {/* CSV Import View */}
+        {activeView === "csv-import" && (
+          <div>
+            <div className="admin-topbar">
+              <div>
+                <h1 className="text-2xl font-bold text-white">CSV Import</h1>
+                <p className="text-gray-400">Upload CSV data into your Master CV</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setActiveView("dashboard")}
+                  className="text-gray-400 hover:text-white border-gray-600"
+                >
+                  Back to Dashboard
+                </Button>
+              </div>
+            </div>
+            <CSVUploadManager
+              onImport={(entries) => {
+                console.log("Imported entries:", entries)
+                toast.success(`${entries.length} entries ready — check console or download the JSON preview to use in data.js`)
+              }}
+            />
+          </div>
+        )}
+
+        {/* Dashboard View */}
+        {activeView !== "csv-import" && <>
         {/* Top Bar */}
         <div className="admin-topbar">
           <div>
@@ -320,11 +351,11 @@ export default function AdminDashboard() {
             color="blue"
           />
           <QuickActionCard
-            title="Settings"
-            description="Configure dashboard"
-            icon={Settings}
-            onClick={() => setActiveView("settings")}
-            color="gray"
+            title="CSV Import — Master CV"
+            description="Upload & map CSV data"
+            icon={Upload}
+            onClick={() => setActiveView("csv-import")}
+            color="orange"
           />
         </div>
 
@@ -405,6 +436,7 @@ export default function AdminDashboard() {
           project={selectedProject}
           onUpdate={handleUpdateProject}
         />
+        </>}
       </div>
     </AdminLayout>
   )
