@@ -34,7 +34,7 @@ export default function About() {
           </div>
           <div className="stat-card">
             <h3>Years of Experience</h3>
-            <p>5+ Years</p>
+            <p>8+ Years</p>
           </div>
           <div className="stat-card">
             <h3>Tech Stack</h3>

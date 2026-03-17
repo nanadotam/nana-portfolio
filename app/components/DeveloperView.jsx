@@ -12,6 +12,9 @@ import ScrollIndicator from "./ScrollIndicator"
 import ProjectModal from "./ProjectModal"
 import FeaturedSpotlight from "./FeaturedSpotlight"
 import { motion, AnimatePresence } from "framer-motion"
+import EasterEggReveal from "./EasterEggReveal"
+import WantMorePopup from "./WantMorePopup"
+import MasterCVInvite from "./MasterCVInvite"
 
 export default function DeveloperView() {
   const [selectedProject, setSelectedProject] = useState(null)
@@ -89,6 +92,13 @@ export default function DeveloperView() {
 
       {/* Extra spacing for giant toggle */}
       <div className="h-80"></div>
+
+      {/* Easter Egg + Want More Popup */}
+      <EasterEggReveal />
+      <WantMorePopup />
+
+      {/* Master CV Invite Popup */}
+      <MasterCVInvite variant="developer" />
 
       {/* Persistent Persona Toggle */}
       <PersistentPersonaToggle />
