@@ -1,4 +1,5 @@
 import "./globals.css"
+import { VisitorTracker } from '@/components/VisitorTracker'
 
 // Site configuration - update these for deployment
 const siteConfig = {
@@ -150,7 +151,10 @@ export default function RootLayout({ children }) {
         '--font-developer': '"JetBrains Mono", monospace',
         '--font-designer': '"Playfair Display", serif',
         '--font-designer-alt': '"Bricolage Grotesque", sans-serif'
-      }}>{children}</body>
+      }}>
+        <VisitorTracker />
+        {children}
+      </body>
     </html>
   )
 }

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { masterCVData, masterCVContact } from "../data";
 import {
   ArrowRight,
   ArrowLeft,
@@ -111,12 +112,29 @@ export default function CVBuilderView() {
   const [answers, setAnswers] = useState({
     format: "docx",
   });
-  const [masterCV, setMasterCV] = useState(null);
+  // Build master CV object from site data
+  const [masterCV] = useState(() => ({
+    cv_master: {
+      name: masterCVContact.name,
+      contact: masterCVContact.contact,
+      summary: masterCVContact.summary,
+      entries: masterCVData.map((entry) => ({
+        organization: entry.organization,
+        period: entry.duration
+          ? `${entry.duration.start || ""} - ${entry.duration.is_current ? "Present" : entry.duration.end || ""}`
+          : "",
+        category: entry.category,
+        role: entry.role || entry.title,
+        skills: entry.skills_tools || [],
+        impact: entry.description || "",
+        bullet_points: entry.achievements || [],
+      })),
+    },
+  }));
   const [generating, setGenerating] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
-  const fileInputRef = useRef(null);
   const inputRef = useRef(null);
 
   // Force light mode
@@ -134,26 +152,6 @@ export default function CVBuilderView() {
     return () => clearTimeout(timer);
   }, [currentQ]);
 
-  // Load master CV JSON
-  const handleJSONUpload = useCallback((e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const data = JSON.parse(evt.target.result);
-        if (data.cv_master || data.entries) {
-          setMasterCV(data);
-          setCurrentQ(0);
-        } else {
-          setError("Invalid JSON — expected cv_master or entries key");
-        }
-      } catch {
-        setError("Could not parse JSON file");
-      }
-    };
-    reader.readAsText(file);
-  }, []);
 
   // Navigation
   const q = QUESTIONS[currentQ];
@@ -184,10 +182,6 @@ export default function CVBuilderView() {
 
   // ── Generate CV ─────────────────────────────────────────────────
   const handleGenerate = async () => {
-    if (!masterCV) {
-      setError("Please upload your master CV JSON first");
-      return;
-    }
     setGenerating(true);
     setError(null);
 
@@ -404,65 +398,6 @@ ${cv.skills?.length ? `<div class="section-title">Technical Skills</div><p class
     setTimeout(() => w.print(), 500);
   };
 
-  // ── Render: JSON upload gate ────────────────────────────────────
-  if (!masterCV) {
-    return (
-      <div style={styles.page}>
-        <div style={styles.container}>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={styles.card}
-          >
-            <div style={{ textAlign: "center", marginBottom: 32 }}>
-              <div style={styles.iconBubble}>
-                <Upload style={{ width: 32, height: 32, color: "#e86c47" }} />
-              </div>
-              <h1 style={styles.heading}>CV Builder</h1>
-              <p style={styles.sublabel}>
-                Upload your <code style={styles.code}>master_cv.json</code> to get started.
-                The AI will tailor your CV to any role.
-              </p>
-            </div>
-
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                const file = e.dataTransfer.files?.[0];
-                if (file) handleJSONUpload({ target: { files: [file] } });
-              }}
-              style={styles.dropZone}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json"
-                onChange={handleJSONUpload}
-                style={{ display: "none" }}
-              />
-              <FileText style={{ width: 40, height: 40, color: "#999", marginBottom: 12 }} />
-              <p style={{ fontSize: 15, fontWeight: 600, color: "#333", marginBottom: 4 }}>
-                Drop your JSON here or click to browse
-              </p>
-              <p style={{ fontSize: 12, color: "#999" }}>
-                Accepts master_cv.json format
-              </p>
-            </div>
-
-            {error && (
-              <div style={styles.errorBanner}>
-                <AlertCircle style={{ width: 16, height: 16 }} />
-                {error}
-              </div>
-            )}
-          </motion.div>
-        </div>
-      </div>
-    );
-  }
-
   // ── Render: Generating state ────────────────────────────────────
   if (generating) {
     return (
@@ -638,7 +573,7 @@ ${cv.skills?.length ? `<div class="section-title">Technical Skills</div><p class
       {/* Back / question counter */}
       <div style={styles.topBar}>
         <button
-          onClick={currentQ > 0 ? goPrev : () => setMasterCV(null)}
+          onClick={currentQ > 0 ? goPrev : () => window.location.href = "/master-cv"}
           style={styles.backBtn}
         >
           <ArrowLeft style={{ width: 18, height: 18 }} />
