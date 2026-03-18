@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useScramble } from "use-scramble";
 import { masterCVStats } from "../data";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import Link from "next/link";
 
 const roles = [
   "Developer",
@@ -320,6 +321,32 @@ export default function LandingPanel({ mode = "full", onRevealCV }) {
             <span style={{ position: "relative" }}>View Master CV</span>
             <ArrowRight style={{ width: 16, height: 16, position: "relative" }} />
           </motion.button>
+
+          <Link href="/master-cv/builder">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "16px 32px",
+                backgroundColor: "transparent",
+                color: "#000",
+                border: "1.5px solid #ccc",
+                borderRadius: 999,
+                fontSize: 14,
+                fontWeight: 500,
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: "0.02em",
+                cursor: "pointer",
+                marginLeft: 12,
+              }}
+            >
+              <Sparkles style={{ width: 15, height: 15 }} />
+              <span>Build Tailored CV</span>
+            </motion.button>
+          </Link>
         </motion.div>
       </div>
     </div>

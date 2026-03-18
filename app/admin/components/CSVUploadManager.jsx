@@ -18,6 +18,7 @@ import {
   ChevronDown,
   RotateCcw,
   Sparkles,
+  FileJson2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -195,6 +196,138 @@ export default function CSVUploadManager({ onImport }) {
   const [errors, setErrors] = useState([])
   const [fileName, setFileName] = useState("")
   const fileInputRef = useRef(null)
+  const jsonInputRef = useRef(null)
+
+  // ── JSON Import (master_cv.json format) ─────────────────────────
+  const handleJSONImport = useCallback((e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.name.endsWith(".json")) {
+      toast.error("Please upload a .json file")
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (evt) => {
+      try {
+        const data = JSON.parse(evt.target.result)
+        // Support both { cv_master: { entries: [...] } } and { entries: [...] }
+        const raw = data.cv_master || data
+        const jsonEntries = raw.entries || []
+
+        if (!jsonEntries.length) {
+          toast.error("No entries found in JSON — expected cv_master.entries or entries array")
+          return
+        }
+
+        // Map master_cv.json → app's masterCVData format
+        const categoryMap = {
+          "Internship": "work_experience",
+          "Freelance": "work_experience",
+          "Co-Curricular / Leadership": "volunteering",
+          "Co-Curricular / Design": "project",
+          "Co-Curricular / Branding & Design": "project",
+          "Co-Curricular / Freelance": "work_experience",
+          "Entrepreneurship / Personal Project": "project",
+          "Personal Project": "project",
+          "Personal Project / Entrepreneurship": "project",
+          "Personal Project / Open Source": "project",
+          "Personal Project / Creative": "project",
+          "Personal Project / Freelance": "project",
+          "Personal Project / Content Creation": "publication",
+          "Personal Interest / Skill": "skill",
+          "Academic Project": "project",
+          "Academic / Research Project": "project",
+          "Academic Project / Competition": "project",
+          "Education": "education",
+          "Education / Training": "education",
+          "Award / Competition": "award",
+          "Award / Academic": "award",
+        }
+
+        const prefixMap = {
+          "work_experience": "we",
+          "project": "pj",
+          "education": "ed",
+          "certification": "ct",
+          "volunteering": "vl",
+          "award": "aw",
+          "skill": "sk",
+          "publication": "pb",
+        }
+
+        const counters = {}
+        const mapped = jsonEntries.map((entry) => {
+          const cat = categoryMap[entry.category] || "project"
+          counters[cat] = (counters[cat] || 0) + 1
+          const prefix = prefixMap[cat] || "en"
+          const id = `${prefix}-${counters[cat]}`
+
+          // Parse period into start/end
+          let startDate = null
+          let endDate = null
+          let isCurrent = false
+          if (entry.period) {
+            isCurrent = entry.period.toLowerCase().includes("present")
+            const parts = entry.period.split(" - ").map((p) => p.trim())
+            // Try to parse dates loosely
+            const parseLoose = (s) => {
+              if (!s || s.toLowerCase() === "present") return null
+              // Handle "Jun 2023", "2023", "May 2026", etc.
+              const d = new Date(s)
+              if (!isNaN(d.getTime())) {
+                return d.toISOString().split("T")[0]
+              }
+              // Try year only
+              if (/^\d{4}$/.test(s)) return `${s}-01-01`
+              return null
+            }
+            startDate = parseLoose(parts[0])
+            endDate = isCurrent ? null : parseLoose(parts[1] || parts[0])
+          }
+
+          return {
+            id,
+            category: cat,
+            title: entry.role || "Untitled",
+            organization: entry.organization || "",
+            role: entry.role || "",
+            location: "",
+            duration: { start: startDate, end: endDate, is_current: isCurrent },
+            description: entry.impact || "",
+            achievements: entry.bullet_points || [],
+            skills_tools: entry.skills || [],
+            tags: [entry.category?.toLowerCase()?.replace(/[^a-z0-9]/g, "-")].filter(Boolean),
+            impact_rating: 5,
+            is_visible: true,
+            sort_order: counters[cat],
+            links: {},
+            images: [],
+            references: [],
+          }
+        })
+
+        setEntries(mapped)
+        setFileName(file.name)
+
+        // Validate
+        const errs = []
+        mapped.forEach((entry, i) => {
+          if (!entry.title || entry.title === "Untitled") {
+            errs.push(`Entry ${i + 1}: Missing title/role`)
+          }
+        })
+        setErrors(errs)
+
+        // Jump straight to preview step (skip CSV mapping)
+        setStep(2)
+        toast.success(`Loaded ${mapped.length} entries from ${file.name}`)
+      } catch (err) {
+        toast.error("Could not parse JSON: " + err.message)
+      }
+    }
+    reader.readAsText(file)
+  }, [])
 
   // ── Step 1: Upload ──────────────────────────────────────────────
   const handleFileSelect = useCallback((e) => {
@@ -476,7 +609,7 @@ export default function CSVUploadManager({ onImport }) {
   // ── Step 1: Upload UI ───────────────────────────────────────────
   const renderUploadStep = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card
           className="admin-card cursor-pointer hover:border-orange-500/50 transition-colors"
           onClick={downloadTemplate}
@@ -504,6 +637,27 @@ export default function CSVUploadManager({ onImport }) {
               <p className="text-sm text-gray-400">Download existing CV entries as CSV</p>
             </div>
           </CardContent>
+        </Card>
+        <Card
+          className="admin-card cursor-pointer hover:border-orange-500/50 transition-colors"
+          onClick={() => jsonInputRef.current?.click()}
+        >
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="p-3 rounded-full bg-purple-500/20">
+              <FileJson2 className="h-5 w-5 text-purple-400" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-white">Import JSON</h3>
+              <p className="text-sm text-gray-400">Load master_cv.json directly</p>
+            </div>
+          </CardContent>
+          <input
+            ref={jsonInputRef}
+            type="file"
+            accept=".json"
+            onChange={handleJSONImport}
+            className="hidden"
+          />
         </Card>
       </div>
 
