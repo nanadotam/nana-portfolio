@@ -224,143 +224,34 @@ export default function CVBuilderView() {
   // ── Download DOCX ───────────────────────────────────────────────
   const downloadDOCX = async () => {
     if (!result) return;
-    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, TabStopPosition, TabStopType } = await import("docx");
-    const { saveAs } = await import("file-saver");
 
-    const cv = result.tailoredCV;
-    const children = [];
-
-    // Name
-    children.push(
-      new Paragraph({
-        children: [new TextRun({ text: cv.name, bold: true, size: 32, font: "Calibri" })],
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 80 },
-      })
-    );
-
-    // Contact line
-    const contactParts = [
-      cv.contact.email,
-      cv.contact.phone,
-      cv.contact.location,
-      cv.contact.linkedin,
-      cv.contact.github,
-    ].filter(Boolean);
-    children.push(
-      new Paragraph({
-        children: [new TextRun({ text: contactParts.join("  |  "), size: 18, font: "Calibri", color: "666666" })],
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 200 },
-      })
-    );
-
-    // Divider helper
-    const addSection = (title) => {
-      children.push(
-        new Paragraph({
-          children: [new TextRun({ text: title.toUpperCase(), bold: true, size: 22, font: "Calibri", color: "2B579A" })],
-          spacing: { before: 300, after: 100 },
-          border: { bottom: { style: "single", size: 1, color: "CCCCCC" } },
-        })
-      );
-    };
-
-    // Summary
-    if (cv.summary) {
-      addSection("Professional Summary");
-      children.push(
-        new Paragraph({
-          children: [new TextRun({ text: cv.summary, size: 20, font: "Calibri" })],
-          spacing: { after: 100 },
-        })
-      );
-    }
-
-    // Experience
-    if (cv.experiences?.length) {
-      addSection("Experience");
-      cv.experiences.forEach((exp) => {
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({ text: exp.role, bold: true, size: 21, font: "Calibri" }),
-              new TextRun({ text: `  —  ${exp.organization}`, size: 21, font: "Calibri", color: "555555" }),
-            ],
-            spacing: { before: 140, after: 40 },
-          })
-        );
-        children.push(
-          new Paragraph({
-            children: [new TextRun({ text: exp.period || "", italics: true, size: 18, font: "Calibri", color: "888888" })],
-            spacing: { after: 60 },
-          })
-        );
-        (exp.bullet_points || []).forEach((bp) => {
-          children.push(
-            new Paragraph({
-              children: [new TextRun({ text: bp, size: 20, font: "Calibri" })],
-              bullet: { level: 0 },
-              spacing: { after: 40 },
-            })
-          );
-        });
+    try {
+      const cv = result.tailoredCV;
+      const response = await fetch("/api/cv/download-docx", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cv, answers }),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate DOCX");
+      }
+
+      const blob = await response.blob();
+      const fileName = `${cv.name.replace(/\s+/g, "_")}_CV_${answers.role?.replace(/\s+/g, "_") || "Tailored"}.docx`;
+
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err.message || "Failed to download DOCX");
     }
-
-    // Projects
-    if (cv.projects?.length) {
-      addSection("Projects");
-      cv.projects.forEach((proj) => {
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({ text: proj.organization || proj.role, bold: true, size: 21, font: "Calibri" }),
-              new TextRun({ text: `  (${proj.period || ""})`, size: 18, font: "Calibri", color: "888888" }),
-            ],
-            spacing: { before: 140, after: 40 },
-          })
-        );
-        (proj.bullet_points || []).forEach((bp) => {
-          children.push(
-            new Paragraph({
-              children: [new TextRun({ text: bp, size: 20, font: "Calibri" })],
-              bullet: { level: 0 },
-              spacing: { after: 40 },
-            })
-          );
-        });
-      });
-    }
-
-    // Skills
-    if (cv.skills?.length) {
-      addSection("Technical Skills");
-      children.push(
-        new Paragraph({
-          children: [new TextRun({ text: cv.skills.join("  |  "), size: 20, font: "Calibri" })],
-          spacing: { after: 100 },
-        })
-      );
-    }
-
-    const doc = new Document({
-      sections: [
-        {
-          properties: {
-            page: {
-              size: { width: 12240, height: 15840 }, // US Letter in twips
-              margin: { top: 720, right: 720, bottom: 720, left: 720 },
-            },
-          },
-          children,
-        },
-      ],
-    });
-
-    const blob = await Packer.toBlob(doc);
-    const fileName = `${cv.name.replace(/\s+/g, "_")}_CV_${answers.role?.replace(/\s+/g, "_") || "Tailored"}.docx`;
-    saveAs(blob, fileName);
   };
 
   // ── Download PDF (print-friendly HTML) ──────────────────────────
