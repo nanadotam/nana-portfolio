@@ -7,6 +7,7 @@ import CVPanel from "./components/CVPanel";
 import DetailModal from "./components/DetailModal";
 import { masterCVData } from "./data";
 import { X, Minimize2 } from "lucide-react";
+import BottomTabBar from "../components/BottomTabBar";
 
 export default function MasterCVView() {
   const [showCV, setShowCV] = useState(false);
@@ -234,6 +235,9 @@ export default function MasterCVView() {
           />
         )}
       </AnimatePresence>
+
+      {/* Bottom Tab Bar */}
+      <BottomTabBar />
     </div>
   );
 }

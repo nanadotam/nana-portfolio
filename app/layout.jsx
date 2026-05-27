@@ -3,7 +3,7 @@ import { VisitorTracker } from '@/components/VisitorTracker'
 
 // Site configuration - update these for deployment
 const siteConfig = {
-  url: "https://nanaamoako.dev", // Update with your actual domain
+  url: "https://portfolio.nanaamoako.com",
   title: "Nana Amoako - Developer & Designer",
   description: "Portfolio showcasing full-stack development and creative design work. Experienced Developer & Designer",
   author: "Nana Amoako",

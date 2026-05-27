@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import ImageGallery from "./ImageGallery"
 import DesignShowcase from "./DesignShowcase"
 import Footer from "./Footer"
-import PersistentPersonaToggle from "./PersistentPersonaToggle"
 import EasterEggReveal from "./EasterEggReveal"
+import BottomTabBar from "./BottomTabBar"
 import WantMorePopup from "./WantMorePopup"
 import Navigation from "./Navigation"
 import DesignerProjectModal from "./DesignerProjectModal"
@@ -804,9 +804,6 @@ export default function DesignerView() {
         {/* Footer */}
         <Footer />
 
-        {/* Extra spacing for giant toggle */}
-        <div className="h-80"></div>
-
         {/* Easter Egg + Want More Popup */}
         <EasterEggReveal />
         <WantMorePopup />
@@ -814,8 +811,8 @@ export default function DesignerView() {
         {/* Master CV Invite Popup */}
         <MasterCVInvite variant="designer" />
 
-        {/* Persistent Persona Toggle */}
-        <PersistentPersonaToggle />
+        {/* Bottom Tab Bar: Developer | CV | Designer */}
+        <BottomTabBar />
       </div>
 
       {/* Contact Form Modal */}

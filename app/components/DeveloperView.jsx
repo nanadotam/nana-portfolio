@@ -7,7 +7,6 @@ import Projects from "./Projects"
 import About from "./About"
 import ContactForm from "./ContactForm"
 import Footer from "./Footer"
-import PersistentPersonaToggle from "./PersistentPersonaToggle"
 import ScrollIndicator from "./ScrollIndicator"
 import ProjectModal from "./ProjectModal"
 import FeaturedSpotlight from "./FeaturedSpotlight"
@@ -15,6 +14,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import EasterEggReveal from "./EasterEggReveal"
 import WantMorePopup from "./WantMorePopup"
 import MasterCVInvite from "./MasterCVInvite"
+import BottomTabBar from "./BottomTabBar"
+import PullToDesigner from "./PullToDesigner"
 
 export default function DeveloperView() {
   const [selectedProject, setSelectedProject] = useState(null)
@@ -90,8 +91,8 @@ export default function DeveloperView() {
       {/* Footer */}
       <Footer />
 
-      {/* Extra spacing for giant toggle */}
-      <div className="h-80"></div>
+      {/* Pull-to-Designer — overscroll triggers designer transition */}
+      <PullToDesigner />
 
       {/* Easter Egg + Want More Popup */}
       <EasterEggReveal />
@@ -100,8 +101,8 @@ export default function DeveloperView() {
       {/* Master CV Invite Popup */}
       <MasterCVInvite variant="developer" />
 
-      {/* Persistent Persona Toggle */}
-      <PersistentPersonaToggle />
+      {/* Bottom Tab Bar: Developer | CV | Designer */}
+      <BottomTabBar />
 
       {/* Contact Form Modal */}
       <AnimatePresence>
