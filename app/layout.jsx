@@ -1,5 +1,6 @@
 import "./globals.css"
 import { VisitorTracker } from '@/components/VisitorTracker'
+import SmoothScroll from "./components/SmoothScroll"
 
 // Site configuration - update these for deployment
 const siteConfig = {
@@ -152,6 +153,7 @@ export default function RootLayout({ children }) {
         '--font-designer': '"Playfair Display", serif',
         '--font-designer-alt': '"Bricolage Grotesque", sans-serif'
       }}>
+        <SmoothScroll />
         <VisitorTracker />
         {children}
       </body>
