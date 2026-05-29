@@ -278,13 +278,19 @@ export default function CardPage() {
       )}
 
       {/* ── Card shell ── */}
+      <style>{`
+        @media (min-width: 640px) {
+          .card-grid { grid-template-columns: 1fr 280px !important; }
+        }
+      `}</style>
+
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: 'easeOut' }}
         style={{
           width: '100%',
-          maxWidth: 860,
+          maxWidth: 900,
           background: t.surface,
           border: `1.5px solid ${t.border}`,
           borderRadius: 24,
@@ -292,30 +298,10 @@ export default function CardPage() {
           boxShadow: '0 24px 60px rgba(0,0,0,0.45)',
         }}
       >
-        {/*
-          Responsive grid:
-          • Mobile  (< 640px): single column, QR below contacts
-          • Desktop (≥ 640px): two columns, QR on right
-        */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(1, 1fr)',
-          }}
-          className="sm:!grid"
-          // inline override for sm via a style tag below
-        >
-          {/* We use a wrapper with a class to switch columns */}
-          <style>{`
-            @media (min-width: 640px) {
-              .card-grid { grid-template-columns: 1fr 320px !important; }
-            }
-          `}</style>
-
-          <div className="card-grid" style={{ display: 'grid', gridTemplateColumns: '1fr' }}>
+        <div className="card-grid" style={{ display: 'grid', gridTemplateColumns: '1fr' }}>
 
             {/* ── LEFT PANEL ── */}
-            <div style={{ padding: 'clamp(1.5rem, 4vw, 2.5rem)', display: 'flex', flexDirection: 'column', gap: 24 }}>
+            <div style={{ padding: 'clamp(1.25rem, 3.5vw, 2.25rem)', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
               {/* Header: photo + name */}
               <motion.div variants={stagger} initial="hidden" animate="show" style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
@@ -346,7 +332,7 @@ export default function CardPage() {
                     <p style={{
                       fontFamily: '"Bricolage Grotesque", sans-serif',
                       fontWeight: 900,
-                      fontSize: 'clamp(2rem, 5vw, 3rem)',
+                      fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
                       lineHeight: 0.92,
                       color: t.textPrimary,
                       letterSpacing: '-0.025em',
@@ -354,7 +340,7 @@ export default function CardPage() {
                     <p style={{
                       fontFamily: '"Bricolage Grotesque", sans-serif',
                       fontWeight: 900,
-                      fontSize: 'clamp(2rem, 5vw, 3rem)',
+                      fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
                       lineHeight: 0.92,
                       color: t.nameLine2,
                       letterSpacing: '-0.025em',
@@ -377,37 +363,11 @@ export default function CardPage() {
               <div style={{ height: 1, background: t.border }} />
 
               {/* Contact rows */}
-              <motion.div variants={stagger} initial="hidden" animate="show" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <motion.div variants={stagger} initial="hidden" animate="show" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {CONTACTS.map((c) => (
                   <ContactRow key={c.href} {...c} theme={theme} />
                 ))}
               </motion.div>
-
-              {/* QR — mobile only (shown below contacts) */}
-              <div className="flex sm:hidden flex-col items-center gap-4 pt-2">
-                <div style={{
-                  background: '#ffffff',
-                  borderRadius: 20,
-                  padding: '1.1rem',
-                  boxShadow: `0 0 0 1.5px ${t.border}, 0 8px 28px rgba(0,0,0,0.25)`,
-                  position: 'relative',
-                }}>
-                  <QRCodeSVG value={CARD_URL} size={170} bgColor="transparent" fgColor={t.qrFg} level="H" />
-                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>
-                    <QRLogo />
-                  </div>
-                </div>
-
-                <button onClick={handleShare} style={{
-                  background: t.pillBg, color: t.pillText,
-                  borderRadius: 999, padding: '9px 28px',
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase',
-                  border: 'none', cursor: 'pointer',
-                }}>
-                  LET&rsquo;S CONNECT
-                </button>
-              </div>
 
               {/* Bottom bar: theme + actions */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 4 }}>
@@ -419,27 +379,31 @@ export default function CardPage() {
               </div>
             </div>
 
-            {/* ── RIGHT PANEL — desktop QR (hidden on mobile) ── */}
+            {/* ── RIGHT PANEL — desktop QR only, hidden on mobile ── */}
             <div
               className="hidden sm:flex"
               style={{
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '2rem 1.75rem',
-                gap: '1.25rem',
+                padding: '1.75rem 1.25rem',
+                gap: '1rem',
                 borderLeft: `1.5px solid ${t.border}`,
                 background: t.bg,
               }}
             >
               <div style={{
                 background: '#ffffff',
-                borderRadius: 22,
-                padding: '1.25rem',
+                borderRadius: 18,
+                padding: '1rem',
                 boxShadow: `0 0 0 1.5px ${t.border}, 0 12px 36px rgba(0,0,0,0.3)`,
                 position: 'relative',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}>
-                <QRCodeSVG value={CARD_URL} size={210} bgColor="transparent" fgColor={t.qrFg} level="H" />
+                <QRCodeSVG value={CARD_URL} size={180} bgColor="transparent" fgColor={t.qrFg} level="H" />
                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>
                   <QRLogo />
                 </div>
@@ -447,26 +411,26 @@ export default function CardPage() {
 
               <button onClick={handleShare} style={{
                 background: t.pillBg, color: t.pillText,
-                borderRadius: 999, padding: '9px 28px',
+                borderRadius: 999, padding: '8px 22px',
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase',
+                fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase',
                 border: 'none', cursor: 'pointer',
-                transition: 'opacity 0.15s',
+                whiteSpace: 'nowrap',
               }}>
                 LET&rsquo;S CONNECT
               </button>
 
               <p style={{
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: '0.6rem', letterSpacing: '0.1em',
+                fontSize: '0.55rem', letterSpacing: '0.1em',
                 textTransform: 'uppercase', color: t.textMuted,
+                textAlign: 'center',
               }}>
                 Scan to visit portfolio
               </p>
             </div>
 
-          </div>{/* .card-grid */}
-        </div>
+        </div>{/* .card-grid */}
       </motion.div>
     </div>
   )
