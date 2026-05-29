@@ -261,7 +261,7 @@ export default function CardPage() {
   return (
     <div
       style={{ background: t.bg, minHeight: '100dvh', transition: 'background 0.4s ease' }}
-      className="flex items-center justify-center p-4 sm:p-8"
+      className="flex items-center justify-center p-4 sm:p-6"
     >
       {/* Toast */}
       {toast && (
@@ -281,7 +281,9 @@ export default function CardPage() {
       <style>{`
         @media (min-width: 640px) {
           .card-grid { grid-template-columns: 1fr 280px !important; }
+          .card-qr-panel { display: flex !important; }
         }
+        .card-qr-panel { display: none; }
       `}</style>
 
       <motion.div
@@ -379,9 +381,9 @@ export default function CardPage() {
               </div>
             </div>
 
-            {/* ── RIGHT PANEL — desktop QR only, hidden on mobile ── */}
+            {/* ── RIGHT PANEL — desktop QR only, hidden on mobile via .card-qr-panel ── */}
             <div
-              className="hidden sm:flex"
+              className="card-qr-panel"
               style={{
                 flexDirection: 'column',
                 alignItems: 'center',
